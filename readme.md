@@ -1,4 +1,1 @@
-# Turma 15 - Grupo 1
-
-Repositorio para o primeiro modulo do Inteli 
-
+Repositorio do jogo do peixe do modulo 1
