@@ -34,7 +34,13 @@
 
       var passarinho;
 
-      var isPassarinhoMoving = false;
+      // funcão que manda dentro do console se o passaro está pronto ou não
+      const oPassaroTaPronto = () => {
+        for(let i=10;i>0;i--) {
+          console.log(i+'- O passaro está se preparando.')
+        }
+        console.log('0 - O passaro está pronto.')
+      }
 
       // Pre-carrega a cena, carregando arquivos como a imagem abaixo
       function preload() {
@@ -65,7 +71,10 @@
 
         // Começa a animação do passarinho e faz a animação ser um loop com o true no final
         passarinho.anims.play("fly", true);
+        oPassaroTaPronto()
       }
+
+    
 
       // Atualiza algo no jogo constantemente.
       function update() {
