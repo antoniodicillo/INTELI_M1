@@ -44,7 +44,7 @@ A nova versão deixa o jogo mais complexo e adiciona novas mecanicas para os jog
 _Inclua aqui um **rascunho da Folha de Concept Art** e uma explicação sobre como o esboço foi desenvolvido._
 
 ### folha de concept art
-
+![Concept Art](concept2.jpg)
 ---
 
 ## 4. Tela Digital do Jogo
@@ -71,6 +71,17 @@ _Cada membro da dupla deve responder individualmente:_
    Por ser um jogo amplamente conhecido, de mecânicas simples e elementos visuais minimalistas, para mim foi um desafio chegar em conceitos que fossem interessantes e que trouxessem novas dinâmicas e desafios para o jogo sem que ele perdesse os elementos visuais que o tornam tão icônico (Os dois retângulos, a movimentação vertical e a física dos elementos).
 2. Que habilidades foram desenvolvidas ou aprimoradas ao longo da atividade?
    Definitivamente a habilidade de abstrair elementos e conceitos únicos para chegar em ideias novas. A mecânica de fazer com que a bola agora destrua o personagem veio da percepção que no jogo original seu objetivo era sempre ir em direção onde a bola estava, quando pensamos em olhar para esse único mecanismo e invertê-lo, chegamos em conceitos complementamente novos que guiaram o desenvolvimento do Concept Art.
+
+[Antonio Di Cillo]
+
+1. Quais foram os maiores desafios enfrentados durante o processo de criação?
+
+Por ser um jogo muito simples, foi difícil encontrar uma ideia que não fugisse do conceito original e, ao mesmo tempo, não fosse excessivamente simples. Conseguimos desenvolver uma ideia criativa que manteve as propostas do jogo original.
+
+2. Que habilidades foram desenvolvidas ou aprimoradas ao longo da atividade?
+
+A habilidade de expandir um conceito sem alterar sua proposta original. Para garantir que o jogo não se desviasse muito de sua ideia central, foi necessário discutir quais elementos fariam mais sentido dentro do contexto do jogo. Como resultado, criamos a mecânica de desviar da bola em vez de atingi-la.
+
 
 ---
 
