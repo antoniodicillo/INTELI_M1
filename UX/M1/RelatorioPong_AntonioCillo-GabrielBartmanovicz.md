@@ -44,7 +44,7 @@ A nova versão deixa o jogo mais complexo e adiciona novas mecanicas para os jog
 _Inclua aqui um **rascunho da Folha de Concept Art** e uma explicação sobre como o esboço foi desenvolvido._
 
 ### folha de concept art
-![Concept Art](concept2.jpg)
+![Concept Art](concept2.png)
 ---
 
 ## 4. Tela Digital do Jogo
