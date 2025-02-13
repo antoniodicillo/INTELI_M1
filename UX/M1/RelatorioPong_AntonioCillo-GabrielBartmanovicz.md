@@ -2,16 +2,13 @@
 
 ## 1. Introdução
 
-Descreva brevemente o objetivo da atividade, mencionando a proposta de reinvenção do jogo Pong e a abordagem escolhida pela dupla.
-<br>
-
 O objetivo desta atividade é reinventar o jogo Pong, um dos primeiros e mais icônicos jogos eletrônicos. A proposta escolhida consisti em inverter a dinâmica tradicional do jogo, onde o jogador deve rebater a bola para o adversário, transformando-a em uma mecânica de esquiva. Agora, os jogadores devem desviar de bombas que podem destruí-los. Além disso, elementos como power-ups especiais que permitem atacar o adversário com um projétil foram adicionados para trazer mais competitividade. Esta abordagem adiciona uma camada extra de desafio e estratégia, diferenciando-a da versão original com sua proposta única ao mesmo tempo que possui elementos visuais que remetem ao jogo original.
 
 ## 2. Pesquisa e Análise Inicial
 
 Um dos principais fatores que faz do Pong ser um dos jogos mais aclamados é sua simplicidade e eficiência em como se comunica com o jogador e cria uma dinâmica divertida e competitiva. O jogo não possui nenhum tutorial, dois bastões em cada lado da tela e um quadrado no meio imediatamente deixa claro o objetivo final. Além disso, seus elementos simples e paleta de duas cores (preto e branco), promove uma experiência visual limpa e fácil de entender, direcionando totalmente a atenção do jogador ao elemento mais importante do jogo: a bola.
 
-Para entender melhor seus elementos, utilizamos o *Framework MDA* (Mecânica, Dinâmica e Estética):
+Para entender melhor seus elementos, utilizamos o _Framework MDA_ (Mecânica, Dinâmica e Estética):
 
 Mecânica: O movimento vertical das barras e a física da bola.
 
@@ -23,29 +20,27 @@ Além disso, a velocidade variável da bola dependendo do ângulo de rebote do j
 
 ## 3. Proposta de Reinvenção
 
-*Tema e Ambientação:*
-
-O tema se mantém simples, apeas de possuir um novo cenário e ser mais focado em desviar de bombas do que acertar bolas. O contexto se inverte comparado a o pong original.
+_Tema e Ambientação:_
 
 O contexto foi invertido em relação ao Pong original: agora, o desafio está em sobreviver e atacar o oponente.
 
 O jogo assume um tom mais dinâmico e explosivo, com os jogadores tentando evitar bombas em vez de rebatê-las.
 
-*Personagens ou Elementos Visuais:*
+_Personagens ou Elementos Visuais:_
 
 As tradicionais barras permanecem como elementos centrais, mas a bola foi substituída por bombas. Além disso, elementos como power-ups e mísseis foram adicionados para aumentar a variedade de interações e competitividade entre jogadores.
 
-*Mudanças na Mecânica:*
+_Mudanças na Mecânica:_
 
 O jogo agora se consiste em desviar da bola em vez de rebatê-la, ao invés do inimigo ganhar pontos a medida que você perde o rebote, cada jogador tem um número fixo de vidas e perde uma a cada vez que é atingido por uma bomba.
 
-*Objetivo da Reinvenção:*
+_Objetivo da Reinvenção:_
 
 A nova versão deixa o jogo mais complexo e adiciona novas mecânicas para os jogadores obterem mais possibilidades de derrotar um ao outro, explorando elementos de jogos de ação com bombas e explosões e elementos de estratégia e habilidade com power-ups de envio de mísseis e desvio de vários elementos simultâneos na tela.
 
 ### Folha de Concept Art
 
-## ![Concept Art](concept2.png)
+## ![Concept Art](paper-concept-art.jpeg)
 
 ## 4. Tela Digital do Jogo
 
@@ -61,7 +56,7 @@ O layout reforça a ideia de competição e perigo constante, com elementos de c
 
 - Como o concept foi adaptado para o formato digital?
 
-Buscamos refinar as ideias originais do Concept Art com elementos mais detalhados e efeitos visuais mais elaborados. Buscamos também criar uma identidade visual para o jogo utilizando uma paleta de cores fixa e elementos visuais vetorizados para manter a consistência visual.   
+Buscamos refinar as ideias originais do Concept Art com elementos mais detalhados e efeitos visuais mais elaborados. Buscamos também criar uma identidade visual para o jogo utilizando uma paleta de cores fixa e elementos visuais vetorizados para manter a consistência visual.
 
 ## 5. Reflexão e Aprendizados
 
