@@ -90,5 +90,5 @@ A habilidade de expandir um conceito sem alterar sua proposta original. Para gar
 
 <p align="center">
 <img  src="mario-bomb.png"/> <br/>
-<img  src="minesweeper.jpeg"/> <br/>
+<img  src="minesweeper.jpg"/> <br/>
 </p>
