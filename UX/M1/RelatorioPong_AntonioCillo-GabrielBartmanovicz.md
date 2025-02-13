@@ -52,12 +52,16 @@ _Inclua aqui um **rascunho da Folha de Concept Art** e uma explicação sobre co
 ![Concept Art](concept.png)
 
 _- Quais elementos visuais foram aprimorados?_
-Elementos visuais como a explosão da bomba, míssel e HUD foram aprimorados para
+<br>
+Elementos visuais como a explosão da bomba, o míssil e a HUD foram aprimorados para um visual mais moderno. A bola foi substituída por uma bomba com mais detalhes em relação ao original, e foi adicionada uma interface de usuário para indicar a quantidade de pontos de vida de cada jogador.
 
 _- O uso de cores, formas e layout foi pensado para reforçar que aspectos do jogo?_
-Por ser um jogo onde a competitividade
+<br>
+Por se tratar de um jogo onde a competitividade é o elemento central, foram utilizadas formas e cores claras para destacar os elementos visuais, garantindo uma estética simples e de fácil compreensão.
 
 _- Como o concept foi adaptado para o formato digital?_
+<br>
+O jogo foi digitalizado no Figma, e os elementos visuais, como as bombas e o cenário, foram vetorizados. Durante esse processo, as mecânicas principais do jogo foram refinadas, mantendo a essência do jogo original, sem se distanciar excessivamente da ideia central do Pong.
 
 ---
 
