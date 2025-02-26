@@ -1,4 +1,4 @@
-import { Jogo } from "./src/jogo.js";
+import { Jogo } from "./jogo.js";
 
 class BootScene extends Phaser.Scene {
   constructor() {
