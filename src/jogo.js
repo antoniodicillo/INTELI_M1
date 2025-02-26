@@ -227,7 +227,7 @@ export class Jogo extends Phaser.Scene {
 
     // Animações dos inimigos
     this.anims.create({
-      key: "esqueleto",
+      key: "normalEsqueleto",
       frames: this.anims.generateFrameNumbers("esqueleto_normal", {
         start: 0,
         end: 3,
@@ -391,8 +391,9 @@ export class Jogo extends Phaser.Scene {
     bg_arvores4._tilePosition.x -= 0.125;
     bg_arvores5._tilePosition.x -= 0.15;
 
-    // Movimentação do personagem
+    // Logica do personagem
     if (atacando === false && rolando === false) {
+      // Movimentação
       if (teclado.left.isDown || teclaA.isDown) {
         personagem.setVelocityX(-200);
         personagem.setFlip(true, false);
@@ -402,12 +403,12 @@ export class Jogo extends Phaser.Scene {
       } else {
         personagem.setVelocityX(0);
       }
-
       if ((teclado.up.isDown || teclaW.isDown) && pode_Pular === true) {
         personagem.setVelocityY(alturaPulo);
         pode_Pular = false;
       }
-
+      
+      // Rolamento
       if (teclaEspaco.isDown && pode_Pular === true && rolando === false) {
         if (teclado.left.isDown || teclaA.isDown) {
           personagem.setVelocityX(-200);
@@ -422,6 +423,7 @@ export class Jogo extends Phaser.Scene {
         return;
       }
 
+      // Logica da animação
       if (personagem.body.touching.down) {
         if (personagem.body.velocity.x === 0) {
           personagem.anims.play("normal", true);
@@ -438,6 +440,9 @@ export class Jogo extends Phaser.Scene {
         pode_Pular = false;
       }
     }
+
+    // Logica do esqueleto
+    esqueleto.anims.play("normalEsqueleto", true);
   }
 }
 
