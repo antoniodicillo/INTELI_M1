@@ -73,9 +73,13 @@ export class Jogo extends Phaser.Scene {
       frameWidth: 144,
       frameHeight: 152,
     }); 
+
+    this.load.on('complete', () => {
+      this.createGame();
+    });
   }
 
-  create() {
+  createGame() {
     // Adicionar imagens e sprites no jogo
     this.add.image(larguraJogo / 2, alturaJogo / 2, "background");
 
@@ -226,7 +230,7 @@ export class Jogo extends Phaser.Scene {
       key: "esqueleto",
       frames: this.anims.generateFrameNumbers("esqueleto_normal", {
         start: 0,
-        end: 9,
+        end: 3,
       }),
       frameRate: 3,
       repeat: -1,
@@ -293,9 +297,9 @@ export class Jogo extends Phaser.Scene {
       key: "ataque_Pesado",
       frames: this.anims.generateFrameNumbers("player_ataquePesado", {
         start: 0,
-        end: 6,
+        end: 5,
       }),
-      frameRate: 7,
+      frameRate: 6,
       repeat: 0,
     });
 
@@ -304,7 +308,7 @@ export class Jogo extends Phaser.Scene {
       key: "rolamento",
       frames: this.anims.generateFrameNumbers("player_rolamento", {
         start: 0,
-        end: 12,
+        end: 11,
       }),
       frameRate: 15,
       repeat: 0,
@@ -337,6 +341,7 @@ export class Jogo extends Phaser.Scene {
 
     // Altera a hitbox do personagem dependendo de sua animação
     personagem.on("animationstart", (anim) => {
+      animacaoAtual = anim.key;
       if (anim.key === "ataque_Leve") {
         personagem.setSize(66, tamanhoNormal[1]);
       } else if (anim.key === "ataque_Pesado") {
@@ -443,7 +448,11 @@ const alturaJogo = 483;
 // Variaveis
 var personagem;
 const tamanhoNormal = [25, 38];
+
+// Frame Data
 const framesRolamentoSemDano = [1, 2, 3, 4, 5, 6, 7];
+const framesAtaqueLeveDano = [2,3];
+const frameAtaquePesadoDano = [3,4,5];
 
 var esqueleto;
 // Teclas wasd
@@ -477,7 +486,7 @@ var galho5_Direita;
 var galho4_Direita;
 var galho2_Direita;
 
-// Variaveis do jogo
+// Variaveis do personagem
 var estagioDoAtaque = 1;
 var pode_Pular = true;
 
@@ -488,7 +497,17 @@ let alturaPulo = -350;
 
 let personagemVidaAtual = 100;
 let personagemEnergiaAtual = 100;
+
 const PERSONAGEM_VIDA_MAXIMA = personagemVidaAtual;
 const PERSONAGEM_ENERGIA_MAXIMA = personagemEnergiaAtual;
+
+const DANO_LEVE = 10;
+const DANO_PESADO = 20;
+
+let animacaoAtual;
+// Variaveis do esqueleto
+let esqueletoVidaAtual = 100;
+
+const ESQUELETO_VIDA_MAXIMA = esqueletoVidaAtual;
 
 let playerNaoTomaDano = false;
