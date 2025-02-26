@@ -24,47 +24,47 @@ export class Jogo extends Phaser.Scene {
 
     // Carrega as animações do personagem
     this.load.spritesheet("player_normal", "assets/Cavaleiro_Idle.png", {
-      frameWidth: 25,
-      frameHeight: 38,
+      frameWidth: 50,
+      frameHeight: 76,
     });
     this.load.spritesheet("player_pulo", "assets/Cavaleiro_Pulo.png", {
-      frameWidth: 25,
-      frameHeight: 38,
+      frameWidth: 50,
+      frameHeight: 76,
     });
     this.load.spritesheet(
       "player_puloCaindo",
       "assets/Cavaleiro_PuloCaindo.png",
       {
-        frameWidth: 29,
-        frameHeight: 38,
+        frameWidth: 58,
+        frameHeight: 76,
       }
     );
     this.load.spritesheet(
       "player_ataqueLeve",
       "assets/Cavaleiro_AtaqueLeve.png",
       {
-        frameWidth: 66,
-        frameHeight: 42,
+        frameWidth: 132,
+        frameHeight: 84,
       }
     );
     this.load.spritesheet(
       "player_ataquePesado",
       "assets/Cavaleiro_AtaquePesado.png",
       {
-        frameWidth: 80,
-        frameHeight: 42,
+        frameWidth: 160,
+        frameHeight: 84,
       }
     );
     this.load.spritesheet("player_corrida", "assets/Cavaleiro_Corrida.png", {
-      frameWidth: 28,
-      frameHeight: 38,
+      frameWidth: 56,
+      frameHeight: 76,
     });
     this.load.spritesheet(
       "player_rolamento",
       "assets/Cavaleiro_Rolamento.png",
       {
-        frameWidth: 50,
-        frameHeight: 40,
+        frameWidth: 100,
+        frameHeight: 80,
       }
     );
 
@@ -171,14 +171,15 @@ export class Jogo extends Phaser.Scene {
     );
 
     // Adicionar fisica ao personagem
-    personagem = this.physics.add.sprite(32, 0, "player_normal").setScale(2);
+    personagem = this.physics.add.sprite(64, 0, "player_normal")
     personagem.setCollideWorldBounds(true);
-    personagem.setPosition(32, alturaJogo / 1.5);
+    personagem.setPosition(64, alturaJogo / 1.5);
 
     // Adicionar fisica ao inimigo
     esqueleto = this.physics.add.sprite(36, 0, "esqueleto_normal").setScale(0.5);
     esqueleto.setCollideWorldBounds(true);
-    esqueleto.setPosition(350, alturaJogo / 1.5);
+    esqueleto.setPosition(350, 410);
+    esqueleto.body.pushable = false
 
     // Adiciona colisão do personagem nas plataforams
     this.physics.add.collider(personagem, chao);
@@ -339,15 +340,15 @@ export class Jogo extends Phaser.Scene {
       }
     });
 
-    // Altera a hitbox do personagem dependendo de sua animação
+    // Altera a colisao do personagem dependendo de sua animação
     personagem.on("animationstart", (anim) => {
       animacaoAtual = anim.key;
       if (anim.key === "ataque_Leve") {
-        personagem.setSize(66, tamanhoNormal[1]);
+        personagem.setSize(132, tamanhoNormal[1]);
       } else if (anim.key === "ataque_Pesado") {
-        personagem.setSize(80, tamanhoNormal[1]);
+        personagem.setSize(160, tamanhoNormal[1]);
       } else {
-        // reseta o tamanho da hitbox para o tamanho normal
+        // reseta o tamanho da colisao para o tamanho normal
         personagem.setSize(tamanhoNormal[0], tamanhoNormal[1]);
       }
     });
@@ -452,7 +453,7 @@ const alturaJogo = 483;
 
 // Variaveis
 var personagem;
-const tamanhoNormal = [25, 38];
+const tamanhoNormal = [50, 76];
 
 // Frame Data
 const framesRolamentoSemDano = [1, 2, 3, 4, 5, 6, 7];
