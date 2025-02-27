@@ -184,6 +184,7 @@ export class Jogo extends Phaser.Scene {
     personagem = this.physics.add.sprite(64, 0, "player_normal");
     personagem.setCollideWorldBounds(true);
     personagem.setPosition(64, alturaJogo / 1.5);
+    personagem.body.pushable = false;
 
     // Adicionar fisica ao inimigo
     esqueleto = this.physics.add.sprite(36, 0, "esqueleto_normal");
@@ -448,6 +449,7 @@ export class Jogo extends Phaser.Scene {
       console.warn("Vida esqueleto: " + esqueletoVidaAtual);
 
       esqueletoPodeLevarHit = false;
+      esqueletoPodeMover = false;
       esqueleto.anims.play("hitEsqueleto", false);
     });
 
@@ -459,13 +461,16 @@ export class Jogo extends Phaser.Scene {
 
     esqueleto.on("animationcomplete", (anim) => {
       if (anim.key === "hitEsqueleto") {
+        // Ve se o esqueleto morreu
         if (esqueletoVidaAtual <= 0) { 
           esqueleto.anims.play("morteEsqueleto", false)
           return;
         }
+        esqueletoPodeMover = true;
         esqueleto.anims.play("normalEsqueleto", true);
         // respawn e morte do esqueleto  
       } else if (anim.key === "morteEsqueleto") {
+        esqueletoPodeMover = false;
         esqueleto.setVisible(false);
         esqueleto.setActive(false);
         esqueleto.disableBody(true, true); 
@@ -475,6 +480,7 @@ export class Jogo extends Phaser.Scene {
           esqueleto.setVisible(true);
           esqueleto.setActive(true);
           esqueleto.anims.play("normalEsqueleto", true);
+          esqueletoPodeMover = true;
         }, 3000);
       }
     });
@@ -539,6 +545,19 @@ export class Jogo extends Phaser.Scene {
         pode_Pular = false;
       }
     }
+    if(esqueletoPodeMover === true) {
+      // Move o esqueleto para o jogador  
+      let personagemX = personagem.body.position.x;
+      let esqueletoX = esqueleto.body.position.x;
+      if(personagemX > esqueletoX) {
+        esqueleto.setFlip(false, false);
+        esqueleto.setVelocityX(100);
+       } else if(personagemX < esqueletoX) {
+        esqueleto.setFlip(true, false);
+        esqueleto.setVelocityX(-100);
+       }
+      
+    }
   }
 }
 
@@ -557,7 +576,7 @@ const tamanhoNormalEsqueleto = [72, 76];
 const framesRolamentoSemDano = [1, 2, 3, 4, 5, 6, 7];
 // Frames que os ataques podem dar dano em inimigos
 const framesAtaqueLeveDano = [1, 2, 3];
-const framesAtaquePesadoDano = [2, 3, 4, 5];
+const framesAtaquePesadoDano = [2, 3];
 
 var esqueleto;
 // Teclas wasd
@@ -618,3 +637,4 @@ let esqueletoVidaAtual = 30;
 const ESQUELETO_VIDA_MAXIMA = esqueletoVidaAtual;
 
 let esqueletoPodeLevarHit = true;
+let esqueletoPodeMover = true;
