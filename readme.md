@@ -1,4 +1,3 @@
-# Turma 15 - Grupo 1
+Link do projeto:
 
-Repositorio para o primeiro modulo do Inteli 
-
+https://antoniodicillo.github.io/INTELI_M1/
