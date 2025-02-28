@@ -7,6 +7,7 @@ class BootScene extends Phaser.Scene {
       plugins: [],
     });
   }
+  
   create() {
     this.scene.start("Jogo");
   }
@@ -17,6 +18,9 @@ const alturaJogo = 483;
 
 const config = {
   type: Phaser.AUTO,
+  scale: {
+    mode: Phaser.Scale.FIT,
+  },
   width: larguraJogo,
   height: alturaJogo,
 
@@ -24,7 +28,7 @@ const config = {
     default: "arcade",
     arcade: {
       gravity: { y: 600 },
-      debug: false,
+      debug: true,
     },
   },
 
