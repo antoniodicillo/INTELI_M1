@@ -684,7 +684,7 @@ export class Jogo extends Phaser.Scene {
 
   update() {
     // god mode
-    personagemNaoTomaDano = true;
+    //personagemNaoTomaDano = true;
 
     // Logica do personagem
     if (stunJogador === false && cooldownRoll === false) {
