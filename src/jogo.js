@@ -914,12 +914,19 @@ export class Jogo extends Phaser.Scene {
       return;
     }
 
-    if (teclaShift.isDown && personagemEnergiaAtual >= ENERGIA_ATAQUE_PESADO) {
+    if (teclaShift.isDown) {
+      if(personagemEnergiaAtual < ENERGIA_ATAQUE_PESADO) {
+        return
+      }
       personagem.setVelocity(0);
       stunJogador = true;
 
       personagem.anims.play("ataque_Pesado", false);
     } else if(personagemEnergiaAtual >= ENERGIA_ATAQUE_LEVE) {
+      if(personagemEnergiaAtual < ENERGIA_ATAQUE_LEVE) {
+        return
+      }
+
       personagem.setVelocity(0);
       stunJogador = true;
 

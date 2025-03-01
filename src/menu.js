@@ -15,8 +15,6 @@ export class Menu extends Phaser.Scene {
       fill: "#ffffff",
     });
     console.log('hello world')
-
-    
   }
 }
 

@@ -9,7 +9,10 @@ class BootScene extends Phaser.Scene {
       plugins: [],
     });
   }
-  
+  preload() {
+    this.load.image("background", "assets/Background.png)
+  }
+
   create() {
     this.scene.start("Jogo");
   }
