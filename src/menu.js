@@ -5,9 +5,6 @@ export class Menu extends Phaser.Scene {
       plugins: [],
     });
   }
-  preload() {
-    this.load.image("background", "../assets/Background.png");
-  }
   
   create() {
     this.textoPrincipal = this.add.text(0, 20, 400, {
