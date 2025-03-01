@@ -1,5 +1,6 @@
-import { Jogo } from "./jogo.js";
-import { GameOver } from "./gameOver.js";
+import { Jogo } from "./src/jogo.js";
+import { GameOver } from "./src/gameOver.js";
+import { Menu } from "./src/menu.js";
 
 class BootScene extends Phaser.Scene {
   constructor() {
@@ -33,7 +34,7 @@ const config = {
     },
   },
 
-  scene: [BootScene, Jogo, GameOver]
+  scene: [BootScene, Jogo, GameOver, Menu]
 };
 
 const game = new Phaser.Game(config);
