@@ -13,7 +13,7 @@ export class Jogo extends Phaser.Scene {
     this.load.image("bg_arvores4", "src/assets/arvores-4.png");
     this.load.image("bg_arvores5", "src/assets/arvores-5.png");
 
-    this.load.image("caveiras", "srcassets/Skulls.png");
+    this.load.image("caveiras", "src/assets/Skulls.png");
 
     // Preload dos outros elementos
     this.load.image("chao", "src/assets/Chao.png");
