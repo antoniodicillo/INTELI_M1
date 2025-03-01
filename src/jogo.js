@@ -6,41 +6,38 @@ export class Jogo extends Phaser.Scene {
   }
   preload() {
     // Preload do background paralax
-    this.load.image("background", "../../assets/Background.png");
-    this.load.image("bg_arvores1", "../../assets/arvores-1.png");
-    this.load.image("bg_arvores2", "../../assets/arvores-2.png");
-    this.load.image("bg_arvores3", "../../assets/arvores-3.png");
-    this.load.image("bg_arvores4", "../../assets/arvores-4.png");
-    this.load.image("bg_arvores5", "../../assets/arvores-5.png");
+    this.load.image("background", "../assets/Background.png");
+    this.load.image("bg_arvores1", "../assets/arvores-1.png");
+    this.load.image("bg_arvores2", "../assets/arvores-2.png");
+    this.load.image("bg_arvores3", "../assets/arvores-3.png");
+    this.load.image("bg_arvores4", "../assets/arvores-4.png");
+    this.load.image("bg_arvores5", "../assets/arvores-5.png");
 
-    this.load.image("caveiras", "../../assets/Skulls.png");
+    this.load.image("caveiras", "../assets/Skulls.png");
 
     // Preload dos outros elementos
-    this.load.image("chao", "../../assets/Chao.png");
-    this.load.image("terra", "../../assets/Terra.png");
+    this.load.image("chao", "../assets/Chao.png");
+    this.load.image("terra", "../assets/Terra.png");
 
-    this.load.image("arvoreBaixo", "../../assets/Arvore_Baixo.png");
-    this.load.image("arvoreCima", "../../assets/Arvore_Cima.png");
-    this.load.image(
-      "arvoreTransparente",
-      "../../../assets/Arvore_Transparente.png"
-    );
-    this.load.image("galho5", "../../assets/Galho5.png");
-    this.load.image("galho4", "../../assets/Galho4.png");
-    this.load.image("galho2", "../../assets/Galho2.png");
+    this.load.image("arvoreBaixo", "../assets/Arvore_Baixo.png");
+    this.load.image("arvoreCima", "../assets/Arvore_Cima.png");
+    this.load.image("arvoreTransparente", "../../assets/Arvore_Transparente.png");
+    this.load.image("galho5", "../assets/Galho5.png");
+    this.load.image("galho4", "../assets/Galho4.png");
+    this.load.image("galho2", "../assets/Galho2.png");
 
     // Carrega as animações do personagem
-    this.load.spritesheet("player_normal", "../../assets/Cavaleiro_Idle.png", {
+    this.load.spritesheet("player_normal", "../assets/Cavaleiro_Idle.png", {
       frameWidth: 50,
       frameHeight: 76,
     });
-    this.load.spritesheet("player_pulo", "../../assets/Cavaleiro_Pulo.png", {
+    this.load.spritesheet("player_pulo", "../assets/Cavaleiro_Pulo.png", {
       frameWidth: 50,
       frameHeight: 76,
     });
     this.load.spritesheet(
       "player_puloCaindo",
-      "../../assets/Cavaleiro_PuloCaindo.png",
+      "../assets/Cavaleiro_PuloCaindo.png",
       {
         frameWidth: 58,
         frameHeight: 76,
@@ -48,7 +45,7 @@ export class Jogo extends Phaser.Scene {
     );
     this.load.spritesheet(
       "player_ataqueLeve",
-      "../../assets/Cavaleiro_AtaqueLeve.png",
+      "../assets/Cavaleiro_AtaqueLeve.png",
       {
         frameWidth: 132,
         frameHeight: 84,
@@ -56,74 +53,54 @@ export class Jogo extends Phaser.Scene {
     );
     this.load.spritesheet(
       "player_ataquePesado",
-      "../../assets/Cavaleiro_AtaquePesado.png",
+      "../assets/Cavaleiro_AtaquePesado.png",
       {
         frameWidth: 198,
         frameHeight: 84,
       }
     );
-    this.load.spritesheet(
-      "player_corrida",
-      "../../assets/Cavaleiro_Corrida.png",
-      {
-        frameWidth: 56,
-        frameHeight: 76,
-      }
-    );
+    this.load.spritesheet("player_corrida", "../assets/Cavaleiro_Corrida.png", {
+      frameWidth: 56,
+      frameHeight: 76,
+    });
     this.load.spritesheet(
       "player_rolamento",
-      "../../assets/Cavaleiro_Rolamento.png",
+      "../assets/Cavaleiro_Rolamento.png",
       {
         frameWidth: 100,
         frameHeight: 80,
       }
     );
-    this.load.spritesheet("player_hit", "../../assets/Cavaleiro_Hit.png", {
+    this.load.spritesheet("player_hit", "../assets/Cavaleiro_Hit.png", {
       frameWidth: 65,
       frameHeight: 80,
     });
 
     // Carrega as animações do esqueleto
-    this.load.spritesheet(
-      "esqueleto_normal",
-      "../../assets/Esqueleto_Idle.png",
-      {
-        frameWidth: 72,
-        frameHeight: 76,
-      }
-    );
+    this.load.spritesheet("esqueleto_normal", "../assets/Esqueleto_Idle.png", {
+      frameWidth: 72,
+      frameHeight: 76,
+    });
 
-    this.load.spritesheet("esqueleto_hit", "../../assets/Esqueleto_Hit.png", {
+    this.load.spritesheet("esqueleto_hit", "../assets/Esqueleto_Hit.png", {
       frameWidth: 90,
       frameHeight: 84,
     });
 
-    this.load.spritesheet(
-      "esqueleto_morte",
-      "../../assets/Esqueleto_Morte.png",
-      {
-        frameWidth: 90,
-        frameHeight: 76,
-      }
-    );
+    this.load.spritesheet("esqueleto_morte", "../assets/Esqueleto_Morte.png", {
+      frameWidth: 90,
+      frameHeight: 76,
+    });
 
-    this.load.spritesheet(
-      "esqueleto_andando",
-      "../../assets/Esqueleto_Andando.png",
-      {
-        frameWidth: 90,
-        frameHeight: 76,
-      }
-    );
+    this.load.spritesheet("esqueleto_andando", "../assets/Esqueleto_Andando.png", {
+      frameWidth: 90,
+      frameHeight: 76,
+    });
 
-    this.load.spritesheet(
-      "esqueleto_ataque",
-      "../../assets/Esqueleto_Ataque.png",
-      {
-        frameWidth: 145,
-        frameHeight: 89,
-      }
-    );
+    this.load.spritesheet("esqueleto_ataque", "../assets/Esqueleto_Ataque.png", {
+      frameWidth: 145,
+      frameHeight: 89,
+    });
 
     this.load.on("complete", () => {
       this.createGame();
@@ -283,6 +260,7 @@ export class Jogo extends Phaser.Scene {
       "galho5"
     );
 
+    
     chao = this.physics.add.staticImage(
       larguraJogo / 2,
       alturaJogo - 50,
@@ -741,12 +719,7 @@ export class Jogo extends Phaser.Scene {
       }
 
       // Rolamento
-      if (
-        teclaEspaco.isDown &&
-        pode_Pular === true &&
-        cooldownRoll === false &&
-        personagemEnergiaAtual >= ENERGIA_ROLAMENTO
-      ) {
+      if (teclaEspaco.isDown && pode_Pular === true && cooldownRoll === false && personagemEnergiaAtual >= ENERGIA_ROLAMENTO) {
         // Ve se o rolamento é para direita ou esquerda (sem input é direita)
         if (teclado.left.isDown || teclaA.isDown) {
           personagem.setVelocityX(-200);
@@ -946,7 +919,7 @@ export class Jogo extends Phaser.Scene {
       stunJogador = true;
 
       personagem.anims.play("ataque_Pesado", false);
-    } else if (personagemEnergiaAtual >= ENERGIA_ATAQUE_LEVE) {
+    } else if(personagemEnergiaAtual >= ENERGIA_ATAQUE_LEVE) {
       personagem.setVelocity(0);
       stunJogador = true;
 
@@ -1116,6 +1089,8 @@ let esqueletoPodeDarDano = false;
 let esqueletoDano = 0;
 const DANO_DO_ESQUELETO = 35;
 // Variaveis demoniod
+
+
 
 // TODO deixar o esqueleto em um model para eu conseguir adicionar varios esqueletos
 // TODO fazer o menu
