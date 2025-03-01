@@ -112,35 +112,35 @@ export class Jogo extends Phaser.Scene {
     this.add.image(larguraJogo / 2, alturaJogo / 2, "background");
 
     // new TileSprite(scene, x, y, width, height, textureKey, [frameKey])
-    bg_arvores1 = this.add.tileSprite(
+    this.bg_arvores1 = this.add.tileSprite(
       larguraJogo / 2, // x
       alturaJogo / 2, // y
       0, // width
       0, // height
       "bg_arvores1" // name
     );
-    bg_arvores2 = this.add.tileSprite(
+    this.bg_arvores2 = this.add.tileSprite(
       larguraJogo / 2, // x
       alturaJogo / 2, // y
       0, // width
       0, // height
       "bg_arvores2" // name
     );
-    bg_arvores3 = this.add.tileSprite(
+    this.bg_arvores3 = this.add.tileSprite(
       larguraJogo / 2, // x
       alturaJogo / 2, // y
       0, // width
       0, // height
       "bg_arvores3" // name
     );
-    bg_arvores4 = this.add.tileSprite(
+    this.bg_arvores4 = this.add.tileSprite(
       larguraJogo / 2, // x
       alturaJogo / 2, // y
       0, // width
       0, // height
       "bg_arvores4" // name
     );
-    bg_arvores5 = this.add.tileSprite(
+    this.bg_arvores5 = this.add.tileSprite(
       larguraJogo / 2, // x
       alturaJogo / 2, // y
       0, // width
@@ -148,68 +148,126 @@ export class Jogo extends Phaser.Scene {
       "bg_arvores5" // name
     );
 
-    this.physics.add.staticImage(600, alturaJogo - 320, "arvoreTransparente");
-    this.physics.add.staticImage(600, alturaJogo - 384, "arvoreTransparente");
-
-    this.arvore2 = this.physics.add.staticImage(larguraJogo, -13, "arvoreCima");
+    this.arvoreTransparente1 = this.physics.add.staticImage(
+      larguraJogo + 600,
+      alturaJogo - 320,
+      "arvoreTransparente"
+    );
+    this.arvoreTransparente2 = this.physics.add.staticImage(
+      larguraJogo + 600,
+      alturaJogo - 384,
+      "arvoreTransparente"
+    );
 
     // Parte da GUI
 
-    caveirasImagem = this.add.image(50, 80, "caveiras").setScale(0.35);
-    // caveirasImagem.setVisible(false);
-    caveirasTexto = this.add.text(70, 80, "(x3)", {
+    // Background da UI
+    this.backgroundUI = this.add.graphics();
+    this.backgroundUI.fillStyle(0x000000, 1);
+    this.backgroundUI.fillRect(0, 70, 90, 45);
+
+    // UI das caveiras coletadas
+    caveirasImagem = this.add.image(30, 90, "caveiras").setScale(0.25);
+    caveirasTexto = this.add.text(50, 90, "(x0)", {
       fontSize: "14px",
       fill: "#ffffff",
-      backgroundColor: "#000000",
-      backgroundAlpha: 0.5,
     });
+
+    // UI da energia do personagem
+
+    this.vidaBgUI = this.add.graphics();
+    this.vidaBgUI.fillStyle(0x000000, 1);
+    this.vidaBgUI.fillRect(0, 20, vidaUI_Largura + 25, 15);
+
+    this.vidaUI = this.add.graphics();
+    this.vidaUI.fillStyle(0xba1f11, 1);
+    this.vidaUI.fillRect(0, 20, vidaUI_Largura, 15);
+
+    this.vidaTexto = this.add.text(vidaUI_Largura, 20, vidaUI_Largura, {
+      fontSize: "14px",
+      fill: "#ffffff",
+    });
+
+    // UI da energia do personagem
+
+    this.energiaBgUI = this.add.graphics();
+    this.energiaBgUI.fillStyle(0x000000, 1);
+    this.energiaBgUI.fillRect(0, 40, energiaUI_Largura + 25, 15);
+
+    this.energiaUI = this.add.graphics();
+    this.energiaUI.fillStyle(0x75bd28, 1);
+    this.energiaUI.fillRect(0, 40, energiaUI_Largura, 15);
+
+    this.energiaTexto = this.add.text(
+      energiaUI_Largura,
+      40,
+      energiaUI_Largura,
+      {
+        fontSize: "14px",
+        fill: "#ffffff",
+      }
+    );
+
+    this.backgroundUI.setScrollFactor(0);
+    caveirasImagem.setScrollFactor(0);
+    caveirasTexto.setScrollFactor(0);
+    this.vidaBgUI.setScrollFactor(0);
+    this.vidaUI.setScrollFactor(0);
+    this.vidaTexto.setScrollFactor(0);
+    this.energiaBgUI.setScrollFactor(0);
+    this.energiaUI.setScrollFactor(0);
+    this.energiaTexto.setScrollFactor(0);
+
+    this.energiaRegenerando = false;
 
     // Adiciona sprites com colisao
     arvoreBaixo = this.physics.add.staticImage(
-      600,
-      alturaJogo - 160,
+      900,
+      alturaJogo / 1.75,
       "arvoreBaixo"
     );
-    arvoreCima = this.physics.add.staticImage(600, -13, "arvoreCima");
+    arvoreCima = this.physics.add.staticImage(900, 0, "arvoreCima");
 
     galho2_Esquerda = this.physics.add.staticImage(
-      536,
-      alturaJogo / 2.35,
+      836,
+      alturaJogo / 2.65,
       "galho2"
     );
     galho4_Esquerda = this.physics.add.staticImage(
-      505,
-      alturaJogo / 1.65,
+      805,
+      alturaJogo / 1.9,
       "galho4"
     );
     galho5_Esquerda = this.physics.add.staticImage(
-      488,
-      alturaJogo / 1.3,
+      788,
+      alturaJogo / 1.5,
       "galho5"
     );
 
     galho2_Direita = this.physics.add.staticImage(
-      664,
-      alturaJogo / 2.35,
+      964,
+      alturaJogo / 2.65,
       "galho2"
     );
     galho4_Direita = this.physics.add.staticImage(
-      696,
-      alturaJogo / 1.65,
+      996,
+      alturaJogo / 1.9,
       "galho4"
     );
     galho5_Direita = this.physics.add.staticImage(
-      712,
-      alturaJogo / 1.3,
+      1012,
+      alturaJogo / 1.5,
       "galho5"
     );
 
     terra = this.physics.add.staticImage(64, alturaJogo - 48, "terra");
     chao = this.physics.add.staticImage(
       larguraJogo / 2,
-      alturaJogo - 16,
+      alturaJogo - 128,
       "chao"
     );
+    chao.setSize(0, 10);
+    chao.setPosition(larguraJogo / 2, alturaJogo - 144);
 
     // Adicionar fisica ao personagem
     personagem = this.physics.add.sprite(64, 0, "player_normal");
@@ -220,7 +278,7 @@ export class Jogo extends Phaser.Scene {
     // Adicionar fisica ao inimigo
     esqueleto = this.physics.add.sprite(36, 0, "esqueleto_normal");
     esqueleto.setCollideWorldBounds(true);
-    esqueleto.setPosition(350, 410);
+    esqueleto.setPosition(1200, 410);
     esqueleto.body.pushable = false;
 
     // Adiciona colisão do personagem nas plataforams
@@ -260,12 +318,20 @@ export class Jogo extends Phaser.Scene {
     teclaA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     teclaD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     teclaW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    teclaR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     teclaEspaco = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.SPACE
     );
     teclaShift = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.SHIFT
     );
+
+    // Fazer a camera seguir o jogador e aumentar o tamanho do jogo
+    this.physics.world.setBounds(0, 0, larguraJogo, alturaJogo); // Adjust the size as needed
+
+    this.cameras.main.setBounds(0, 0, larguraJogo, alturaJogo / 2); // Adjust the size as needed
+
+    this.cameras.main.startFollow(personagem);
 
     // ------------------------------------------------------
     // Animações do personagem
@@ -412,7 +478,7 @@ export class Jogo extends Phaser.Scene {
         start: 0,
         end: 7,
       }),
-      frameRate: 15,
+      frameRate: 10,
       repeat: 0,
     });
 
@@ -428,26 +494,35 @@ export class Jogo extends Phaser.Scene {
     personagem.on("animationstart", (anim) => {
       animacaoAtual = anim.key;
       if (anim.key === "ataque_Leve") {
+        personagemEnergiaAtual -= ENERGIA_ATAQUE_LEVE;
+        this.updateUi("energia");
+
         personagem.setSize(132, tamanhoNormal[1]);
       } else if (anim.key === "ataque_Pesado") {
+        personagemEnergiaAtual -= ENERGIA_ATAQUE_PESADO;
+        this.updateUi("energia");
+
         personagem.setSize(160, tamanhoNormal[1]);
       } else {
-        if(anim.key === "hit") {
-          playerNaoTomaDano = true;
+        if (anim.key === "hit") {
+          personagemNaoTomaDano = true;
+        } else if (anim.key === "rolamento") {
+          personagemEnergiaAtual -= ENERGIA_ROLAMENTO;
+          this.updateUi("energia");
         }
         // reseta o tamanho da colisao para o tamanho normal
         personagem.setSize(tamanhoNormal[0], tamanhoNormal[1]);
       }
     });
- 
+
     // Ve o frame da animação do personagem
     personagem.on("animationupdate", function (anim, frame) {
       // Se for um frame especifico de rolamento, deixa o jogador invencivel a dano
       if (anim.key === "rolamento") {
         if (framesRolamentoSemDano.includes(frame.frame.name)) {
-          playerNaoTomaDano = true;
+          personagemNaoTomaDano = true;
         } else {
-          playerNaoTomaDano = false;
+          personagemNaoTomaDano = false;
         }
         // Se o frame corresponder com o frame de ataque, seta a variavel dano para o dano do ataque
       } else if (anim.key === "ataque_Leve") {
@@ -477,11 +552,9 @@ export class Jogo extends Phaser.Scene {
         dano = 0;
       } else if (anim.key === "rolamento") {
         personagem.setVelocityX(0);
-        setTimeout(() => {
-          cooldownRoll = false;
-        }, 100)
-      } else if(anim.key === "hit") {
-        playerNaoTomaDano = false;
+        cooldownRoll = false;
+      } else if (anim.key === "hit") {
+        personagemNaoTomaDano = false;
         stunJogador = false;
         cooldownRoll = false;
       }
@@ -497,19 +570,27 @@ export class Jogo extends Phaser.Scene {
       }
       if (dano === 0) {
         if (esqueletoDano > 0) {
-          if (playerNaoTomaDano === true) {
+          if (personagemNaoTomaDano === true) {
             console.log("i-frame");
             return;
           }
+          personagemVidaAtual -= esqueletoDano;
+          personagemVidaAtual = Math.max(0, personagemVidaAtual);
+
           console.warn("Vida jogador: " + personagemVidaAtual);
 
-          personagemVidaAtual -= esqueletoDano;
           esqueletoPodeDarDano = false;
-         
+
+          if (personagemVidaAtual == 0) {
+            this.scene.start("GameOver");
+          }
+
+          this.updateUi("vida");
+
           personagem.setVelocity(0);
 
           stunJogador = true;
-          personagem.anims.play('hit', true);
+          personagem.anims.play("hit", true);
         }
         return;
       }
@@ -602,12 +683,8 @@ export class Jogo extends Phaser.Scene {
   }
 
   update() {
-    // Update do paralax
-    bg_arvores1._tilePosition.x -= 0.005;
-    bg_arvores2._tilePosition.x -= 0.015;
-    bg_arvores3._tilePosition.x -= 0.025;
-    bg_arvores4._tilePosition.x -= 0.03;
-    bg_arvores5._tilePosition.x -= 0.035;
+    // god mode
+    personagemNaoTomaDano = true;
 
     // Logica do personagem
     if (stunJogador === false && cooldownRoll === false) {
@@ -615,9 +692,23 @@ export class Jogo extends Phaser.Scene {
       if (teclado.left.isDown || teclaA.isDown) {
         personagem.setVelocityX(-200);
         personagem.setFlip(true, false);
+
+        // Update do paralax para direita
+        this.bg_arvores1._tilePosition.x += 0.005;
+        this.bg_arvores2._tilePosition.x += 0.015;
+        this.bg_arvores3._tilePosition.x += 0.025;
+        this.bg_arvores4._tilePosition.x += 0.03;
+        this.bg_arvores5._tilePosition.x += 0.035;
       } else if (teclado.right.isDown || teclaD.isDown) {
         personagem.setVelocityX(200);
         personagem.setFlip(false, false);
+
+        // Update do paralax para esquerda
+        this.bg_arvores1._tilePosition.x -= 0.005;
+        this.bg_arvores2._tilePosition.x -= 0.015;
+        this.bg_arvores3._tilePosition.x -= 0.025;
+        this.bg_arvores4._tilePosition.x -= 0.03;
+        this.bg_arvores5._tilePosition.x -= 0.035;
       } else {
         personagem.setVelocityX(0);
       }
@@ -628,7 +719,7 @@ export class Jogo extends Phaser.Scene {
       }
 
       // Rolamento
-      if (teclaEspaco.isDown && pode_Pular === true && cooldownRoll === false) {
+      if (teclaEspaco.isDown && pode_Pular === true && cooldownRoll === false && personagemEnergiaAtual >= ENERGIA_ROLAMENTO) {
         // Ve se o rolamento é para direita ou esquerda (sem input é direita)
         if (teclado.left.isDown || teclaA.isDown) {
           personagem.setVelocityX(-200);
@@ -640,6 +731,28 @@ export class Jogo extends Phaser.Scene {
         personagem.anims.play("rolamento", true);
         cooldownRoll = true;
         return;
+      }
+
+      // Regeneração de vida
+      if (personagemVidaAtual < PERSONAGEM_VIDA_MAXIMA) {
+        if (teclaR.isDown) {
+          if (caveiras > 0 || cooldownHeal === false) {
+            cooldownHeal = true;
+
+            setTimeout(() => {
+              cooldownHeal = false;
+            }, 1000);
+
+            caveiras--;
+            personagemVidaAtual += 10;
+            personagemVidaAtual = Math.min(
+              personagemVidaAtual,
+              PERSONAGEM_VIDA_MAXIMA
+            );
+            this.updateUi("vida");
+            caveirasTexto.setText("(x" + caveiras + ")");
+          }
+        }
       }
 
       // Logica da animação
@@ -717,6 +830,78 @@ export class Jogo extends Phaser.Scene {
     }
   }
 
+  // Função para atualizar a UI de vida ou stamina
+  updateUi(params) {
+    if (params === "vida") {
+      this.updateDaUi(
+        personagemVidaAtual,
+        vidaUI_Largura,
+        this.vidaUI,
+        this.vidaTexto,
+        0xba1f11,
+        20
+      );
+    } else if (params === "energia") {
+      this.updateDaUi(
+        personagemEnergiaAtual,
+        energiaUI_Largura,
+        this.energiaUI,
+        this.energiaTexto,
+        0x75bd28,
+        40
+      );
+
+      console.log(personagemEnergiaAtual);
+      this.energiaRegenerando = false;
+
+      // Logica para a regeneracao de energia
+      setTimeout(() => {
+        if (this.energiaRegenerando === false) {
+          this.energiaRegenerando = true;
+          const energiaInterval = setInterval(() => {
+            if (
+              personagemEnergiaAtual < PERSONAGEM_ENERGIA_MAXIMA &&
+              this.energiaRegenerando === true
+            ) {
+              this.energiaRegenerando = true;
+              personagemEnergiaAtual += 1;
+              this.updateDaUi(
+                personagemEnergiaAtual,
+                energiaUI_Largura,
+                this.energiaUI,
+                this.energiaTexto,
+                0x75bd28,
+                40
+              );
+            } else {
+              this.energiaRegenerando = false;
+              clearInterval(energiaInterval);
+            }
+          }, 50);
+        }
+      }, 2000);
+    }
+  }
+
+  // Funcao da funcao de update ui para
+  updateDaUi(valorUI, larguraUI, UI, textoUI, cor, posicao) {
+    textoUI.setText(valorUI);
+
+    while (valorUI < larguraUI) {
+      larguraUI--;
+      UI.clear();
+      UI.fillStyle(cor, 1);
+      UI.fillRect(0, posicao, larguraUI, 15);
+    }
+
+    while (valorUI > larguraUI) {
+      larguraUI++;
+      UI.clear();
+      UI.fillStyle(cor, 1);
+      UI.fillRect(0, posicao, larguraUI, 15);
+    }
+  }
+
   ataquePlayer() {
     // Apenas ataca quando jogador não estiver no ar ou se já está stunJogador
     if (pode_Pular === false) {
@@ -729,11 +914,15 @@ export class Jogo extends Phaser.Scene {
       return;
     }
 
-    personagem.setVelocity(0);
-    stunJogador = true;
-    if (teclaShift.isDown) {
+    if (teclaShift.isDown && personagemEnergiaAtual >= ENERGIA_ATAQUE_PESADO) {
+      personagem.setVelocity(0);
+      stunJogador = true;
+
       personagem.anims.play("ataque_Pesado", false);
-    } else {
+    } else if(personagemEnergiaAtual >= ENERGIA_ATAQUE_LEVE) {
+      personagem.setVelocity(0);
+      stunJogador = true;
+
       personagem.anims.play("ataque_Leve", false);
     }
   }
@@ -749,7 +938,7 @@ export class Jogo extends Phaser.Scene {
   }
 
   respawnEsqueleto() {
-    esqueleto.enableBody(true, 350, 400, true, true);
+    esqueleto.enableBody(true, 100, 400, true, true);
     esqueletoVidaAtual = ESQUELETO_VIDA_MAXIMA;
     esqueleto.setVisible(true);
     esqueleto.setActive(true);
@@ -793,8 +982,8 @@ export class Jogo extends Phaser.Scene {
 }
 
 // Largura e altura do jogo
-const larguraJogo = 879;
-const alturaJogo = 483;
+const larguraJogo = 4000;
+const alturaJogo = 600;
 
 // Variaveis
 var personagem;
@@ -806,7 +995,7 @@ const tamanhoNormalEsqueleto = [72, 76];
 // Frames que o jogador é invencivel e não toma dano quando ele estiver cooldownRoll
 const framesRolamentoSemDano = [2, 3, 4, 5, 6, 7, 8];
 // Frames que os ataques podem dar dano em inimigos
-const framesAtaqueLeveDano = [1, 2, 3];
+const framesAtaqueLeveDano = [2, 3];
 const framesAtaquePesadoDano = [2, 3];
 
 var esqueleto;
@@ -816,14 +1005,8 @@ let teclaD;
 let teclaW;
 let teclaEspaco;
 let teclaShift;
+let teclaR;
 var teclado;
-
-// Variaveis do background
-let bg_arvores1;
-let bg_arvores2;
-let bg_arvores3;
-let bg_arvores4;
-let bg_arvores5;
 
 // Variaveis da GUI
 let caveirasImagem;
@@ -860,10 +1043,18 @@ let personagemEnergiaAtual = 100;
 const PERSONAGEM_VIDA_MAXIMA = personagemVidaAtual;
 const PERSONAGEM_ENERGIA_MAXIMA = personagemEnergiaAtual;
 
-let playerNaoTomaDano = false;
+let vidaUI_Largura = PERSONAGEM_VIDA_MAXIMA;
+let energiaUI_Largura = PERSONAGEM_ENERGIA_MAXIMA;
+
+let personagemNaoTomaDano = false;
 
 const DANO_LEVE = 10;
-const DANO_PESADO = 20;
+const DANO_PESADO = 25;
+
+const ENERGIA_ATAQUE_LEVE = 20;
+const ENERGIA_ATAQUE_PESADO = 35;
+const ENERGIA_ROLAMENTO = 15;
+
 let dano = 0;
 
 let animacaoAtual;
@@ -873,6 +1064,10 @@ const personagemSpawn = [200, alturaJogo / 1.5];
 
 let diferencaPersonagemEsqueletoX = 0;
 let caveiras = 0;
+
+let cooldownHeal = false;
+
+let energiaAntiga = personagemEnergiaAtual;
 // Variaveis do esqueleto
 let esqueletoVidaAtual = 30;
 
@@ -888,8 +1083,9 @@ let esqueletoJaTaMorto = false; // você já está morto, esqueleto
 let esqueletoX;
 
 // Frames que o ataque do esqueleto pode dar dano no jogador
-const framesEsqueletoAtaque = [7, 8];
+const framesEsqueletoAtaque = [6, 7];
 let esqueletoPodeDarDano = false;
 
 let esqueletoDano = 0;
 const DANO_DO_ESQUELETO = 35;
+// Variaveis demoniod

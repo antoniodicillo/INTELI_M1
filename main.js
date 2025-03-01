@@ -1,4 +1,5 @@
 import { Jogo } from "./jogo.js";
+import { GameOver } from "./gameOver.js";
 
 class BootScene extends Phaser.Scene {
   constructor() {
@@ -28,11 +29,11 @@ const config = {
     default: "arcade",
     arcade: {
       gravity: { y: 600 },
-      debug: false,
+      debug: true,
     },
   },
 
-  scene: [BootScene, Jogo]
+  scene: [BootScene, Jogo, GameOver]
 };
 
-var game = new Phaser.Game(config);
+const game = new Phaser.Game(config);
