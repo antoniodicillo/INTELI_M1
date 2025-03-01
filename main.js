@@ -10,7 +10,7 @@ class BootScene extends Phaser.Scene {
     });
   }
   preload() {
-    this.load.image("background", "assets/Background.png)
+    this.load.image("background", "assets/Background.png")
   }
 
   create() {
