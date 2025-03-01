@@ -6,7 +6,7 @@ export class Jogo extends Phaser.Scene {
   }
   preload() {
     // Preload do background paralax
-    this.load.image("background", "/src/assets/Background.png");
+    this.load.image("background", "src/assets/Background.png");
     this.load.image("bg_arvores1", "../assets/arvores-1.png");
     this.load.image("bg_arvores2", "../assets/arvores-2.png");
     this.load.image("bg_arvores3", "../assets/arvores-3.png");
