@@ -1,5 +1,7 @@
 // boa sorte
 
+import '../assets'
+
 export class Jogo extends Phaser.Scene {
   constructor() {
     super("Jogo");
