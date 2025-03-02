@@ -4,6 +4,47 @@ export class Jogo extends Phaser.Scene {
   constructor() {
     super("Jogo");
   }
+
+  init() {
+    this.esqueleto = {
+      vidaAtual: 30,
+      VIDA_MAXIMA: 30,
+
+      podeLevarHit: true,
+      podeMover: true,
+      podePular: true,
+      pertoParaAtaque: false,
+      coolDownAtaque: false,
+      esqueletoJaTaMorto: false,
+
+      FRAMES_ATAQUE: [6, 7],
+      podeDarDano: false,
+      DANO: 35,
+      danoAtualEsqueleto: 0,
+      posX: 200,
+      respawnPos: [100,400]
+    };
+
+    this.esqueleto2 = {
+      vidaAtual: 30,
+      VIDA_MAXIMA: 30,
+
+      podeLevarHit: true,
+      podeMover: true,
+      podePular: true,
+      pertoParaAtaque: false,
+      coolDownAtaque: false,
+      esqueletoJaTaMorto: false,
+
+      FRAMES_ATAQUE: [6, 7],
+      podeDarDano: false,
+      DANO: 35,
+      danoAtualEsqueleto: 0,
+      posX: 200,
+      respawnPos: [1100,400]
+    };
+  }
+
   preload() {
     // Preload do background paralax
     this.load.image("background", "src/assets/Background.png");
@@ -60,10 +101,14 @@ export class Jogo extends Phaser.Scene {
         frameHeight: 84,
       }
     );
-    this.load.spritesheet("player_corrida", "src/assets/Cavaleiro_Corrida.png", {
-      frameWidth: 56,
-      frameHeight: 76,
-    });
+    this.load.spritesheet(
+      "player_corrida",
+      "src/assets/Cavaleiro_Corrida.png",
+      {
+        frameWidth: 56,
+        frameHeight: 76,
+      }
+    );
     this.load.spritesheet(
       "player_rolamento",
       "src/assets/Cavaleiro_Rolamento.png",
@@ -93,15 +138,23 @@ export class Jogo extends Phaser.Scene {
       frameHeight: 76,
     });
 
-    this.load.spritesheet("esqueleto_andando", "src/assets/Esqueleto_Andando.png", {
-      frameWidth: 90,
-      frameHeight: 76,
-    });
+    this.load.spritesheet(
+      "esqueleto_andando",
+      "src/assets/Esqueleto_Andando.png",
+      {
+        frameWidth: 90,
+        frameHeight: 76,
+      }
+    );
 
-    this.load.spritesheet("esqueleto_ataque", "src/assets/Esqueleto_Ataque.png", {
-      frameWidth: 145,
-      frameHeight: 89,
-    });
+    this.load.spritesheet(
+      "esqueleto_ataque",
+      "src/assets/Esqueleto_Ataque.png",
+      {
+        frameWidth: 145,
+        frameHeight: 89,
+      }
+    );
 
     this.load.on("complete", () => {
       this.createGame();
@@ -160,7 +213,6 @@ export class Jogo extends Phaser.Scene {
     );
 
     this.add.image(larguraJogo / 2, alturaJogo / 1.2, "backgroundGrama");
-
 
     // Parte da GUI
 
@@ -263,7 +315,6 @@ export class Jogo extends Phaser.Scene {
       "galho5"
     );
 
-    
     chao = this.physics.add.staticImage(
       larguraJogo / 2,
       alturaJogo - 50,
@@ -271,8 +322,6 @@ export class Jogo extends Phaser.Scene {
     );
     chao.setSize(0, 10);
     chao.setPosition(larguraJogo / 2, alturaJogo - 65);
-
-    
 
     // Adicionar fisica ao personagem
     personagem = this.physics.add.sprite(64, 0, "player_normal");
@@ -283,8 +332,13 @@ export class Jogo extends Phaser.Scene {
     // Adicionar fisica ao inimigo
     esqueleto = this.physics.add.sprite(36, 0, "esqueleto_normal");
     esqueleto.setCollideWorldBounds(true);
-    esqueleto.setPosition(1200, 410);
+    esqueleto.setPosition(400, 410);
     esqueleto.body.pushable = false;
+
+    esqueleto2 = this.physics.add.sprite(36, 0, "esqueleto_normal");
+    esqueleto2.setCollideWorldBounds(true);
+    esqueleto2.setPosition(100, 410);
+    esqueleto2.body.pushable = false;
 
     // Adiciona colisão do personagem nas plataforams
     this.physics.add.collider(personagem, chao);
@@ -300,7 +354,7 @@ export class Jogo extends Phaser.Scene {
     this.physics.add.collider(personagem, galho4_Direita);
     this.physics.add.collider(personagem, galho5_Direita);
 
-    // Adiciona colisão do inimigo nas plataforams
+    // Adiciona colisão aos inimigos
     this.physics.add.collider(esqueleto, chao);
     this.physics.add.collider(esqueleto, terra);
     this.physics.add.collider(esqueleto, arvoreBaixo);
@@ -313,6 +367,19 @@ export class Jogo extends Phaser.Scene {
     this.physics.add.collider(esqueleto, galho2_Direita);
     this.physics.add.collider(esqueleto, galho4_Direita);
     this.physics.add.collider(esqueleto, galho5_Direita);
+
+    this.physics.add.collider(esqueleto2, chao);
+    this.physics.add.collider(esqueleto2, terra);
+    this.physics.add.collider(esqueleto2, arvoreBaixo);
+    this.physics.add.collider(esqueleto2, arvoreCima);
+
+    this.physics.add.collider(esqueleto2, galho2_Esquerda);
+    this.physics.add.collider(esqueleto2, galho4_Esquerda);
+    this.physics.add.collider(esqueleto2, galho5_Esquerda);
+
+    this.physics.add.collider(esqueleto2, galho2_Direita);
+    this.physics.add.collider(esqueleto2, galho4_Direita);
+    this.physics.add.collider(esqueleto2, galho5_Direita);
 
     // Move os galhos da direta para direta
     galho2_Direita.setFlip(true, false);
@@ -497,7 +564,6 @@ export class Jogo extends Phaser.Scene {
 
     // Altera a colisao do personagem dependendo de sua animação
     personagem.on("animationstart", (anim) => {
-      animacaoAtual = anim.key;
       if (anim.key === "ataque_Leve") {
         personagemEnergiaAtual -= ENERGIA_ATAQUE_LEVE;
         this.updateUi("energia");
@@ -548,11 +614,13 @@ export class Jogo extends Phaser.Scene {
     // Seta a variavel stunJogador para false quando a animação termina, e muda o estagio do ataque
     personagem.on("animationcomplete", (anim) => {
       if (anim.key === "ataque_Leve") {
-        esqueletoPodeLevarHit = true;
+        this.esqueleto.podeLevarHit = true;
+        this.esqueleto2.podeLevarHit = true;
         stunJogador = false;
         dano = 0;
       } else if (anim.key === "ataque_Pesado") {
-        esqueletoPodeLevarHit = true;
+        this.esqueleto.podeLevarHit = true;
+        this.esqueleto2.podeLevarHit = true;
         stunJogador = false;
         dano = 0;
       } else if (anim.key === "rolamento") {
@@ -565,131 +633,51 @@ export class Jogo extends Phaser.Scene {
       }
     });
 
-    // Logica para o ataque do personagem contra o esqueleto
+    // Logica para o overlap do personagem contra o esqueleto
     this.physics.add.overlap(personagem, esqueleto, () => {
-      if (esqueletoPodeLevarHit === false) {
-        return;
-      }
-      if (stunJogador === false && esqueletoPodeDarDano === false) {
-        return;
-      }
-      if (dano === 0) {
-        if (esqueletoDano > 0) {
-          if (personagemNaoTomaDano === true) {
-            console.log("i-frame");
-            return;
-          }
-          personagemVidaAtual -= esqueletoDano;
-          personagemVidaAtual = Math.max(0, personagemVidaAtual);
-
-          console.warn("Vida jogador: " + personagemVidaAtual);
-
-          esqueletoPodeDarDano = false;
-
-          if (personagemVidaAtual == 0) {
-            this.scene.start("GameOver");
-          }
-
-          this.updateUi("vida");
-
-          personagem.setVelocity(0);
-
-          stunJogador = true;
-          personagem.anims.play("hit", true);
-        }
-        return;
-      }
-      if (esqueletoVidaAtual <= 0) {
-        esqueletoJaTaMorto = true;
-        return;
-      }
-
-      esqueletoVidaAtual -= dano;
-
-      esqueleto.setVelocityX(0);
-      esqueleto.setVelocityY(200);
-
-      esqueletoPodeLevarHit = false;
-      esqueletoPodeMover = false;
-
-      esqueleto.anims.play("hitEsqueleto", false);
+      this.overlapEsqueletoPlayer(personagem, esqueleto, this.esqueleto);
     });
+
+    this.physics.add.overlap(personagem, esqueleto2, () => {
+      this.overlapEsqueletoPlayer(personagem, esqueleto2, this.esqueleto2);
+    });
+
 
     // Logica das animações do esqueleto
 
+    // Animação do primeiro esqueleto
     esqueleto.on("animationstart", (anim) => {
-      // Ve se o esqueleto comecou o ataque
-      if (anim.key === "ataqueEsqueleto") {
-        esqueleto.setSize(145, tamanhoNormalEsqueleto[1]);
-        return;
-      }
-      esqueleto.setSize(tamanhoNormalEsqueleto[0], tamanhoNormalEsqueleto[1]);
+      this.esqueletoAnimacaoComecada(esqueleto, anim);
     });
 
     // Verifica o frame da animação do esqueleto
     esqueleto.on("animationupdate", (anim, frame) => {
-      if (anim.key === "ataqueEsqueleto") {
-        esqueleto.setSize(145, tamanhoNormalEsqueleto[1]);
-
-        // Verifica se o frame é um frame de ataque
-        if (framesEsqueletoAtaque.includes(frame.frame.name)) {
-          esqueletoDano = DANO_DO_ESQUELETO;
-        } else {
-          esqueletoDano = 0;
-        }
-
-        return;
-      }
-      esqueleto.setSize(tamanhoNormalEsqueleto[0], tamanhoNormalEsqueleto[1]);
+      this.esqueletoAnimacaoUpdate(esqueleto, this.esqueleto, anim, frame);
     });
 
     esqueleto.on("animationcomplete", (anim) => {
-      // Ve se o esqueleto levou hit
-      if (anim.key === "hitEsqueleto") {
-        // Ve se o esqueleto morreu
-        if (esqueletoVidaAtual <= 0) {
-          esqueletoJaTaMorto = true;
-          esqueleto.anims.play("morteEsqueleto", false);
-          return;
-        }
-        coolDownAtaqueEsqueleto = false;
-
-        esqueletoPodeMover = true;
-        esqueletoPodePular = true;
-        esqueleto.anims.play("normalEsqueleto", true);
-        // respawn e morte do esqueleto se o esqueleto tocar a animacao de morte
-      } else if (anim.key === "morteEsqueleto") {
-        // Respawn aqui em baixo
-        this.killEsqueleto();
-        setTimeout(() => {
-          this.respawnEsqueleto();
-        }, 3000);
-      } else if (anim.key === "ataqueEsqueleto") {
-        if (esqueletoJaTaMorto === true) {
-          this.killEsqueleto();
-          setTimeout(() => {
-            this.respawnEsqueleto();
-          }, 3000);
-          return;
-        }
-
-        esqueletoPodeDarDano = false;
-        esqueletoDano = 0;
-        esqueletoPodeMover = true;
-        esqueletoPodePular = true;
-        esqueleto.anims.play("normalEsqueleto", true);
-        setTimeout(() => {
-          coolDownAtaqueEsqueleto = false;
-        }, 2000);
-      }
+      this.esqueletoAnimacaoTerminada(this.esqueleto, esqueleto, anim);
     });
 
-    esqueleto.anims.play("normalEsqueleto", true);
+    // Verifica o frame da animação do segundo esqueleto
+    esqueleto2.on("animationstart", (anim) => {
+      this.esqueletoAnimacaoComecada(esqueleto2, anim);
+    });
+
+    
+    esqueleto2.on("animationupdate", (anim, frame) => {
+      this.esqueletoAnimacaoUpdate(esqueleto2, this.esqueleto2, anim, frame);
+    });
+
+    esqueleto2.on("animationcomplete", (anim) => {
+      this.esqueletoAnimacaoTerminada(this.esqueleto2, esqueleto2, anim);
+    });
+
   }
 
   update() {
     // god mode
-    personagemNaoTomaDano = true;
+    //personagemNaoTomaDano = true;
 
     // Logica do personagem
     if (stunJogador === false && cooldownRoll === false) {
@@ -724,7 +712,12 @@ export class Jogo extends Phaser.Scene {
       }
 
       // Rolamento
-      if (teclaEspaco.isDown && pode_Pular === true && cooldownRoll === false && personagemEnergiaAtual >= ENERGIA_ROLAMENTO) {
+      if (
+        teclaEspaco.isDown &&
+        pode_Pular === true &&
+        cooldownRoll === false &&
+        personagemEnergiaAtual >= ENERGIA_ROLAMENTO
+      ) {
         // Ve se o rolamento é para direita ou esquerda (sem input é direita)
         if (teclado.left.isDown || teclaA.isDown) {
           personagem.setVelocityX(-200);
@@ -780,59 +773,11 @@ export class Jogo extends Phaser.Scene {
       }
     }
     personagemX = personagem.body.position.x;
-    esqueletoX = esqueleto.body.position.x;
+    this.esqueleto.posX = esqueleto.body.position.x;
+    this.esqueleto2.posX = esqueleto2.body.position.x;
 
-    // Variavel da diferenca do x entre o esqueleto e o personagem
-    diferencaPersonagemEsqueletoX = personagemX - esqueletoX;
-    // Verifica se o personagem está no alcance do ataque do esqueleto
-    if (diferencaPersonagemEsqueletoX > 0) {
-      if (diferencaPersonagemEsqueletoX <= 75) {
-        esqueletoPertoParaAtaque = true;
-        this.ataqueEsqueleto();
-      } else {
-        esqueletoPertoParaAtaque = false;
-      }
-    } else {
-      if (diferencaPersonagemEsqueletoX >= -75) {
-        this.ataqueEsqueleto();
-        esqueletoPertoParaAtaque = true;
-      } else {
-        esqueletoPertoParaAtaque = false;
-      }
-    }
-
-    if (esqueletoPodeMover === true && esqueletoJaTaMorto === false) {
-      // Se o esqueleto estiver muito perto do personagem significa que ele pode atacar
-
-      // Move o esqueleto para o jogador
-      if (diferencaPersonagemEsqueletoX > 50) {
-        esqueleto.setFlip(false, false);
-        esqueleto.setVelocityX(100);
-        esqueleto.anims.play("andarEsqueleto", true);
-      } else if (diferencaPersonagemEsqueletoX < -50) {
-        esqueleto.setFlip(true, false);
-        esqueleto.setVelocityX(-100);
-      }
-
-      // Se o esquleto estar movendo, tocar animacao
-      if (esqueleto.body.touching.down) {
-        if (esqueleto.body.velocity.x !== 0) {
-          esqueleto.anims.play("andarEsqueleto", true);
-        }
-      }
-
-      // Logica para ver se o esqueleto pode pular ou nao
-      if (esqueleto.body.touching.down) {
-        esqueletoPodePular = true;
-      } else {
-        esqueletoPodePular = false;
-      }
-
-      // Se o esqueleto tocar em uma parede, ele chama a funcao de pulo para verificar se ele pode pular
-      if (esqueleto.body.touching.left || esqueleto.body.touching.right) {
-        this.puloEsqueleto();
-      }
-    }
+    this.updateLogicEsqueleto(this.esqueleto, esqueleto);
+    this.updateLogicEsqueleto(this.esqueleto2, esqueleto2);
   }
 
   // Função para atualizar a UI de vida ou stamina
@@ -856,7 +801,6 @@ export class Jogo extends Phaser.Scene {
         40
       );
 
-      console.log(personagemEnergiaAtual);
       this.energiaRegenerando = false;
 
       // Logica para a regeneracao de energia
@@ -920,16 +864,16 @@ export class Jogo extends Phaser.Scene {
     }
 
     if (teclaShift.isDown) {
-      if(personagemEnergiaAtual < ENERGIA_ATAQUE_PESADO) {
-        return
+      if (personagemEnergiaAtual < ENERGIA_ATAQUE_PESADO) {
+        return;
       }
       personagem.setVelocity(0);
       stunJogador = true;
 
       personagem.anims.play("ataque_Pesado", false);
-    } else if(personagemEnergiaAtual >= ENERGIA_ATAQUE_LEVE) {
-      if(personagemEnergiaAtual < ENERGIA_ATAQUE_LEVE) {
-        return
+    } else if (personagemEnergiaAtual >= ENERGIA_ATAQUE_LEVE) {
+      if (personagemEnergiaAtual < ENERGIA_ATAQUE_LEVE) {
+        return;
       }
 
       personagem.setVelocity(0);
@@ -939,57 +883,238 @@ export class Jogo extends Phaser.Scene {
     }
   }
 
-  killEsqueleto() {
-    esqueletoPodeMover = false;
-    esqueleto.setVisible(false);
-    esqueleto.setActive(false);
-    esqueleto.disableBody(true, true);
+  overlapEsqueletoPlayer(personagem, oEsqueletoVar, oEsqueleto) {
+    if (oEsqueleto.podeLevarHit === false) {
+      return;
+    }
+    if (stunJogador === false && oEsqueleto.podeDarDano === false) {
+      return;
+    }
+    if (dano === 0) {
+      if (oEsqueleto.danoAtualEsqueleto > 0 && oEsqueleto.podeDarDano === true) {
+        if (personagemNaoTomaDano === true) {
+          console.log("i-frame");
+          return;
+        }
+        personagemVidaAtual -= oEsqueleto.danoAtualEsqueleto;
+        personagemVidaAtual = Math.max(0, personagemVidaAtual);
+
+        oEsqueleto.podeDarDano = false;
+
+        if (personagemVidaAtual == 0) {
+          this.scene.start("GameOver");
+        }
+
+        this.updateUi("vida");
+
+        personagem.setVelocity(0);
+
+        stunJogador = true;
+        personagem.anims.play("hit", true);
+      }
+      return;
+    }
+    if (oEsqueleto.vidaAtual <= 0) {
+      oEsqueleto.esqueletoJaTaMorto = true;
+      return;
+    }
+
+    oEsqueleto.vidaAtual -= dano;
+
+    oEsqueletoVar.setVelocityX(0);
+    oEsqueletoVar.setVelocityY(200);
+
+    oEsqueleto.podeLevarHit = false;
+    oEsqueleto.podeMover = false;
+
+    oEsqueletoVar.anims.play("hitEsqueleto", false);
+  }
+
+  // ----------------------------------------------
+  // Funções esqueleto
+
+  updateLogicEsqueleto(oEsqueleto, oEsqueletoVar) {
+
+    console.log(oEsqueleto.podeMover);
+    // Variavel da diferenca do x entre o esqueleto e o personagem
+    diferencaPersonagemEsqueletoX = personagemX - oEsqueleto.posX;
+    // Verifica se o personagem está no alcance do ataque do esqueleto
+    if (diferencaPersonagemEsqueletoX > 0) {
+      if (diferencaPersonagemEsqueletoX <= 75) {
+        oEsqueleto.pertoParaAtaque = true;
+        this.ataqueEsqueleto(oEsqueleto, oEsqueletoVar);
+      } else {
+        oEsqueleto.pertoParaAtaque = false;
+      }
+    } else {
+      if (diferencaPersonagemEsqueletoX >= -75) {
+        this.ataqueEsqueleto(oEsqueleto, oEsqueletoVar);
+        oEsqueleto.pertoParaAtaque = true;
+      } else {
+        oEsqueleto.pertoParaAtaque = false;
+      }
+    }
+
+    if (
+      oEsqueleto.podeMover === true &&
+      oEsqueleto.esqueletoJaTaMorto === false
+    ) {
+      // Se o esqueleto estiver muito perto do personagem significa que ele pode atacar
+
+      // Move o esqueleto para o jogador
+      if (diferencaPersonagemEsqueletoX > 50) {
+        oEsqueletoVar.setFlip(false, false);
+        oEsqueletoVar.setVelocityX(100);
+        oEsqueletoVar.anims.play("andarEsqueleto", true);
+      } else if (diferencaPersonagemEsqueletoX < -50) {
+        oEsqueletoVar.setFlip(true, false);
+        oEsqueletoVar.setVelocityX(-100);
+      }
+
+      // Se o esquleto estar movendo, tocar animacao
+      if (oEsqueletoVar.body.touching.down) {
+        if (oEsqueletoVar.body.velocity.x !== 0) {
+          oEsqueletoVar.anims.play("andarEsqueleto", true);
+        }
+      }
+
+      // Logica para ver se o esqueleto pode pular ou nao
+      if (oEsqueletoVar.body.touching.down) {
+        oEsqueleto.podePular = true;
+      } else {
+        oEsqueleto.podePular = false;
+      }
+
+      // Se o esqueleto tocar em uma parede, ele chama a funcao de pulo para verificar se ele pode pular
+      if (oEsqueletoVar.body.touching.left || oEsqueletoVar.body.touching.right) {
+        this.puloEsqueleto(oEsqueleto, oEsqueletoVar);
+      }
+    }
+  }
+
+  esqueletoAnimacaoUpdate(oEsqueletoVar, oEsqueleto, anim, frame) {
+    if (anim.key === "ataqueEsqueleto") {
+      oEsqueletoVar.setSize(145, tamanhoNormalEsqueleto[1]);
+
+      // Verifica se o frame é um frame de ataque
+      if (oEsqueleto.FRAMES_ATAQUE.includes(frame.frame.name)) {
+        oEsqueleto.danoAtualEsqueleto = oEsqueleto.DANO;
+      } else {
+        oEsqueleto.danoAtualEsqueleto = 0;
+      }
+
+      return;
+    }
+    oEsqueletoVar.setSize(tamanhoNormalEsqueleto[0], tamanhoNormalEsqueleto[1]);
+  }
+
+  esqueletoAnimacaoComecada(oEsqueletoVar, anim) {
+    // Ve se o esqueleto comecou o ataque
+    if (anim.key === "ataqueEsqueleto") {
+      oEsqueletoVar.setSize(145, tamanhoNormalEsqueleto[1]);
+      return;
+    }
+    oEsqueletoVar.setSize(tamanhoNormalEsqueleto[0], tamanhoNormalEsqueleto[1]);
+  }
+
+  esqueletoAnimacaoTerminada(oEsqueleto, oEsqueletoVar, anim) {
+    // Ve se o esqueleto levou hit
+    if (anim.key === "hitEsqueleto") {
+      // Ve se o esqueleto morreu
+      if (oEsqueleto.vidaAtual <= 0) {
+        oEsqueleto.esqueletoJaTaMorto = true;
+        oEsqueletoVar.anims.play("morteEsqueleto", false);
+        return;
+      }
+
+      oEsqueleto.coolDownAtaque = false;
+      oEsqueleto.podeDarDano = false;
+      oEsqueleto.danoAtualEsqueleto = 0;
+
+      oEsqueleto.podeMover = true;
+      oEsqueleto.podePular = true;
+      oEsqueletoVar.anims.play("normalEsqueleto", true);
+      // respawn e morte do esqueleto se o esqueleto tocar a animacao de morte
+    } else if (anim.key === "morteEsqueleto") {
+      // Respawn aqui em baixo
+      this.killEsqueleto(oEsqueleto, oEsqueletoVar);
+      setTimeout(() => {
+        this.respawnEsqueleto(oEsqueleto, oEsqueletoVar);
+      }, 3000);
+    } else if (anim.key === "ataqueEsqueleto") {
+      if (oEsqueleto.esqueletoJaTaMorto === true) {
+        this.killEsqueleto(oEsqueleto, oEsqueletoVar);
+        setTimeout(() => {
+          this.respawnEsqueleto(oEsqueleto, oEsqueletoVar);
+        }, 3000);
+        return;
+      }
+
+      oEsqueleto.podeDarDano = false;
+      oEsqueleto.danoAtualEsqueleto = 0;
+
+      oEsqueleto.podeMover = true;
+      oEsqueleto.podePular = true;
+      esqueleto.anims.play("normalEsqueleto", true);
+      setTimeout(() => {
+        oEsqueleto.coolDownAtaque = false;
+      }, 2000);
+    }
+  }
+
+  killEsqueleto(oEsqueleto, oEsqueletoVar) {
+    oEsqueleto.podeMover = false;
+    oEsqueletoVar.setVisible(false);
+    oEsqueletoVar.setActive(false);
+    oEsqueletoVar.disableBody(true, true);
+
     caveiras++;
     caveirasImagem.setVisible(true);
     caveirasTexto.setText("(x" + caveiras + ")");
   }
 
-  respawnEsqueleto() {
-    esqueleto.enableBody(true, 100, 400, true, true);
-    esqueletoVidaAtual = ESQUELETO_VIDA_MAXIMA;
-    esqueleto.setVisible(true);
-    esqueleto.setActive(true);
-    esqueleto.anims.play("normalEsqueleto", true);
-    esqueletoPodeMover = true;
-    esqueletoJaTaMorto = false;
-    coolDownAtaqueEsqueleto = false;
+  respawnEsqueleto(oEsqueleto, oEsqueletoVar) {
+    oEsqueletoVar.enableBody(true, oEsqueleto.respawnPos[0], oEsqueleto.respawnPos[1], true, true);
+    oEsqueletoVar.setVisible(true);
+    oEsqueletoVar.setActive(true);
+    oEsqueletoVar.anims.play("normalEsqueleto", true);
+
+    oEsqueleto.vidaAtual = oEsqueleto.VIDA_MAXIMA;
+    oEsqueleto.podeMover = true;
+    oEsqueleto.esqueletoJaTaMorto = false;
+    oEsqueleto.coolDownAtaque = false;
   }
 
   // Logica para ver se o esqueleto deveria pular ou nao
-  puloEsqueleto() {
-    if (esqueletoPodePular === false) {
+  puloEsqueleto(oEsqueleto, oEsqueletoVar) {
+    if (oEsqueleto.podePular === false) {
       return;
     }
-    if (esqueletoPertoParaAtaque === true) {
+    if (oEsqueleto.pertoParaAtaque === true) {
       return;
     }
 
     // bem que phaser podia ter pathfinding...
 
-    esqueleto.setVelocityY(alturaPulo);
-    esqueletoPodePular = false;
+    oEsqueletoVar.setVelocityY(alturaPulo);
+    oEsqueleto.podePular = false;
   }
 
-  ataqueEsqueleto() {
-    if (coolDownAtaqueEsqueleto === true) {
+  ataqueEsqueleto(oEsqueleto, oEsqueletoVar) {
+    if (oEsqueleto.coolDownAtaque === true) {
       return;
     }
-    if (esqueletoVidaAtual <= 0) {
+    if (oEsqueleto.vidaAtual <= 0) {
       return;
     }
 
-    esqueleto.anims.play("ataqueEsqueleto", false);
-    esqueleto.setVelocityX(0);
-    esqueletoPodeMover = false;
-    esqueletoPodePular = false;
-    coolDownAtaqueEsqueleto = true;
+    oEsqueletoVar.anims.play("ataqueEsqueleto", false);
+    oEsqueletoVar.setVelocityX(0);
+    oEsqueleto.podeMover = false;
+    oEsqueleto.podePular = false;
 
-    esqueletoPodeDarDano = true;
+    oEsqueleto.coolDownAtaque = true;
+    oEsqueleto.podeDarDano = true;
   }
 }
 
@@ -998,7 +1123,10 @@ const larguraJogo = 4000;
 const alturaJogo = 600;
 
 // Variaveis
-var personagem;
+let personagem;
+let esqueleto;
+let esqueleto2;
+
 const tamanhoNormal = [50, 76];
 const tamanhoNormalEsqueleto = [72, 76];
 
@@ -1010,7 +1138,6 @@ const framesRolamentoSemDano = [2, 3, 4, 5, 6, 7, 8];
 const framesAtaqueLeveDano = [2, 3];
 const framesAtaquePesadoDano = [2, 3];
 
-var esqueleto;
 // Teclas wasd
 let teclaA;
 let teclaD;
@@ -1069,7 +1196,6 @@ const ENERGIA_ROLAMENTO = 15;
 
 let dano = 0;
 
-let animacaoAtual;
 let personagemX;
 
 const personagemSpawn = [200, alturaJogo / 1.5];
@@ -1079,30 +1205,7 @@ let caveiras = 0;
 
 let cooldownHeal = false;
 
-let energiaAntiga = personagemEnergiaAtual;
-// Variaveis do esqueleto
-let esqueletoVidaAtual = 30;
-
-const ESQUELETO_VIDA_MAXIMA = esqueletoVidaAtual;
-
-let esqueletoPodeLevarHit = true;
-let esqueletoPodeMover = true;
-let esqueletoPodePular = true;
-let esqueletoPertoParaAtaque = false;
-let coolDownAtaqueEsqueleto = false;
-
-let esqueletoJaTaMorto = false; // você já está morto, esqueleto
-let esqueletoX;
-
-// Frames que o ataque do esqueleto pode dar dano no jogador
-const framesEsqueletoAtaque = [6, 7];
-let esqueletoPodeDarDano = false;
-
-let esqueletoDano = 0;
-const DANO_DO_ESQUELETO = 35;
-// Variaveis demoniod
-
-
+// Variaveis demonio
 
 // TODO deixar o esqueleto em um model para eu conseguir adicionar varios esqueletos
 // TODO fazer o menu

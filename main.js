@@ -25,6 +25,8 @@ const config = {
   },
   width: larguraJogo,
   height: alturaJogo,
+  pixelArt: true,
+  roundPixels: false,
 
   physics: {
     default: "arcade",
