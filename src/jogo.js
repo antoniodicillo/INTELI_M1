@@ -7,6 +7,7 @@ export class Jogo extends Phaser.Scene {
   preload() {
     // Preload do background paralax
     this.load.image("background", "src/assets/Background.png");
+    this.load.image("backgroundGrama", "src/assets/GramaBackground.png");
     this.load.image("bg_arvores1", "src/assets/arvores-1.png");
     this.load.image("bg_arvores2", "src/assets/arvores-2.png");
     this.load.image("bg_arvores3", "src/assets/arvores-3.png");
@@ -110,7 +111,6 @@ export class Jogo extends Phaser.Scene {
   createGame() {
     // Adicionar imagens e sprites no jogo
     this.add.image(larguraJogo / 2, alturaJogo / 2, "background");
-
     // new TileSprite(scene, x, y, width, height, textureKey, [frameKey])
     this.bg_arvores1 = this.add.tileSprite(
       larguraJogo / 2, // x
@@ -158,6 +158,9 @@ export class Jogo extends Phaser.Scene {
       alturaJogo - 384,
       "arvoreTransparente"
     );
+
+    this.add.image(larguraJogo / 2, alturaJogo / 1.2, "backgroundGrama");
+
 
     // Parte da GUI
 
@@ -268,6 +271,8 @@ export class Jogo extends Phaser.Scene {
     );
     chao.setSize(0, 10);
     chao.setPosition(larguraJogo / 2, alturaJogo - 65);
+
+    
 
     // Adicionar fisica ao personagem
     personagem = this.physics.add.sprite(64, 0, "player_normal");
