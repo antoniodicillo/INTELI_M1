@@ -828,7 +828,7 @@ export class Jogo extends Phaser.Scene {
             }
           }, 50);
         }
-      }, 2000);
+      }, 1000);
     }
   }
 
@@ -1017,50 +1017,50 @@ export class Jogo extends Phaser.Scene {
     oEsqueletoVar.setSize(tamanhoNormalEsqueleto[0], tamanhoNormalEsqueleto[1]);
   }
 
-  esqueletoAnimacaoTerminada(oEsqueleto, oEsqueletoVar, anim) {
-    // Ve se o esqueleto levou hit
-    if (anim.key === "hitEsqueleto") {
-      // Ve se o esqueleto morreu
-      if (oEsqueleto.vidaAtual <= 0) {
-        oEsqueleto.esqueletoJaTaMorto = true;
-        oEsqueletoVar.anims.play("morteEsqueleto", false);
-        return;
-      }
+    esqueletoAnimacaoTerminada(oEsqueleto, oEsqueletoVar, anim) {
+      // Ve se o esqueleto levou hit
+      if (anim.key === "hitEsqueleto") {
+        // Ve se o esqueleto morreu
+        if (oEsqueleto.vidaAtual <= 0) {
+          oEsqueleto.esqueletoJaTaMorto = true;
+          oEsqueletoVar.anims.play("morteEsqueleto", false);
+          return;
+        }
 
-      oEsqueleto.coolDownAtaque = false;
-      oEsqueleto.podeDarDano = false;
-      oEsqueleto.danoAtualEsqueleto = 0;
+        oEsqueleto.coolDownAtaque = false;
+        oEsqueleto.podeDarDano = false;
+        oEsqueleto.danoAtualEsqueleto = 0;
 
-      oEsqueleto.podeMover = true;
-      oEsqueleto.podePular = true;
-      oEsqueletoVar.anims.play("normalEsqueleto", true);
-      // respawn e morte do esqueleto se o esqueleto tocar a animacao de morte
-    } else if (anim.key === "morteEsqueleto") {
-      // Respawn aqui em baixo
-      this.killEsqueleto(oEsqueleto, oEsqueletoVar);
-      setTimeout(() => {
-        this.respawnEsqueleto(oEsqueleto, oEsqueletoVar);
-      }, 3000);
-    } else if (anim.key === "ataqueEsqueleto") {
-      if (oEsqueleto.esqueletoJaTaMorto === true) {
+        oEsqueleto.podeMover = true;
+        oEsqueleto.podePular = true;
+        oEsqueletoVar.anims.play("normalEsqueleto", true);
+        // respawn e morte do esqueleto se o esqueleto tocar a animacao de morte
+      } else if (anim.key === "morteEsqueleto") {
+        // Respawn aqui em baixo
         this.killEsqueleto(oEsqueleto, oEsqueletoVar);
         setTimeout(() => {
           this.respawnEsqueleto(oEsqueleto, oEsqueletoVar);
         }, 3000);
-        return;
+      } else if (anim.key === "ataqueEsqueleto") {
+        if (oEsqueleto.esqueletoJaTaMorto === true) {
+          this.killEsqueleto(oEsqueleto, oEsqueletoVar);
+          setTimeout(() => {
+            this.respawnEsqueleto(oEsqueleto, oEsqueletoVar);
+          }, 3000);
+          return;
+        }
+
+        oEsqueleto.podeDarDano = false;
+        oEsqueleto.danoAtualEsqueleto = 0;
+
+        oEsqueleto.podeMover = true;
+        oEsqueleto.podePular = true;
+        oEsqueletoVar.anims.play("normalEsqueleto", true);
+        setTimeout(() => {
+          oEsqueleto.coolDownAtaque = false;
+        }, 2000);
       }
-
-      oEsqueleto.podeDarDano = false;
-      oEsqueleto.danoAtualEsqueleto = 0;
-
-      oEsqueleto.podeMover = true;
-      oEsqueleto.podePular = true;
-      esqueleto.anims.play("normalEsqueleto", true);
-      setTimeout(() => {
-        oEsqueleto.coolDownAtaque = false;
-      }, 2000);
     }
-  }
 
   killEsqueleto(oEsqueleto, oEsqueletoVar) {
     oEsqueleto.podeMover = false;
@@ -1133,7 +1133,7 @@ const tamanhoNormalEsqueleto = [72, 76];
 // Frame Data
 
 // Frames que o jogador é invencivel e não toma dano quando ele estiver cooldownRoll
-const framesRolamentoSemDano = [2, 3, 4, 5, 6, 7, 8];
+const framesRolamentoSemDano = [2, 3, 4, 5, 6, 7, 8, 9];
 // Frames que os ataques podem dar dano em inimigos
 const framesAtaqueLeveDano = [2, 3];
 const framesAtaquePesadoDano = [2, 3];
