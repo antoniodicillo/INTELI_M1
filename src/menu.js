@@ -5,13 +5,20 @@ export class Menu extends Phaser.Scene {
       plugins: [],
     });
   }
-  
+  preload() {
+
+  }
   create() {
-    this.textoPrincipal = this.add.text(0, 20, 400, {
+     // Get the center coordinates of the screen
+     const centerX = this.cameras.main.width / 2;
+     const centerY = this.cameras.main.height / 2;
+    this.textoPrincipal = this.add.text(centerX, centerY, 'Skibidi toilet', {
       fontSize: "14px",
       fill: "#ffffff",
     });
     console.log('hello world')
   }
+
+
 }
 

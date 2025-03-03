@@ -1,8 +1,8 @@
 // boa sorte
 
-export class Jogo extends Phaser.Scene {
+export class Boss extends Phaser.Scene {
   constructor() {
-    super("Jogo");
+    super("Boss");
   }
 
   init() {
@@ -160,6 +160,8 @@ export class Jogo extends Phaser.Scene {
         frameHeight: 89,
       }
     );
+
+    
   }
 
   create() {
@@ -264,22 +266,23 @@ export class Jogo extends Phaser.Scene {
     this.add.image(larguraJogo / 1.853, alturaJogo / 1.3, "pedra2");
 
     chao = this.physics.add.staticImage(
-      larguraJogo / 3.9,
+      larguraJogo / 3.14,
       alturaJogo - 60,
       "chao"
     );
 
     chao.setSize(0, 10);
-    chao.setPosition(larguraJogo / 3.9, alturaJogo - 65);
+    chao.setPosition(larguraJogo / 3.14, alturaJogo - 65);
 
     this.chao2 = this.physics.add.staticImage(
-      larguraJogo / 1.325,
+      larguraJogo / 1.223,
       alturaJogo - 60,
       "chao2"
     );
 
     this.chao2.setSize(0, 10);
-    this.chao2.setPosition(larguraJogo / 1.325, alturaJogo - 65);
+    this.chao2.setPosition(larguraJogo / 1.223, alturaJogo - 65);
+   
 
     // Adicionar fisica ao personagem
     personagem = this.physics.add.sprite(64, 0, "player_normal");
@@ -354,7 +357,8 @@ export class Jogo extends Phaser.Scene {
     this.paredeBoss.setSize(50, 600); // Set the size of the wall
     this.paredeBoss.setAlpha(0); // Make the wall invisible
 
-    // Registrar teclas do teclado
+
+    // Registrar teclas do this.teclado
     teclaA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     teclaD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     teclaW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -611,9 +615,9 @@ export class Jogo extends Phaser.Scene {
     });
 
     this.physics.add.overlap(personagem, this.paredeBoss, () => {
-      this.scene.start("Boss");
-      this.scene.stop("Jogo");
-    });
+      console.log('hora do boss')
+      this.scene.start("Menu");
+    })
 
     // Logica das animações do esqueleto
 
@@ -922,8 +926,6 @@ export class Jogo extends Phaser.Scene {
       return;
     }
     if (dano === 0) {
-      
-      // Logica para ver se foi o esqueleto que deu o hit no jogador
       if (
         oEsqueleto.danoAtualEsqueleto > 0 &&
         oEsqueleto.podeDarDano === true
@@ -963,20 +965,6 @@ export class Jogo extends Phaser.Scene {
     oEsqueleto.podeMover = false;
 
     oEsqueletoVar.anims.play("hitEsqueleto", false);
-
-    // Para o frame para dar a sensação de hit (obrigado gmtk)
-    this.scene.pause();
-    
-    if(dano > 15) {
-      setTimeout(() => {
-        this.scene.resume();
-      }, 30);
-    } else {
-      setTimeout(() => {
-        this.scene.resume();
-      }, 65);
-    }
-   
   }
 
   // ----------------------------------------------
@@ -1194,6 +1182,8 @@ const framesRolamentoSemDano = [2, 3, 4, 5, 6, 7, 8, 9];
 const framesAtaqueLeveDano = [2, 3];
 const framesAtaquePesadoDano = [2, 3];
 
+
+
 // Teclas wasd
 let teclaA;
 let teclaD;
@@ -1254,7 +1244,7 @@ let dano = 0;
 
 let personagemX;
 
-const personagemSpawn = [20, alturaJogo / 1.5];
+const personagemSpawn = [100, alturaJogo / 1.5];
 
 let diferencaPersonagemEsqueletoX = 0;
 let caveiras = 0;
