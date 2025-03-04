@@ -2,9 +2,15 @@ Link do projeto:
 
 https://antoniodicillo.github.io/INTELI_M1/
 
-1. Título do Jogo: (insira aqui o nome do seu jogo)
+1. Título do Jogo: The Blighted Forest
 
-2. Contexto: (insira aqui uma pequena explicação da narrativa do seu jogo)
+2. Contexto: 
+
+O jogo se passa por volta dos anos 900, em uma floresta chamada "Blighted Florest" onde ocorreu uma grande batalha entre dois reinos que resultou em milhares de mortos, que foram enterrados na própria floresta. Desde então, há rumores que ela é almodiçoada, pois os que se aventuram para lá nunca voltaram para contar a historia. 
+
+Sua missão como um cavaleiro é de regastar um soldado que desapareceu na floresta. 
+
+(insira aqui uma pequena explicação da narrativa do seu jogo)
 
 3. Controles: (insira aqui os controles do seu jogo)
 

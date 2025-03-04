@@ -1,6 +1,6 @@
 import { Jogo } from "./src/jogo.js";
 import { GameOver } from "./src/gameOver.js";
-import { Menu } from "./src/menu.js";
+import { Menu, Creditos, Controles } from "./src/menu.js";
 import { Boss } from "./src/boss.js";
 
 class BootScene extends Phaser.Scene {
@@ -12,7 +12,8 @@ class BootScene extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start("Jogo");
+    this.scene.start("Menu");
+    this.scene.stop("boot");
   }
 }
 
@@ -33,11 +34,12 @@ const config = {
     default: "arcade",
     arcade: {
       gravity: { y: 600 },
-      debug: true,
+      debug: false,
     },
   },
 
-  scene: [BootScene, Jogo, GameOver, Menu, Boss]
+  scene: [BootScene, Menu, Creditos, Controles,  Jogo, GameOver, Boss]
 };
+
 
 const game = new Phaser.Game(config);

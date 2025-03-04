@@ -7,8 +7,8 @@ export class Jogo extends Phaser.Scene {
 
   init() {
     this.esqueleto = {
-      vidaAtual: 30,
-      VIDA_MAXIMA: 30,
+      vidaAtual: 50,
+      VIDA_MAXIMA: 50,
 
       podeLevarHit: true,
       podeMover: true,
@@ -23,11 +23,14 @@ export class Jogo extends Phaser.Scene {
       danoAtualEsqueleto: 0,
       posX: 200,
       respawnPos: [100, 400],
+      respawnTempo: 8000,
+
+      velocidade: 150,
     };
 
     this.esqueleto2 = {
-      vidaAtual: 30,
-      VIDA_MAXIMA: 30,
+      vidaAtual: 50,
+      VIDA_MAXIMA: 50,
 
       podeLevarHit: true,
       podeMover: true,
@@ -41,7 +44,10 @@ export class Jogo extends Phaser.Scene {
       DANO: 35,
       danoAtualEsqueleto: 0,
       posX: 200,
-      respawnPos: [1100, 400],
+      respawnPos: [1200, 400],
+      respawnTempo: 8000,
+
+      velocidade: 160,
     };
   }
 
@@ -127,28 +133,30 @@ export class Jogo extends Phaser.Scene {
       frameHeight: 80,
     });
 
+
     // Carrega as animações do esqueleto
+
     this.load.spritesheet("esqueleto_normal", "src/assets/Esqueleto_Idle.png", {
-      frameWidth: 72,
-      frameHeight: 76,
+      frameWidth: 92,
+      frameHeight: 102,
     });
 
     this.load.spritesheet("esqueleto_hit", "src/assets/Esqueleto_Hit.png", {
-      frameWidth: 90,
-      frameHeight: 84,
+      frameWidth: 102,
+      frameHeight: 109,
     });
 
     this.load.spritesheet("esqueleto_morte", "src/assets/Esqueleto_Morte.png", {
-      frameWidth: 90,
-      frameHeight: 76,
+      frameWidth: 132,
+      frameHeight: 109,
     });
 
     this.load.spritesheet(
       "esqueleto_andando",
       "src/assets/Esqueleto_Andando.png",
       {
-        frameWidth: 90,
-        frameHeight: 76,
+        frameWidth: 92,
+        frameHeight: 107,
       }
     );
 
@@ -156,15 +164,17 @@ export class Jogo extends Phaser.Scene {
       "esqueleto_ataque",
       "src/assets/Esqueleto_Ataque.png",
       {
-        frameWidth: 145,
-        frameHeight: 89,
+        frameWidth: 212,
+        frameHeight: 116,
       }
     );
+    this.load.image("jogar", "src/assets/Jogar.png");
   }
 
   create() {
     // Adicionar imagens e sprites no jogo
     this.add.image(larguraJogo / 2, alturaJogo / 2, "background");
+
 
     this.bg_arvores1 = this.add.tileSprite(
       larguraJogo / 2, // x
@@ -288,14 +298,14 @@ export class Jogo extends Phaser.Scene {
     personagem.body.pushable = false;
 
     // Adicionar fisica ao inimigo
-    esqueleto = this.physics.add.sprite(36, 0, "esqueleto_normal");
+    esqueleto = this.physics.add.sprite(64, 0, "esqueleto_normal");
     esqueleto.setCollideWorldBounds(true);
-    esqueleto.setPosition(400, 410);
+    esqueleto.setPosition(400, 300);
     esqueleto.body.pushable = false;
 
-    esqueleto2 = this.physics.add.sprite(36, 0, "esqueleto_normal");
+    esqueleto2 = this.physics.add.sprite(64, 0, "esqueleto_normal");
     esqueleto2.setCollideWorldBounds(true);
-    esqueleto2.setPosition(100, 410);
+    esqueleto2.setPosition(100, 300);
     esqueleto2.body.pushable = false;
 
     this.add.image(larguraJogo / 1.8, alturaJogo / 1.3, "pedra1");
@@ -350,8 +360,8 @@ export class Jogo extends Phaser.Scene {
     galho5_Direita.setFlip(true, false);
 
     // Parede invisivel para avancar de nivel
-    this.paredeBoss = this.physics.add.staticImage(larguraJogo - 20, 300, null);
-    this.paredeBoss.setSize(50, 600); // Set the size of the wall
+    this.paredeBoss = this.physics.add.staticImage(larguraJogo - 5, 300, null);
+    this.paredeBoss.setSize(10, 600); // Set the size of the wall
     this.paredeBoss.setAlpha(0); // Make the wall invisible
 
     // Registrar teclas do teclado
@@ -693,6 +703,8 @@ export class Jogo extends Phaser.Scene {
       }
     );
 
+
+
     this.backgroundUI.setScrollFactor(0);
     caveirasImagem.setScrollFactor(0);
     caveirasTexto.setScrollFactor(0);
@@ -747,25 +759,27 @@ export class Jogo extends Phaser.Scene {
         teclaEspaco.isDown &&
         pode_Pular === true &&
         cooldownRoll === false &&
-        personagemEnergiaAtual >= ENERGIA_ROLAMENTO
-      ) {
-        // Ve se o rolamento é para direita ou esquerda (sem input é direita)
-        if (teclado.left.isDown || teclaA.isDown) {
-          personagem.setVelocityX(-200);
-          personagem.setFlip(true, false);
-        } else {
-          personagem.setVelocityX(200);
-          personagem.setFlip(false, false);
-        }
-        personagem.anims.play("rolamento", true);
-        cooldownRoll = true;
-        return;
-      }
+        personagemEnergiaAtual >= ENERGIA_ROLAMENTO) {
+      {
+          // Ve se o rolamento é para direita ou esquerda (sem input é direita)
+          if (teclado.left.isDown || teclaA.isDown) {
+            personagem.setVelocityX(-200);
+            personagem.setFlip(true, false);
+          } else {
+            personagem.setVelocityX(200);
+            personagem.setFlip(false, false);
+          }
+          personagem.anims.play("rolamento", true);
+          cooldownRoll = true;
+          return;
+        }} 
+  
+     
 
       // Regeneração de vida
       if (personagemVidaAtual < PERSONAGEM_VIDA_MAXIMA) {
         if (teclaR.isDown) {
-          if (caveiras > 0 || cooldownHeal === false) {
+          if (caveiras > 0 && cooldownHeal === false) {
             cooldownHeal = true;
 
             setTimeout(() => {
@@ -896,6 +910,7 @@ export class Jogo extends Phaser.Scene {
 
     if (teclaShift.isDown) {
       if (personagemEnergiaAtual < ENERGIA_ATAQUE_PESADO) {
+        this.naoTenhoEnergiaUi();
         return;
       }
       personagem.setVelocity(0);
@@ -904,6 +919,7 @@ export class Jogo extends Phaser.Scene {
       personagem.anims.play("ataque_Pesado", false);
     } else if (personagemEnergiaAtual >= ENERGIA_ATAQUE_LEVE) {
       if (personagemEnergiaAtual < ENERGIA_ATAQUE_LEVE) {
+        this.naoTenhoEnergiaUi();
         return;
       }
 
@@ -964,17 +980,16 @@ export class Jogo extends Phaser.Scene {
 
     oEsqueletoVar.anims.play("hitEsqueleto", false);
 
-    // Para o frame para dar a sensação de hit (obrigado gmtk)
+    // Para o frame para dar a sensação de hit 
     this.scene.pause();
-    
-    if(dano > 15) {
+    if(dano < 15) {
       setTimeout(() => {
         this.scene.resume();
       }, 30);
     } else {
       setTimeout(() => {
         this.scene.resume();
-      }, 65);
+      }, 60);
     }
    
   }
@@ -987,14 +1002,14 @@ export class Jogo extends Phaser.Scene {
     diferencaPersonagemEsqueletoX = personagemX - oEsqueleto.posX;
     // Verifica se o personagem está no alcance do ataque do esqueleto
     if (diferencaPersonagemEsqueletoX > 0) {
-      if (diferencaPersonagemEsqueletoX <= 75) {
+      if (diferencaPersonagemEsqueletoX <= 100) {
         oEsqueleto.pertoParaAtaque = true;
         this.ataqueEsqueleto(oEsqueleto, oEsqueletoVar);
       } else {
         oEsqueleto.pertoParaAtaque = false;
       }
     } else {
-      if (diferencaPersonagemEsqueletoX >= -75) {
+      if (diferencaPersonagemEsqueletoX >= -100) {
         this.ataqueEsqueleto(oEsqueleto, oEsqueletoVar);
         oEsqueleto.pertoParaAtaque = true;
       } else {
@@ -1011,11 +1026,11 @@ export class Jogo extends Phaser.Scene {
       // Move o esqueleto para o jogador
       if (diferencaPersonagemEsqueletoX > 50) {
         oEsqueletoVar.setFlip(false, false);
-        oEsqueletoVar.setVelocityX(100);
+        oEsqueletoVar.setVelocityX(oEsqueleto.velocidade);
         oEsqueletoVar.anims.play("andarEsqueleto", true);
       } else if (diferencaPersonagemEsqueletoX < -50) {
         oEsqueletoVar.setFlip(true, false);
-        oEsqueletoVar.setVelocityX(-100);
+        oEsqueletoVar.setVelocityX(-oEsqueleto.velocidade);
       }
 
       // Se o esquleto estar movendo, tocar animacao
@@ -1044,8 +1059,6 @@ export class Jogo extends Phaser.Scene {
 
   esqueletoAnimacaoUpdate(oEsqueletoVar, oEsqueleto, anim, frame) {
     if (anim.key === "ataqueEsqueleto") {
-      oEsqueletoVar.setSize(145, tamanhoNormalEsqueleto[1]);
-
       // Verifica se o frame é um frame de ataque
       if (oEsqueleto.FRAMES_ATAQUE.includes(frame.frame.name)) {
         oEsqueleto.danoAtualEsqueleto = oEsqueleto.DANO;
@@ -1061,7 +1074,7 @@ export class Jogo extends Phaser.Scene {
   esqueletoAnimacaoComecada(oEsqueletoVar, anim) {
     // Ve se o esqueleto comecou o ataque
     if (anim.key === "ataqueEsqueleto") {
-      oEsqueletoVar.setSize(145, tamanhoNormalEsqueleto[1]);
+      oEsqueletoVar.setSize(212, tamanhoNormalEsqueleto[1]);
       return;
     }
     oEsqueletoVar.setSize(tamanhoNormalEsqueleto[0], tamanhoNormalEsqueleto[1]);
@@ -1090,13 +1103,13 @@ export class Jogo extends Phaser.Scene {
       this.killEsqueleto(oEsqueleto, oEsqueletoVar);
       setTimeout(() => {
         this.respawnEsqueleto(oEsqueleto, oEsqueletoVar);
-      }, 8000);
+      }, oEsqueleto.respawnTempo);
     } else if (anim.key === "ataqueEsqueleto") {
       if (oEsqueleto.esqueletoJaTaMorto === true) {
         this.killEsqueleto(oEsqueleto, oEsqueletoVar);
         setTimeout(() => {
           this.respawnEsqueleto(oEsqueleto, oEsqueletoVar);
-        }, 8000);
+        }, oEsqueleto.respawnTempo);
         return;
       }
 
@@ -1184,7 +1197,7 @@ let esqueleto;
 let esqueleto2;
 
 const tamanhoNormal = [50, 76];
-const tamanhoNormalEsqueleto = [72, 76];
+const tamanhoNormalEsqueleto = [92, 107];
 
 // Frame Data
 
@@ -1261,7 +1274,3 @@ let caveiras = 0;
 
 let cooldownHeal = false;
 
-// Variaveis demonio
-
-// TODO deixar o esqueleto em um model para eu conseguir adicionar varios esqueletos
-// TODO fazer o menu
