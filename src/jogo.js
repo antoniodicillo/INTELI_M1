@@ -23,7 +23,7 @@ export class Jogo extends Phaser.Scene {
       danoAtualEsqueleto: 0,
       posX: 200,
       respawnPos: [100, 400],
-      respawnTempo: 8000,
+      respawnTempo: 10000,
 
       velocidade: 150,
     };
@@ -44,11 +44,27 @@ export class Jogo extends Phaser.Scene {
       DANO: 35,
       danoAtualEsqueleto: 0,
       posX: 200,
-      respawnPos: [1200, 400],
-      respawnTempo: 8000,
+      respawnPos: [200, 400],
+      respawnTempo: 10000,
 
       velocidade: 160,
     };
+
+    // Reseta variaveis
+    stunJogador = false;
+    personagemVidaAtual = PERSONAGEM_VIDA_MAXIMA;
+    personagemEnergiaAtual = PERSONAGEM_ENERGIA_MAXIMA;
+    pode_Pular = true;
+    cooldownRoll = false;
+    personagemVidaAtual = 20;
+    personagemEnergiaAtual = 100;
+    vidaUI_Largura = personagemVidaAtual;
+    energiaUI_Largura = personagemEnergiaAtual;
+    personagemNaoTomaDano = false;
+    dano = 0;
+    personagemX = 0;
+    diferencaPersonagemEsqueletoX = 0;
+    cooldownHeal = false;
   }
 
   preload() {
@@ -133,6 +149,10 @@ export class Jogo extends Phaser.Scene {
       frameHeight: 80,
     });
 
+    this.load.spritesheet("player_morte", "src/assets/Cavaleiro_Morte.png", {
+      frameWidth: 96,
+      frameHeight: 80,
+    });
 
     // Carrega as animações do esqueleto
 
@@ -168,13 +188,20 @@ export class Jogo extends Phaser.Scene {
         frameHeight: 116,
       }
     );
-    this.load.image("jogar", "src/assets/Jogar.png");
+
+    // Elementos da UI
+    this.load.image("sair", "src/assets/Sair.png");
+    this.load.image("sairDestaque", "src/assets/SairUnderline.png");
+    this.load.image("continuar", "src/assets/Continuar.png");
+    this.load.image("continuarDestaque", "src/assets/ContinuarUnderline.png");
   }
 
   create() {
+    cooldownRoll = false;
+    stunJogador = false;
+
     // Adicionar imagens e sprites no jogo
     this.add.image(larguraJogo / 2, alturaJogo / 2, "background");
-
 
     this.bg_arvores1 = this.add.tileSprite(
       larguraJogo / 2, // x
@@ -300,7 +327,7 @@ export class Jogo extends Phaser.Scene {
     // Adicionar fisica ao inimigo
     esqueleto = this.physics.add.sprite(64, 0, "esqueleto_normal");
     esqueleto.setCollideWorldBounds(true);
-    esqueleto.setPosition(1200, 300);
+    esqueleto.setPosition(400, 300);
     esqueleto.body.pushable = false;
 
     esqueleto2 = this.physics.add.sprite(64, 0, "esqueleto_normal");
@@ -468,6 +495,15 @@ export class Jogo extends Phaser.Scene {
       frames: this.anims.generateFrameNumbers("player_hit", {
         start: 0,
         end: 3,
+      }),
+      frameRate: 10,
+      repeat: 0,
+    });
+    this.anims.create({
+      key: "morte",
+      frames: this.anims.generateFrameNumbers("player_morte", {
+        start: 0,
+        end: 9,
       }),
       frameRate: 10,
       repeat: 0,
@@ -663,7 +699,7 @@ export class Jogo extends Phaser.Scene {
 
     // UI das caveiras coletadas
     caveirasImagem = this.add.image(30, 90, "caveiras").setScale(0.25);
-    caveirasTexto = this.add.text(50, 90, "(x"+caveiras+")", {
+    caveirasTexto = this.add.text(50, 90, "(x" + caveiras + ")", {
       fontSize: "14px",
       fill: "#ffffff",
     });
@@ -702,8 +738,6 @@ export class Jogo extends Phaser.Scene {
         fill: "#ffffff",
       }
     );
-
-
 
     this.backgroundUI.setScrollFactor(0);
     caveirasImagem.setScrollFactor(0);
@@ -759,8 +793,9 @@ export class Jogo extends Phaser.Scene {
         teclaEspaco.isDown &&
         pode_Pular === true &&
         cooldownRoll === false &&
-        personagemEnergiaAtual >= ENERGIA_ROLAMENTO) {
-      {
+        personagemEnergiaAtual >= ENERGIA_ROLAMENTO
+      ) {
+        {
           // Ve se o rolamento é para direita ou esquerda (sem input é direita)
           if (teclado.left.isDown || teclaA.isDown) {
             personagem.setVelocityX(-200);
@@ -772,9 +807,8 @@ export class Jogo extends Phaser.Scene {
           personagem.anims.play("rolamento", true);
           cooldownRoll = true;
           return;
-        }} 
-  
-     
+        }
+      }
 
       // Regeneração de vida
       if (personagemVidaAtual < PERSONAGEM_VIDA_MAXIMA) {
@@ -787,7 +821,7 @@ export class Jogo extends Phaser.Scene {
             }, 1000);
 
             caveiras--;
-            localStorage.setItem("Caveiras",caveiras)
+            localStorage.setItem("Caveiras", caveiras);
             personagemVidaAtual += 50;
             personagemVidaAtual = Math.min(
               personagemVidaAtual,
@@ -881,7 +915,6 @@ export class Jogo extends Phaser.Scene {
   // Funcao da funcao de update ui para
   updateDaUi(valorUI, larguraUI, UI, textoUI, cor, posicao) {
     textoUI.setText(valorUI);
-    console.log(valorUI,larguraUI)
 
     // destruir a otimização
     while (valorUI < larguraUI) {
@@ -892,14 +925,13 @@ export class Jogo extends Phaser.Scene {
     }
 
     while (valorUI > larguraUI) {
-      console.log(valorUI, larguraUI);
       larguraUI++;
       UI.clear();
       UI.fillStyle(cor, 1);
       UI.fillRect(0, posicao, larguraUI, 15);
     }
 
-    if(valorUI === larguraUI) {
+    if (valorUI === larguraUI) {
       UI.clear();
       UI.fillStyle(cor, 1);
       UI.fillRect(0, posicao, larguraUI, 15);
@@ -949,7 +981,6 @@ export class Jogo extends Phaser.Scene {
       return;
     }
     if (dano === 0) {
-      
       // Logica para ver se foi o esqueleto que deu o hit no jogador
       if (
         oEsqueleto.danoAtualEsqueleto > 0 &&
@@ -964,7 +995,17 @@ export class Jogo extends Phaser.Scene {
         oEsqueleto.podeDarDano = false;
 
         if (personagemVidaAtual == 0) {
-          this.scene.start("GameOver");
+          personagem.anims.play("morte", false);
+          personagem.podeLevarHit = false;
+          personagemNaoTomaDano = true;
+          personagem.podeMover = false;
+          stunJogador = true;
+          personagem.setVelocityX(0);
+          personagem.setVelocityY(200);
+          setTimeout(() => {
+            this.gameOver();
+          }, 800);
+          return;
         }
 
         this.updateUi("vida");
@@ -991,9 +1032,9 @@ export class Jogo extends Phaser.Scene {
 
     oEsqueletoVar.anims.play("hitEsqueleto", false);
 
-    // Para o frame para dar a sensação de hit 
+    // Para o frame para dar a sensação de hit
     this.scene.pause();
-    if(dano < 15) {
+    if (dano < 15) {
       setTimeout(() => {
         this.scene.resume();
       }, 30);
@@ -1002,7 +1043,6 @@ export class Jogo extends Phaser.Scene {
         this.scene.resume();
       }, 60);
     }
-   
   }
 
   // ----------------------------------------------
@@ -1143,7 +1183,7 @@ export class Jogo extends Phaser.Scene {
     oEsqueletoVar.disableBody(true, true);
 
     caveiras++;
-    localStorage.setItem("Caveiras",caveiras)
+    localStorage.setItem("Caveiras", caveiras);
     caveirasImagem.setVisible(true);
     caveirasTexto.setText("(x" + caveiras + ")");
   }
@@ -1188,6 +1228,9 @@ export class Jogo extends Phaser.Scene {
     if (oEsqueleto.vidaAtual <= 0) {
       return;
     }
+    if (oEsqueleto.podeLevarHit === false) {
+      return;
+    }
 
     oEsqueletoVar.anims.play("ataqueEsqueleto", false);
     oEsqueletoVar.setVelocityX(0);
@@ -1196,6 +1239,172 @@ export class Jogo extends Phaser.Scene {
 
     oEsqueleto.coolDownAtaque = true;
     oEsqueleto.podeDarDano = true;
+  }
+
+  gameOver() {
+    // "Desativa os esqueletos"
+    esqueleto.anims.play("normalEsqueleto", true);
+    esqueleto2.anims.play("normalEsqueleto", true);
+
+    esqueleto.setVelocityX(0);
+    esqueleto2.setVelocityX(0);
+
+    this.esqueleto.podeLevarHit = false;
+
+    this.esqueleto.podeMover = false;
+    this.esqueleto2.podeMover = false;
+    this.esqueleto.coolDownAtaque = true;
+    this.esqueleto2.coolDownAtaque = true;
+
+    // Define quanto tempo demora para a tween
+    this.tempoTween = 800;
+
+    // Parte da GUI do game over
+
+    // Background da UI
+    const x = this.cameras.main.width;
+    const y = this.cameras.main.height;
+
+    this.backgroundGameOver = this.add.graphics();
+    this.backgroundGameOver.fillStyle(0x000000, 0.5);
+    this.backgroundGameOver.fillRect(0, 0, x, y);
+
+    this.barraGameOver1 = this.add.graphics();
+    this.barraGameOver1.fillStyle(0x000000, 0.8);
+    this.barraGameOver1.fillRect(0, y - 50, x, 50);
+
+    this.barraGameOver2 = this.add.graphics();
+    this.barraGameOver2.fillStyle(0x000000, 0.8);
+    this.barraGameOver2.fillRect(0, 0, x, 25);
+
+    // Textos da UI
+    this.mainTexto = this.add
+      .text(x - 850, y / 2, "", {
+        fontSize: "48px",
+        fill: "#ffffff",
+      })
+      .setOrigin(0.5, 0.5);
+
+    this.textoContinuar = this.add
+      .image(x / 1.35, y - 50, "continuar")
+
+    // Interação com os botões
+    this.textoContinuar.on("pointerover", () => {
+      this.textoContinuar.setTexture("continuarDestaque");
+    });
+    this.textoContinuar.on("pointerout", () => {
+      this.textoContinuar.setTexture("continuar");
+    });
+    this.textoContinuar.on("pointerdown", () => {
+      // reseta o jogo para como ele era
+      personagemNaoTomaDano = false;
+      stunJogador = false;
+      cooldownRoll = false;
+
+      this.textoContinuar.off("pointerdown");
+      this.textoSair.off("pointerdown");
+
+      this.input.off("pointerdown");
+
+      personagem.off("animationcomplete");
+      personagem.off("animationstart");
+      personagem.off("animationupdate");
+
+      esqueleto.off("animationcomplete");
+      esqueleto.off("animationstart");
+      esqueleto.off("animationupdate");
+
+      esqueleto2.off("animationcomplete");
+      esqueleto2.off("animationstart");
+      esqueleto2.off("animationupdate");
+
+      this.scene.restart();
+    });
+
+    this.textoSair = this.add.image(x / 1.1, y - 50, "sair")
+    this.textoSair.on("pointerover", () => {
+      this.textoSair.setTexture("sairDestaque");
+    });
+    this.textoSair.on("pointerout", () => {
+      this.textoSair.setTexture("sair");
+    });
+    this.textoSair.on("pointerdown", () => {
+      this.scene.start("Menu");
+      this.scene.stop("Jogo");
+    });
+
+    this.textoSair.setVisible(false);
+    this.textoContinuar.setVisible(false);
+
+    // Tweens
+    // Add tweens to expand the bars
+    this.tweens.add({
+      targets: { height: 50 },
+      height: 100,
+      duration: this.tempoTween,
+      ease: "Power1",
+      onUpdate: (tween) => {
+        const height = tween.getValue();
+        this.barraGameOver1.clear();
+        this.barraGameOver1.fillStyle(0x000000, 0.8);
+        this.barraGameOver1.fillRect(0, y - height, x, height);
+      },
+    });
+
+    this.tweens.add({
+      targets: { height: 25 },
+      height: 50,
+      duration: this.tempoTween,
+      ease: "Power1",
+      onUpdate: (tween) => {
+        const height = tween.getValue();
+        this.barraGameOver2.clear();
+        this.barraGameOver2.fillStyle(0x000000, 0.8);
+        this.barraGameOver2.fillRect(0, 0, x, height);
+      },
+    });
+
+    // Esconder a UI original
+    this.backgroundUI.setVisible(false);
+    caveirasImagem.setVisible(false);
+    caveirasTexto.setVisible(false);
+    this.vidaBgUI.setVisible(false);
+    this.vidaUI.setVisible(false);
+    this.vidaTexto.setVisible(false);
+    this.energiaBgUI.setVisible(false);
+    this.energiaUI.setVisible(false);
+    this.energiaTexto.setVisible(false);
+
+    this.backgroundGameOver.setScrollFactor(0);
+    this.barraGameOver1.setScrollFactor(0);
+    this.barraGameOver2.setScrollFactor(0);
+    this.textoContinuar.setScrollFactor(0);
+    this.textoSair.setScrollFactor(0);
+    this.mainTexto.setScrollFactor(0);
+
+    
+    setTimeout(() => {
+      this.efeitoTypewrite("O cavaleiro está morto", this.mainTexto);
+      this.textoSair.setVisible(true);
+      this.textoContinuar.setVisible(true);
+      this.textoSair.setInteractive();
+      this.textoContinuar.setInteractive();
+    }, this.tempoTween)
+  }
+
+  efeitoTypewrite(texto, objeto) {
+    const length = texto.length;
+    const xAntigo = objeto.x;
+    let i = 0;
+    this.time.addEvent({
+      callback: () => {
+        objeto.text += texto[i];
+        objeto.x = xAntigo + objeto.width / 2;
+        ++i;
+      },
+      repeat: length - 1,
+      delay: 100
+    });
   }
 }
 
@@ -1251,7 +1460,7 @@ var galho2_Direita;
 // Variaveis do personagem
 var pode_Pular = true;
 
-var stunJogador = false;
+let stunJogador = false;
 
 let cooldownRoll = false;
 
@@ -1283,7 +1492,6 @@ const personagemSpawn = [20, alturaJogo / 1.5];
 
 let diferencaPersonagemEsqueletoX = 0;
 
-let caveiras = Number(localStorage.getItem('Caveiras'))
+let caveiras = Number(localStorage.getItem("Caveiras"));
 
 let cooldownHeal = false;
-

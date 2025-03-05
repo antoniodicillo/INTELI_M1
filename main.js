@@ -16,7 +16,7 @@ class BootScene extends Phaser.Scene {
       localStorage.setItem('Caveiras',0)
     }   
 
-    this.scene.start("Menu");
+    this.scene.start("Boss");
     this.scene.stop("boot");
   }
 }
