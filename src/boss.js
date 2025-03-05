@@ -181,7 +181,7 @@ export class Boss extends Phaser.Scene {
     // Adicionar fisica ao inimigo
     boss = this.physics.add.sprite(64, 0, "boss_normal");
     boss.setCollideWorldBounds(true);
-    boss.setPosition(400, 300);
+    boss.setPosition(1000, 535);
     boss.setOrigin(0.5, 1);
 
     boss.body.pushable = false;
@@ -226,7 +226,7 @@ export class Boss extends Phaser.Scene {
         start: 0,
         end: 9,
       }),
-      frameRate: 3,
+      frameRate: 10,
       repeat: -1,
     });
 
@@ -736,7 +736,7 @@ export class Boss extends Phaser.Scene {
               this.energiaRegenerando = false;
               clearInterval(energiaInterval);
             }
-          }, 50);
+          }, 30);
         }
       }, 500);
     }
@@ -1069,6 +1069,9 @@ export class Boss extends Phaser.Scene {
     if (oBoss.vidaAtual <= 0) {
       return;
     }
+    if(oBoss.podeMover === false ) {
+      return;
+    }
 
     oBoss.combo = Math.floor(Math.random() * 3) + 1;
     console.log(oBoss.combo);
@@ -1166,7 +1169,7 @@ export class Boss extends Phaser.Scene {
     });
     this.textoSair.on("pointerdown", () => {
       this.scene.start("Menu");
-      this.scene.stop("Jogo");
+      this.scene.stop("Boss");
     });
 
     this.textoSair.setVisible(false);
@@ -1288,7 +1291,7 @@ let cooldownRoll = false;
 
 let alturaPulo = -350;
 
-let personagemVidaAtual = 20;
+let personagemVidaAtual = 100;
 let personagemEnergiaAtual = 100;
 
 const PERSONAGEM_VIDA_MAXIMA = personagemVidaAtual;
@@ -1310,7 +1313,7 @@ let dano = 0;
 
 let personagemX;
 
-const personagemSpawn = [20, alturaJogo / 1.5];
+const personagemSpawn = [20, 500];
 
 let diferencaPersonagemBossX = 0;
 

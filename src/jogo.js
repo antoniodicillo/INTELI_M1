@@ -906,7 +906,7 @@ export class Jogo extends Phaser.Scene {
               this.energiaRegenerando = false;
               clearInterval(energiaInterval);
             }
-          }, 50);
+          }, 30);
         }
       }, 500);
     }
@@ -1488,7 +1488,7 @@ let dano = 0;
 
 let personagemX;
 
-const personagemSpawn = [20, alturaJogo / 1.5];
+const personagemSpawn = [20, 500];
 
 let diferencaPersonagemEsqueletoX = 0;
 
