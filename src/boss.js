@@ -6,42 +6,31 @@ export class Boss extends Phaser.Scene {
   }
 
   init() {
-    this.esqueleto = {
-      vidaAtual: 30,
-      VIDA_MAXIMA: 30,
+    this.boss = {
+      vidaAtual: 500,
+      VIDA_MAXIMA: 500,
 
       podeLevarHit: true,
       podeMover: true,
       podePular: true,
       pertoParaAtaque: false,
       coolDownAtaque: false,
-      esqueletoJaTaMorto: false,
+      bossJaTaMorto: false,
+      podeSerStunado: true, 
 
-      FRAMES_ATAQUE: [6, 7],
+      FRAMES_ATAQUE_1: [4,5],
+      FRAMES_ATAQUE_2: [3,4],
+      FRAMES_ATAQUE_3: [5,6],
+      DANO_1: 35,
+      DANO_2: 40,
+      DANO_3: 65,
       podeDarDano: false,
-      DANO: 35,
-      danoAtualEsqueleto: 0,
+      danoAtual: 0,
       posX: 200,
-      respawnPos: [100, 400],
-    };
 
-    this.esqueleto2 = {
-      vidaAtual: 30,
-      VIDA_MAXIMA: 30,
+      combo: 0, // 0 - Sem combo, 1 - So o primeiro ataque, 2 - Primeiro e segundo ataque, 3 - Todos os ataques
 
-      podeLevarHit: true,
-      podeMover: true,
-      podePular: true,
-      pertoParaAtaque: false,
-      coolDownAtaque: false,
-      esqueletoJaTaMorto: false,
-
-      FRAMES_ATAQUE: [6, 7],
-      podeDarDano: false,
-      DANO: 35,
-      danoAtualEsqueleto: 0,
-      posX: 200,
-      respawnPos: [1100, 400],
+      velocidade: 250,
     };
   }
 
@@ -49,29 +38,13 @@ export class Boss extends Phaser.Scene {
     // Preload do background paralax
     this.load.image("background", "src/assets/Background.png");
     this.load.image("backgroundGrama", "src/assets/GramaBackground.png");
-    this.load.image("backgroundGrama2", "src/assets/Grama.png");
-    this.load.image("pilares", "src/assets/Pilares.png");
-    this.load.image("bg_arvores1", "src/assets/arvores-1.png");
-    this.load.image("bg_arvores2", "src/assets/arvores-2.png");
-    this.load.image("bg_arvores3", "src/assets/arvores-3.png");
-    this.load.image("bg_arvores4", "src/assets/arvores-4.png");
-    this.load.image("bg_arvores5", "src/assets/arvores-5.png");
-
-    this.load.image("pedra1", "src/assets/Pedra1.png");
-    this.load.image("pedra2", "src/assets/Pedra2.png");
+    this.load.image("pilaresBoss", "src/assets/PilaresBoss.png");
+    this.load.image("muralha", "src/assets/Muralha.png");
 
     this.load.image("caveiras", "src/assets/Skulls.png");
 
     // Preload dos outros elementos
-    this.load.image("chao", "src/assets/Chao.png");
-    this.load.image("chao2", "src/assets/Chao2.png");
-
-    this.load.image("arvoreBaixo", "src/assets/Arvore_Baixo.png");
-    this.load.image("arvoreCima", "src/assets/Arvore_Cima.png");
-    this.load.image("arvoreTransparente", "src/assets/Arvore_Transparente.png");
-    this.load.image("galho5", "src/assets/Galho5.png");
-    this.load.image("galho4", "src/assets/Galho4.png");
-    this.load.image("galho2", "src/assets/Galho2.png");
+    this.load.image("chaoBoss", "src/assets/ChaoBoss.png");
 
     // Carrega as animações do personagem
     this.load.spritesheet("player_normal", "src/assets/Cavaleiro_Idle.png", {
@@ -127,162 +100,69 @@ export class Boss extends Phaser.Scene {
       frameHeight: 80,
     });
 
-    // Carrega as animações do esqueleto
-    this.load.spritesheet("esqueleto_normal", "src/assets/Esqueleto_Idle.png", {
-      frameWidth: 72,
-      frameHeight: 76,
+    // ------------------------------------------------------
+    // Carrega as animações do boss
+    // ------------------------------------------------------
+
+    this.load.spritesheet("boss_normal", "src/assets/Boss_Idle.png", {
+      frameWidth: 84,
+      frameHeight: 92,
     });
 
-    this.load.spritesheet("esqueleto_hit", "src/assets/Esqueleto_Hit.png", {
-      frameWidth: 90,
-      frameHeight: 84,
+    this.load.spritesheet("boss_hit", "src/assets/Boss_Hit.png", {
+      frameWidth: 88,
+      frameHeight: 92,
     });
 
-    this.load.spritesheet("esqueleto_morte", "src/assets/Esqueleto_Morte.png", {
-      frameWidth: 90,
-      frameHeight: 76,
+    this.load.spritesheet("boss_morte", "src/assets/Boss_Morte.png", {
+      frameWidth: 116,
+      frameHeight: 92,
     });
 
-    this.load.spritesheet(
-      "esqueleto_andando",
-      "src/assets/Esqueleto_Andando.png",
-      {
-        frameWidth: 90,
-        frameHeight: 76,
-      }
-    );
+    this.load.spritesheet("boss_andando", "src/assets/Boss_Correr.png", {
+      frameWidth: 118,
+      frameHeight: 92,
+    });
 
-    this.load.spritesheet(
-      "esqueleto_ataque",
-      "src/assets/Esqueleto_Ataque.png",
-      {
-        frameWidth: 145,
-        frameHeight: 89,
-      }
-    );
+    this.load.spritesheet("boss_ataque1", "src/assets/Boss_Ataque1.png", {
+      frameWidth: 170,
+      frameHeight: 120,
+    });
 
-    
+    this.load.spritesheet("boss_ataque2", "src/assets/Boss_Ataque2.png", {
+      frameWidth: 240,
+      frameHeight: 155,
+    });
+
+    this.load.spritesheet("boss_ataque3", "src/assets/Boss_Ataque3.png", {
+      frameWidth: 265,
+      frameHeight: 205,
+    });
+
+    this.load.image("jogar", "src/assets/Jogar.png");
   }
 
   create() {
     // Adicionar imagens e sprites no jogo
     this.add.image(larguraJogo / 2, alturaJogo / 2, "background");
 
-    this.bg_arvores1 = this.add.tileSprite(
-      larguraJogo / 2, // x
-      alturaJogo / 2, // y
-      0, // width
-      0, // height
-      "bg_arvores1" // name
-    );
-    this.bg_arvores2 = this.add.tileSprite(
-      larguraJogo / 2, // x
-      alturaJogo / 2, // y
-      0, // width
-      0, // height
-      "bg_arvores2" // name
-    );
-    this.bg_arvores3 = this.add.tileSprite(
-      larguraJogo / 2, // x
-      alturaJogo / 2, // y
-      0, // width
-      0, // height
-      "bg_arvores3" // name
-    );
-    this.bg_arvores4 = this.add.tileSprite(
-      larguraJogo / 2, // x
-      alturaJogo / 2, // y
-      0, // width
-      0, // height
-      "bg_arvores4" // name
-    );
-    this.bg_arvores5 = this.add.tileSprite(
-      larguraJogo / 2, // x
-      alturaJogo / 2, // y
-      0, // width
-      0, // height
-      "bg_arvores5" // name
-    );
-
-    this.arvoreTransparente1 = this.physics.add.staticImage(
-      larguraJogo + 600,
-      alturaJogo - 320,
-      "arvoreTransparente"
-    );
-    this.arvoreTransparente2 = this.physics.add.staticImage(
-      larguraJogo + 600,
-      alturaJogo - 384,
-      "arvoreTransparente"
-    );
-
     this.add.image(larguraJogo / 2, alturaJogo / 1.2, "backgroundGrama");
 
-    // Adiciona sprites com colisao
-    arvoreBaixo = this.physics.add.staticImage(
-      900,
-      alturaJogo / 1.45,
-      "arvoreBaixo"
-    );
-    arvoreCima = this.physics.add.staticImage(900, 60, "arvoreCima");
-
-    galho2_Esquerda = this.physics.add.staticImage(
-      836,
-      alturaJogo / 1.9,
-      "galho2"
-    );
-    galho4_Esquerda = this.physics.add.staticImage(
-      805,
-      alturaJogo / 1.5,
-      "galho4"
-    );
-    galho5_Esquerda = this.physics.add.staticImage(
-      788,
-      alturaJogo / 1.25,
-      "galho5"
-    );
-
-    galho2_Direita = this.physics.add.staticImage(
-      964,
-      alturaJogo / 1.9,
-      "galho2"
-    );
-    galho4_Direita = this.physics.add.staticImage(
-      996,
-      alturaJogo / 1.5,
-      "galho4"
-    );
-    galho5_Direita = this.physics.add.staticImage(
-      1012,
-      alturaJogo / 1.25,
-      "galho5"
-    );
-
+    this.muralha = this.add.image(larguraJogo / 1.8, alturaJogo / 2, "muralha");
     this.pilares = this.add.image(
-      larguraJogo / 1.223,
+      larguraJogo / 2,
       alturaJogo / 2,
-      "pilares"
+      "pilaresBoss"
     );
-
-    this.add.image(larguraJogo / 1.853, alturaJogo / 1.3, "pedra2");
 
     chao = this.physics.add.staticImage(
-      larguraJogo / 3.14,
+      larguraJogo / 2,
       alturaJogo - 60,
-      "chao"
+      "chaoBoss"
     );
 
     chao.setSize(0, 10);
-    chao.setPosition(larguraJogo / 3.14, alturaJogo - 65);
-
-    this.chao2 = this.physics.add.staticImage(
-      larguraJogo / 1.223,
-      alturaJogo - 60,
-      "chao2"
-    );
-
-    this.chao2.setSize(0, 10);
-    this.chao2.setPosition(larguraJogo / 1.223, alturaJogo - 65);
-   
+    chao.setPosition(larguraJogo / 2, alturaJogo - 65);
 
     // Adicionar fisica ao personagem
     personagem = this.physics.add.sprite(64, 0, "player_normal");
@@ -291,74 +171,24 @@ export class Boss extends Phaser.Scene {
     personagem.body.pushable = false;
 
     // Adicionar fisica ao inimigo
-    esqueleto = this.physics.add.sprite(36, 0, "esqueleto_normal");
-    esqueleto.setCollideWorldBounds(true);
-    esqueleto.setPosition(400, 410);
-    esqueleto.body.pushable = false;
+    boss = this.physics.add.sprite(64, 0, "boss_normal");
+    boss.setCollideWorldBounds(true);
+    boss.setPosition(400, 300);
+    boss.setOrigin(0.5, 1);
 
-    esqueleto2 = this.physics.add.sprite(36, 0, "esqueleto_normal");
-    esqueleto2.setCollideWorldBounds(true);
-    esqueleto2.setPosition(100, 410);
-    esqueleto2.body.pushable = false;
-
-    this.add.image(larguraJogo / 1.8, alturaJogo / 1.3, "pedra1");
+    boss.body.pushable = false;
 
     // Adiciona colisão do personagem nas plataforams
     this.physics.add.collider(personagem, chao);
     this.physics.add.collider(personagem, this.chao2);
     this.physics.add.collider(personagem, terra);
-    this.physics.add.collider(personagem, arvoreBaixo);
-    this.physics.add.collider(personagem, arvoreCima);
-
-    this.physics.add.collider(personagem, galho2_Esquerda);
-    this.physics.add.collider(personagem, galho4_Esquerda);
-    this.physics.add.collider(personagem, galho5_Esquerda);
-
-    this.physics.add.collider(personagem, galho2_Direita);
-    this.physics.add.collider(personagem, galho4_Direita);
-    this.physics.add.collider(personagem, galho5_Direita);
 
     // Adiciona colisão aos inimigos
-    this.physics.add.collider(esqueleto, chao);
-    this.physics.add.collider(esqueleto, this.chao2);
-    this.physics.add.collider(esqueleto, terra);
-    this.physics.add.collider(esqueleto, arvoreBaixo);
-    this.physics.add.collider(esqueleto, arvoreCima);
+    this.physics.add.collider(boss, chao);
+    this.physics.add.collider(boss, this.chao2);
+    this.physics.add.collider(boss, terra);
 
-    this.physics.add.collider(esqueleto, galho2_Esquerda);
-    this.physics.add.collider(esqueleto, galho4_Esquerda);
-    this.physics.add.collider(esqueleto, galho5_Esquerda);
-
-    this.physics.add.collider(esqueleto, galho2_Direita);
-    this.physics.add.collider(esqueleto, galho4_Direita);
-    this.physics.add.collider(esqueleto, galho5_Direita);
-
-    this.physics.add.collider(esqueleto2, chao);
-    this.physics.add.collider(esqueleto2, this.chao2);
-    this.physics.add.collider(esqueleto2, terra);
-    this.physics.add.collider(esqueleto2, arvoreBaixo);
-    this.physics.add.collider(esqueleto2, arvoreCima);
-
-    this.physics.add.collider(esqueleto2, galho2_Esquerda);
-    this.physics.add.collider(esqueleto2, galho4_Esquerda);
-    this.physics.add.collider(esqueleto2, galho5_Esquerda);
-
-    this.physics.add.collider(esqueleto2, galho2_Direita);
-    this.physics.add.collider(esqueleto2, galho4_Direita);
-    this.physics.add.collider(esqueleto2, galho5_Direita);
-
-    // Move os galhos da direta para direta
-    galho2_Direita.setFlip(true, false);
-    galho4_Direita.setFlip(true, false);
-    galho5_Direita.setFlip(true, false);
-
-    // Parede invisivel para avancar de nivel
-    this.paredeBoss = this.physics.add.staticImage(larguraJogo - 20, 300, null);
-    this.paredeBoss.setSize(50, 600); // Set the size of the wall
-    this.paredeBoss.setAlpha(0); // Make the wall invisible
-
-
-    // Registrar teclas do this.teclado
+    // Registrar teclas do teclado
     teclaA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     teclaD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     teclaW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -468,24 +298,24 @@ export class Boss extends Phaser.Scene {
     });
 
     // ------------------------------------------------------
-    // Animações do esqueleto
+    // Animações do boss
     // ------------------------------------------------------
 
-    // Idle do esqueleto
+    // Idle do boss
     this.anims.create({
-      key: "normalEsqueleto",
-      frames: this.anims.generateFrameNumbers("esqueleto_normal", {
+      key: "normalBoss",
+      frames: this.anims.generateFrameNumbers("boss_normal", {
         start: 0,
-        end: 3,
+        end: 9,
       }),
-      frameRate: 3,
+      frameRate: 10,
       repeat: -1,
     });
 
-    // Animação de hit do esqueleto
+    // Animação de hit do boss
     this.anims.create({
-      key: "hitEsqueleto",
-      frames: this.anims.generateFrameNumbers("esqueleto_hit", {
+      key: "hitBoss",
+      frames: this.anims.generateFrameNumbers("boss_hit", {
         start: 0,
         end: 3,
       }),
@@ -493,32 +323,54 @@ export class Boss extends Phaser.Scene {
       repeat: 0,
     });
 
-    // Animação de hit do esqueleto
+    // Animação de hit do boss
     this.anims.create({
-      key: "morteEsqueleto",
-      frames: this.anims.generateFrameNumbers("esqueleto_morte", {
+      key: "morteBoss",
+      frames: this.anims.generateFrameNumbers("boss_morte", {
         start: 0,
-        end: 3,
+        end: 6,
       }),
       frameRate: 8,
       repeat: 0,
     });
 
-    // Animação de andar do esqueleto
+    // Animação de andar do boss
     this.anims.create({
-      key: "andarEsqueleto",
-      frames: this.anims.generateFrameNumbers("esqueleto_andando", {
+      key: "andarBoss",
+      frames: this.anims.generateFrameNumbers("boss_andando", {
         start: 0,
-        end: 3,
+        end: 7,
       }),
       frameRate: 8,
       repeat: -1,
     });
 
-    // Animação de ataque do esqueleto
+    // Animação de ataque do boss
     this.anims.create({
-      key: "ataqueEsqueleto",
-      frames: this.anims.generateFrameNumbers("esqueleto_ataque", {
+      key: "ataqueBoss1",
+      frames: this.anims.generateFrameNumbers("boss_ataque1", {
+        start: 0,
+        end: 6,
+      }),
+      frameRate: 10,
+      repeat: 0,
+    });
+
+    // Animação de ataque do boss
+    this.anims.create({
+      key: "ataqueBoss2",
+      frames: this.anims.generateFrameNumbers("boss_ataque2", {
+        start: 0,
+        end: 6,
+      }),
+      frameRate: 10,
+      repeat: 0,
+    });
+
+    // Animação de ataque do boss
+    this.anims.create({
+      key: "ataqueBoss3",
+      frames: this.anims.generateFrameNumbers("boss_ataque3", {
         start: 0,
         end: 7,
       }),
@@ -586,13 +438,11 @@ export class Boss extends Phaser.Scene {
     // Seta a variavel stunJogador para false quando a animação termina, e muda o estagio do ataque
     personagem.on("animationcomplete", (anim) => {
       if (anim.key === "ataque_Leve") {
-        this.esqueleto.podeLevarHit = true;
-        this.esqueleto2.podeLevarHit = true;
+        this.boss.podeLevarHit = true;
         stunJogador = false;
         dano = 0;
       } else if (anim.key === "ataque_Pesado") {
-        this.esqueleto.podeLevarHit = true;
-        this.esqueleto2.podeLevarHit = true;
+        this.boss.podeLevarHit = true;
         stunJogador = false;
         dano = 0;
       } else if (anim.key === "rolamento") {
@@ -605,47 +455,25 @@ export class Boss extends Phaser.Scene {
       }
     });
 
-    // Logica para o overlap do personagem contra o esqueleto
-    this.physics.add.overlap(personagem, esqueleto, () => {
-      this.overlapEsqueletoPlayer(personagem, esqueleto, this.esqueleto);
+    // Logica para o overlap do personagem contra o boss
+    this.physics.add.overlap(personagem, boss, () => {
+      this.overlapBossPlayer(personagem, boss, this.boss);
     });
 
-    this.physics.add.overlap(personagem, esqueleto2, () => {
-      this.overlapEsqueletoPlayer(personagem, esqueleto2, this.esqueleto2);
+    // Logica das animações do boss
+
+    // Animação do primeiro boss
+    boss.on("animationstart", (anim) => {
+      this.bossAnimacaoComecada(boss, anim);
     });
 
-    this.physics.add.overlap(personagem, this.paredeBoss, () => {
-      console.log('hora do boss')
-      this.scene.start("Menu");
-    })
-
-    // Logica das animações do esqueleto
-
-    // Animação do primeiro esqueleto
-    esqueleto.on("animationstart", (anim) => {
-      this.esqueletoAnimacaoComecada(esqueleto, anim);
+    // Verifica o frame da animação do boss
+    boss.on("animationupdate", (anim, frame) => {
+      this.bossAnimacaoUpdate(boss, this.boss, anim, frame);
     });
 
-    // Verifica o frame da animação do esqueleto
-    esqueleto.on("animationupdate", (anim, frame) => {
-      this.esqueletoAnimacaoUpdate(esqueleto, this.esqueleto, anim, frame);
-    });
-
-    esqueleto.on("animationcomplete", (anim) => {
-      this.esqueletoAnimacaoTerminada(this.esqueleto, esqueleto, anim);
-    });
-
-    // Verifica o frame da animação do segundo esqueleto
-    esqueleto2.on("animationstart", (anim) => {
-      this.esqueletoAnimacaoComecada(esqueleto2, anim);
-    });
-
-    esqueleto2.on("animationupdate", (anim, frame) => {
-      this.esqueletoAnimacaoUpdate(esqueleto2, this.esqueleto2, anim, frame);
-    });
-
-    esqueleto2.on("animationcomplete", (anim) => {
-      this.esqueletoAnimacaoTerminada(this.esqueleto2, esqueleto2, anim);
+    boss.on("animationcomplete", (anim) => {
+      this.bossAnimacaoTerminada(this.boss, boss, anim);
     });
 
     // Parte da GUI
@@ -657,7 +485,7 @@ export class Boss extends Phaser.Scene {
 
     // UI das caveiras coletadas
     caveirasImagem = this.add.image(30, 90, "caveiras").setScale(0.25);
-    caveirasTexto = this.add.text(50, 90, "(x0)", {
+    caveirasTexto = this.add.text(50, 90, "(x"+caveiras+")", {
       fontSize: "14px",
       fill: "#ffffff",
     });
@@ -697,6 +525,28 @@ export class Boss extends Phaser.Scene {
       }
     );
 
+    // Bara de vida do boss
+
+    this.larguraVidaBoss = this.boss.vidaAtual;
+
+    this.bossVidaBgUI = this.add.graphics();
+    this.bossVidaBgUI.fillStyle(0x000000, 1);
+    this.bossVidaBgUI.fillRect(325, 100, this.larguraVidaBoss + 25, 15);
+
+    this.bossVidaUI = this.add.graphics();
+    this.bossVidaUI.fillStyle(0xba1f11, 1);
+    this.bossVidaUI.fillRect(325, 100, this.larguraVidaBoss, 15);
+
+    this.bossVidaName = this.add.text(325, 80, 'O soldado perdido', {
+      fontSize: "14px",
+      fill: "#ffffff",
+    });
+    this.bossVidaText = this.add.text(this.larguraVidaBoss + 325, 100, this.boss.vidaAtual, {
+      fontSize: "14px",
+      fill: "#ffffff",
+    });
+
+
     this.backgroundUI.setScrollFactor(0);
     caveirasImagem.setScrollFactor(0);
     caveirasTexto.setScrollFactor(0);
@@ -706,13 +556,17 @@ export class Boss extends Phaser.Scene {
     this.energiaBgUI.setScrollFactor(0);
     this.energiaUI.setScrollFactor(0);
     this.energiaTexto.setScrollFactor(0);
-
+    this.bossVidaText.setScrollFactor(0);
+    this.bossVidaBgUI.setScrollFactor(0);
+    this.bossVidaUI.setScrollFactor(0);
+    this.bossVidaName.setScrollFactor(0);
+    
     this.energiaRegenerando = false;
   }
 
   update() {
     // god mode
-    personagemNaoTomaDano = true;
+    //personagemNaoTomaDano = true;
 
     // Logica do personagem
     if (stunJogador === false && cooldownRoll === false) {
@@ -722,21 +576,11 @@ export class Boss extends Phaser.Scene {
         personagem.setFlip(true, false);
 
         // Update do paralax para direita
-        this.bg_arvores1._tilePosition.x += 0.005;
-        this.bg_arvores2._tilePosition.x += 0.015;
-        this.bg_arvores3._tilePosition.x += 0.025;
-        this.bg_arvores4._tilePosition.x += 0.03;
-        this.bg_arvores5._tilePosition.x += 0.035;
       } else if (teclado.right.isDown || teclaD.isDown) {
         personagem.setVelocityX(200);
         personagem.setFlip(false, false);
 
         // Update do paralax para esquerda
-        this.bg_arvores1._tilePosition.x -= 0.005;
-        this.bg_arvores2._tilePosition.x -= 0.015;
-        this.bg_arvores3._tilePosition.x -= 0.025;
-        this.bg_arvores4._tilePosition.x -= 0.03;
-        this.bg_arvores5._tilePosition.x -= 0.035;
       } else {
         personagem.setVelocityX(0);
       }
@@ -753,23 +597,25 @@ export class Boss extends Phaser.Scene {
         cooldownRoll === false &&
         personagemEnergiaAtual >= ENERGIA_ROLAMENTO
       ) {
-        // Ve se o rolamento é para direita ou esquerda (sem input é direita)
-        if (teclado.left.isDown || teclaA.isDown) {
-          personagem.setVelocityX(-200);
-          personagem.setFlip(true, false);
-        } else {
-          personagem.setVelocityX(200);
-          personagem.setFlip(false, false);
+        {
+          // Ve se o rolamento é para direita ou esquerda (sem input é direita)
+          if (teclado.left.isDown || teclaA.isDown) {
+            personagem.setVelocityX(-200);
+            personagem.setFlip(true, false);
+          } else {
+            personagem.setVelocityX(200);
+            personagem.setFlip(false, false);
+          }
+          personagem.anims.play("rolamento", true);
+          cooldownRoll = true;
+          return;
         }
-        personagem.anims.play("rolamento", true);
-        cooldownRoll = true;
-        return;
       }
 
       // Regeneração de vida
       if (personagemVidaAtual < PERSONAGEM_VIDA_MAXIMA) {
         if (teclaR.isDown) {
-          if (caveiras > 0 || cooldownHeal === false) {
+          if (caveiras > 0 && cooldownHeal === false) {
             cooldownHeal = true;
 
             setTimeout(() => {
@@ -777,7 +623,8 @@ export class Boss extends Phaser.Scene {
             }, 1000);
 
             caveiras--;
-            personagemVidaAtual += 10;
+            localStorage.setItem('Caveiras', caveiras)
+            personagemVidaAtual += 50;
             personagemVidaAtual = Math.min(
               personagemVidaAtual,
               PERSONAGEM_VIDA_MAXIMA
@@ -796,7 +643,10 @@ export class Boss extends Phaser.Scene {
         } else {
           personagem.anims.play("corrida", true);
         }
-        pode_Pular = true;
+        if (!boss.body.touching.up) {
+          pode_Pular = true;
+        }
+
         // Se o personagem estiver movendo
       } else {
         if (personagem.body.velocity.y > 0) {
@@ -808,11 +658,15 @@ export class Boss extends Phaser.Scene {
       }
     }
     personagemX = personagem.body.position.x;
-    this.esqueleto.posX = esqueleto.body.position.x;
-    this.esqueleto2.posX = esqueleto2.body.position.x;
+    this.boss.posX = boss.body.position.x;
 
-    this.updateLogicEsqueleto(this.esqueleto, esqueleto);
-    this.updateLogicEsqueleto(this.esqueleto2, esqueleto2);
+    this.updateLogicBoss(this.boss, boss);
+  }
+  updateVidaBoss() {
+    this.bossVidaUI.clear();
+    this.bossVidaUI.fillStyle(0xba1f11, 1);
+    this.bossVidaUI.fillRect(325, 100, this.boss.vidaAtual, 15);
+    this.bossVidaText.setText(this.boss.vidaAtual);
   }
 
   // Função para atualizar a UI de vida ou stamina
@@ -863,7 +717,7 @@ export class Boss extends Phaser.Scene {
             }
           }, 50);
         }
-      }, 1000);
+      }, 500);
     }
   }
 
@@ -884,6 +738,13 @@ export class Boss extends Phaser.Scene {
       UI.fillStyle(cor, 1);
       UI.fillRect(0, posicao, larguraUI, 15);
     }
+
+    if(valorUI === larguraUI) {
+      UI.clear();
+      UI.fillStyle(cor, 1);
+      UI.fillRect(0, posicao, larguraUI, 15);
+      return;
+    }
   }
 
   ataquePlayer() {
@@ -900,6 +761,7 @@ export class Boss extends Phaser.Scene {
 
     if (teclaShift.isDown) {
       if (personagemEnergiaAtual < ENERGIA_ATAQUE_PESADO) {
+        this.naoTenhoEnergiaUi();
         return;
       }
       personagem.setVelocity(0);
@@ -908,6 +770,7 @@ export class Boss extends Phaser.Scene {
       personagem.anims.play("ataque_Pesado", false);
     } else if (personagemEnergiaAtual >= ENERGIA_ATAQUE_LEVE) {
       if (personagemEnergiaAtual < ENERGIA_ATAQUE_LEVE) {
+        this.naoTenhoEnergiaUi();
         return;
       }
 
@@ -918,25 +781,23 @@ export class Boss extends Phaser.Scene {
     }
   }
 
-  overlapEsqueletoPlayer(personagem, oEsqueletoVar, oEsqueleto) {
-    if (oEsqueleto.podeLevarHit === false) {
+  overlapBossPlayer(personagem, oBossVar, oBoss) {
+    if (oBoss.podeLevarHit === false) {
       return;
     }
-    if (stunJogador === false && oEsqueleto.podeDarDano === false) {
+    if (stunJogador === false && oBoss.podeDarDano === false) {
       return;
     }
     if (dano === 0) {
-      if (
-        oEsqueleto.danoAtualEsqueleto > 0 &&
-        oEsqueleto.podeDarDano === true
-      ) {
+      // Logica para ver se foi o boss que deu o hit no jogador
+      if (oBoss.danoAtual > 0 && oBoss.podeDarDano === true) {
         if (personagemNaoTomaDano === true) {
           return;
         }
-        personagemVidaAtual -= oEsqueleto.danoAtualEsqueleto;
+        personagemVidaAtual -= oBoss.danoAtual;
         personagemVidaAtual = Math.max(0, personagemVidaAtual);
 
-        oEsqueleto.podeDarDano = false;
+        oBoss.podeDarDano = false;
 
         if (personagemVidaAtual == 0) {
           this.scene.start("GameOver");
@@ -951,238 +812,276 @@ export class Boss extends Phaser.Scene {
       }
       return;
     }
-    if (oEsqueleto.vidaAtual <= 0) {
-      oEsqueleto.esqueletoJaTaMorto = true;
+    if (oBoss.vidaAtual <= 0) {
+      oBoss.bossJaTaMorto = true;
       return;
     }
+    
+   
+   
+   
 
-    oEsqueleto.vidaAtual -= dano;
+    // Verifica se o boss vai tocar a animacao de hit ou nao
+    if(oBoss.podeSerStunado === true || oBoss.vidaAtual <= 0) {
+      oBoss.vidaAtual -= (dano * 2);
+      
 
-    oEsqueletoVar.setVelocityX(0);
-    oEsqueletoVar.setVelocityY(200);
+      oBossVar.setVelocityX(0);
+      oBossVar.setVelocityY(200);
+  
+   
+      oBoss.podeMover = false;
+      oBoss.podeLevarHit = false;
 
-    oEsqueleto.podeLevarHit = false;
-    oEsqueleto.podeMover = false;
+      oBossVar.anims.play("hitBoss", false);
+    } else {
+      oBoss.vidaAtual -= dano;
 
-    oEsqueletoVar.anims.play("hitEsqueleto", false);
+      oBoss.podeLevarHit = false;
+      setTimeout(() => {
+        oBoss.podeLevarHit = true;
+      }, 500)
+    }
+
+    if(oBoss.vidaAtual <= 0) {
+      oBoss.vidaAtual = 0;
+    }
+
+    this.updateVidaBoss();
+
+    // Para o frame para dar a sensação de hit
+    this.scene.pause();
+    if (dano < 15) {
+      setTimeout(() => {
+        this.scene.resume();
+      }, 30);
+    } else {
+      setTimeout(() => {
+        this.scene.resume();
+      }, 60);
+    }
   }
 
   // ----------------------------------------------
-  // Funções esqueleto
+  // Funções boss
 
-  updateLogicEsqueleto(oEsqueleto, oEsqueletoVar) {
-    // Variavel da diferenca do x entre o esqueleto e o personagem
-    diferencaPersonagemEsqueletoX = personagemX - oEsqueleto.posX;
-    // Verifica se o personagem está no alcance do ataque do esqueleto
-    if (diferencaPersonagemEsqueletoX > 0) {
-      if (diferencaPersonagemEsqueletoX <= 75) {
-        oEsqueleto.pertoParaAtaque = true;
-        this.ataqueEsqueleto(oEsqueleto, oEsqueletoVar);
+  updateLogicBoss(oBoss, oBossVar) {
+    // Variavel da diferenca do x entre o boss e o personagem
+    diferencaPersonagemBossX = personagemX - oBoss.posX;
+    // Verifica se o personagem está no alcance do ataque do boss
+    if (diferencaPersonagemBossX > 0) {
+      if (diferencaPersonagemBossX <= 100) {
+        oBoss.pertoParaAtaque = true;
+        this.ataqueBoss(oBoss, oBossVar);
       } else {
-        oEsqueleto.pertoParaAtaque = false;
+        oBoss.pertoParaAtaque = false;
       }
     } else {
-      if (diferencaPersonagemEsqueletoX >= -75) {
-        this.ataqueEsqueleto(oEsqueleto, oEsqueletoVar);
-        oEsqueleto.pertoParaAtaque = true;
+      if (diferencaPersonagemBossX >= -100) {
+        this.ataqueBoss(oBoss, oBossVar);
+        oBoss.pertoParaAtaque = true;
       } else {
-        oEsqueleto.pertoParaAtaque = false;
+        oBoss.pertoParaAtaque = false;
       }
     }
 
     if (
-      oEsqueleto.podeMover === true &&
-      oEsqueleto.esqueletoJaTaMorto === false
+      oBoss.podeMover === true &&
+      oBoss.bossJaTaMorto === false
     ) {
-      // Se o esqueleto estiver muito perto do personagem significa que ele pode atacar
+      // Se o boss estiver muito perto do personagem significa que ele pode atacar
 
-      // Move o esqueleto para o jogador
-      if (diferencaPersonagemEsqueletoX > 50) {
-        oEsqueletoVar.setFlip(false, false);
-        oEsqueletoVar.setVelocityX(100);
-        oEsqueletoVar.anims.play("andarEsqueleto", true);
-      } else if (diferencaPersonagemEsqueletoX < -50) {
-        oEsqueletoVar.setFlip(true, false);
-        oEsqueletoVar.setVelocityX(-100);
+      // Move o boss para o jogador
+      if (diferencaPersonagemBossX > 50) {
+        oBossVar.setFlip(false, false);
+        oBossVar.setVelocityX(oBoss.velocidade);
+        oBossVar.anims.play("andarBoss", true);
+      } else if (diferencaPersonagemBossX < -50) {
+        oBossVar.setFlip(true, false);
+        oBossVar.setVelocityX(-oBoss.velocidade);
       }
 
       // Se o esquleto estar movendo, tocar animacao
-      if (oEsqueletoVar.body.touching.down) {
-        if (oEsqueletoVar.body.velocity.x !== 0) {
-          oEsqueletoVar.anims.play("andarEsqueleto", true);
+      if (oBossVar.body.touching.down) {
+        if (oBossVar.body.velocity.x !== 0) {
+          oBossVar.anims.play("andarBoss", true);
         }
       }
 
-      // Logica para ver se o esqueleto pode pular ou nao
-      if (oEsqueletoVar.body.touching.down) {
-        oEsqueleto.podePular = true;
+      // Logica para ver se o boss pode pular ou nao
+      if (oBossVar.body.touching.down) {
+        oBoss.podePular = true;
       } else {
-        oEsqueleto.podePular = false;
-      }
-
-      // Se o esqueleto tocar em uma parede, ele chama a funcao de pulo para verificar se ele pode pular
-      if (
-        oEsqueletoVar.body.touching.left ||
-        oEsqueletoVar.body.touching.right
-      ) {
-        this.puloEsqueleto(oEsqueleto, oEsqueletoVar);
+        oBoss.podePular = false;
       }
     }
   }
 
-  esqueletoAnimacaoUpdate(oEsqueletoVar, oEsqueleto, anim, frame) {
-    if (anim.key === "ataqueEsqueleto") {
-      oEsqueletoVar.setSize(145, tamanhoNormalEsqueleto[1]);
-
+  bossAnimacaoUpdate(oBossVar, oBoss, anim, frame) {
+    if (anim.key === "ataqueBoss1") {
       // Verifica se o frame é um frame de ataque
-      if (oEsqueleto.FRAMES_ATAQUE.includes(frame.frame.name)) {
-        oEsqueleto.danoAtualEsqueleto = oEsqueleto.DANO;
+      if (oBoss.FRAMES_ATAQUE_1.includes(frame.frame.name)) {
+        oBoss.danoAtual = oBoss.DANO_1;
       } else {
-        oEsqueleto.danoAtualEsqueleto = 0;
+        oBoss.danoAtual = 0;
+      }
+
+      return;
+    } else if (anim.key === "ataqueBoss2") {
+      // Verifica se o frame é um frame de ataque
+      if (oBoss.FRAMES_ATAQUE_2.includes(frame.frame.name)) {
+        oBoss.danoAtual = oBoss.DANO_2;
+      } else {
+        oBoss.danoAtual = 0;
+      }
+
+      return;
+    } else if (anim.key === "ataqueBoss3") {
+      // Verifica se o frame é um frame de ataque
+      if (oBoss.FRAMES_ATAQUE_3.includes(frame.frame.name)) {
+        oBoss.danoAtual = oBoss.DANO_3;
+      } else {
+        oBoss.danoAtual = 0;
       }
 
       return;
     }
-    oEsqueletoVar.setSize(tamanhoNormalEsqueleto[0], tamanhoNormalEsqueleto[1]);
+
+    oBossVar.setSize(tamanhoNormalBoss[0], tamanhoNormalBoss[1]);
   }
 
-  esqueletoAnimacaoComecada(oEsqueletoVar, anim) {
-    // Ve se o esqueleto comecou o ataque
-    if (anim.key === "ataqueEsqueleto") {
-      oEsqueletoVar.setSize(145, tamanhoNormalEsqueleto[1]);
+  bossAnimacaoComecada(oBossVar, anim) {
+    if (anim.key === "ataqueBoss1") {
+      oBossVar.setSize(170, 120);
+      oBossVar.setOffset(0, 70);
+      return;
+    } else if (anim.key === "ataqueBoss2") {
+      oBossVar.setSize(240, 155);
+      oBossVar.setOffset(0, 70);
       return;
     }
-    oEsqueletoVar.setSize(tamanhoNormalEsqueleto[0], tamanhoNormalEsqueleto[1]);
+    if (anim.key === "ataqueBoss3") {
+      oBossVar.setSize(265, 205);
+      oBossVar.setOffset(0, 70);
+      return;
+    }
+    oBossVar.setSize(tamanhoNormalBoss[0], tamanhoNormalBoss[1]);
   }
 
-  esqueletoAnimacaoTerminada(oEsqueleto, oEsqueletoVar, anim) {
-    // Ve se o esqueleto levou hit
-    if (anim.key === "hitEsqueleto") {
+  bossAnimacaoTerminada(oBoss, oBossVar, anim) {
+    // Ve se o boss levou hit
+    if (anim.key === "hitBoss") {
       // Ve se o esqueleto morreu
-      if (oEsqueleto.vidaAtual <= 0) {
-        oEsqueleto.esqueletoJaTaMorto = true;
-        oEsqueletoVar.anims.play("morteEsqueleto", false);
+      if (oBoss.vidaAtual <= 0) {
+        oBoss.bossJaTaMorto = true;
+        oBossVar.anims.play("morteBoss", false);
         return;
       }
 
-      oEsqueleto.coolDownAtaque = false;
-      oEsqueleto.podeDarDano = false;
-      oEsqueleto.danoAtualEsqueleto = 0;
+      oBoss.coolDownAtaque = false;
+      oBoss.podeDarDano = false;
+      oBoss.danoAtual = 0;
 
-      oEsqueleto.podeMover = true;
-      oEsqueleto.podePular = true;
-      oEsqueletoVar.anims.play("normalEsqueleto", true);
-      // respawn e morte do esqueleto se o esqueleto tocar a animacao de morte
-    } else if (anim.key === "morteEsqueleto") {
+      oBoss.podeMover = true;
+      oBoss.podePular = true;
+      oBossVar.anims.play("normalBoss", true);
+      // respawn e morte do boss se o boss tocar a animacao de morte
+    } else if (anim.key === "morteBoss") {
       // Respawn aqui em baixo
-      this.killEsqueleto(oEsqueleto, oEsqueletoVar);
-      setTimeout(() => {
-        this.respawnEsqueleto(oEsqueleto, oEsqueletoVar);
-      }, 8000);
-    } else if (anim.key === "ataqueEsqueleto") {
-      if (oEsqueleto.esqueletoJaTaMorto === true) {
-        this.killEsqueleto(oEsqueleto, oEsqueletoVar);
-        setTimeout(() => {
-          this.respawnEsqueleto(oEsqueleto, oEsqueletoVar);
-        }, 8000);
+      this.killBoss(oBoss, oBossVar);
+    } else if (
+      anim.key === "ataqueBoss3" ||
+      anim.key === "ataqueBoss2" ||
+      anim.key === "ataqueBoss1"
+    ) {
+      console.log('combo: ' + oBoss.combo)
+
+      if (oBoss.bossJaTaMorto === true ||  oBoss.vidaAtual <= 0) {
+        oBoss.bossJaTaMorto = true;
+        oBossVar.anims.play("morteBoss", false);
         return;
       }
 
-      oEsqueleto.podeDarDano = false;
-      oEsqueleto.danoAtualEsqueleto = 0;
+      if (anim.key === "ataqueBoss1" && oBoss.combo >= 2) {
+        setTimeout(() => {
+          oBossVar.anims.play("ataqueBoss2", true);
+        }, 50)
+        return;
+      } else if (anim.key === "ataqueBoss2" && oBoss.combo >= 3) {
+        setTimeout(() => {
+          oBossVar.anims.play("ataqueBoss3", true);
+        }, 50)
+        return;
+      }
+    
 
-      oEsqueleto.podeMover = true;
-      oEsqueleto.podePular = true;
-      oEsqueletoVar.anims.play("normalEsqueleto", true);
+      oBoss.podeSerStunado = true;
+
       setTimeout(() => {
-        oEsqueleto.coolDownAtaque = false;
-      }, 2000);
+        oBoss.podeDarDano = false;
+        oBoss.danoAtual = 0;
+  
+        oBoss.podeMover = true;
+        oBoss.podePular = true;
+        oBossVar.anims.play("normalBoss", true);
+        setTimeout(() => {
+          oBoss.coolDownAtaque = false;
+        }, 3000);
+      }, 50)
     }
   }
 
-  killEsqueleto(oEsqueleto, oEsqueletoVar) {
-    oEsqueleto.podeMover = false;
-    oEsqueletoVar.setVisible(false);
-    oEsqueletoVar.setActive(false);
-    oEsqueletoVar.disableBody(true, true);
+  killBoss(oBoss, oBossVar) {
+    oBoss.podeMover = false;
+    oBossVar.setActive(false);
 
-    caveiras++;
+    caveiras += 20;
+    localStorage.setItem('Caveiras', caveiras)
     caveirasImagem.setVisible(true);
     caveirasTexto.setText("(x" + caveiras + ")");
   }
 
-  respawnEsqueleto(oEsqueleto, oEsqueletoVar) {
-    oEsqueletoVar.enableBody(
-      true,
-      oEsqueleto.respawnPos[0],
-      oEsqueleto.respawnPos[1],
-      true,
-      true
-    );
-    oEsqueletoVar.setVisible(true);
-    oEsqueletoVar.setActive(true);
-    oEsqueletoVar.anims.play("normalEsqueleto", true);
-
-    oEsqueleto.vidaAtual = oEsqueleto.VIDA_MAXIMA;
-    oEsqueleto.podeMover = true;
-    oEsqueleto.esqueletoJaTaMorto = false;
-    oEsqueleto.coolDownAtaque = false;
-  }
-
-  // Logica para ver se o esqueleto deveria pular ou nao
-  puloEsqueleto(oEsqueleto, oEsqueletoVar) {
-    if (oEsqueleto.podePular === false) {
+  ataqueBoss(oBoss, oBossVar) {
+    if (oBoss.coolDownAtaque === true) {
       return;
     }
-    if (oEsqueleto.pertoParaAtaque === true) {
+    if (oBoss.vidaAtual <= 0) {
       return;
     }
 
-    // bem que phaser podia ter pathfinding...
+    oBoss.combo = Math.floor(Math.random() * 3) + 1;
+    console.log(oBoss.combo)
 
-    oEsqueletoVar.setVelocityY(alturaPulo);
-    oEsqueleto.podePular = false;
-  }
+    oBoss.podeSerStunado = false;
 
-  ataqueEsqueleto(oEsqueleto, oEsqueletoVar) {
-    if (oEsqueleto.coolDownAtaque === true) {
-      return;
-    }
-    if (oEsqueleto.vidaAtual <= 0) {
-      return;
-    }
+    oBossVar.anims.play("ataqueBoss1", false);
+    oBossVar.setVelocityX(0);
+    oBoss.podeMover = false;
+    oBoss.podePular = false;
 
-    oEsqueletoVar.anims.play("ataqueEsqueleto", false);
-    oEsqueletoVar.setVelocityX(0);
-    oEsqueleto.podeMover = false;
-    oEsqueleto.podePular = false;
-
-    oEsqueleto.coolDownAtaque = true;
-    oEsqueleto.podeDarDano = true;
+    oBoss.coolDownAtaque = true;
+    oBoss.podeDarDano = true;
   }
 }
 
 // Largura e altura do jogo
-const larguraJogo = 3000;
+const larguraJogo = 2000;
 const alturaJogo = 600;
 
 // Variaveis
 let personagem;
-let esqueleto;
-let esqueleto2;
+let boss;
 
 const tamanhoNormal = [50, 76];
-const tamanhoNormalEsqueleto = [72, 76];
+const tamanhoNormalBoss = [84, 92];
 
 // Frame Data
 
 // Frames que o jogador é invencivel e não toma dano quando ele estiver cooldownRoll
-const framesRolamentoSemDano = [2, 3, 4, 5, 6, 7, 8, 9];
+const framesRolamentoSemDano = [1, 2, 3, 4, 5, 6, 7, 8];
 // Frames que os ataques podem dar dano em inimigos
 const framesAtaqueLeveDano = [2, 3];
 const framesAtaquePesadoDano = [2, 3];
-
-
 
 // Teclas wasd
 let teclaA;
@@ -1200,18 +1099,6 @@ let caveirasTexto;
 // Variaveis de objetos
 var chao;
 var terra;
-
-var arvoreBaixo;
-var arvoreCima;
-var arvoreTransparente;
-
-var galho5_Esquerda;
-var galho4_Esquerda;
-var galho2_Esquerda;
-
-var galho5_Direita;
-var galho4_Direita;
-var galho2_Direita;
 
 // Variaveis do personagem
 var pode_Pular = true;
@@ -1234,7 +1121,7 @@ let energiaUI_Largura = PERSONAGEM_ENERGIA_MAXIMA;
 let personagemNaoTomaDano = false;
 
 const DANO_LEVE = 10;
-const DANO_PESADO = 25;
+const DANO_PESADO = 30;
 
 const ENERGIA_ATAQUE_LEVE = 20;
 const ENERGIA_ATAQUE_PESADO = 35;
@@ -1244,14 +1131,10 @@ let dano = 0;
 
 let personagemX;
 
-const personagemSpawn = [100, alturaJogo / 1.5];
+const personagemSpawn = [20, alturaJogo / 1.5];
 
-let diferencaPersonagemEsqueletoX = 0;
-let caveiras = 0;
+let diferencaPersonagemBossX = 0;
+
+let caveiras = Number(localStorage.getItem('Caveiras'))
 
 let cooldownHeal = false;
-
-// Variaveis demonio
-
-// TODO deixar o esqueleto em um model para eu conseguir adicionar varios esqueletos
-// TODO fazer o menu

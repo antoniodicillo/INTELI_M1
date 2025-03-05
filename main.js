@@ -12,7 +12,11 @@ class BootScene extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start("Menu");
+    if(!localStorage.getItem("Caveiras")) {
+      localStorage.setItem('Caveiras',0)
+    }   
+
+    this.scene.start("Boss");
     this.scene.stop("boot");
   }
 }
@@ -34,7 +38,7 @@ const config = {
     default: "arcade",
     arcade: {
       gravity: { y: 600 },
-      debug: false,
+      debug: true,
     },
   },
 

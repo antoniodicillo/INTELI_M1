@@ -300,12 +300,12 @@ export class Jogo extends Phaser.Scene {
     // Adicionar fisica ao inimigo
     esqueleto = this.physics.add.sprite(64, 0, "esqueleto_normal");
     esqueleto.setCollideWorldBounds(true);
-    esqueleto.setPosition(400, 300);
+    esqueleto.setPosition(1200, 300);
     esqueleto.body.pushable = false;
 
     esqueleto2 = this.physics.add.sprite(64, 0, "esqueleto_normal");
     esqueleto2.setCollideWorldBounds(true);
-    esqueleto2.setPosition(100, 300);
+    esqueleto2.setPosition(1400, 300);
     esqueleto2.body.pushable = false;
 
     this.add.image(larguraJogo / 1.8, alturaJogo / 1.3, "pedra1");
@@ -663,7 +663,7 @@ export class Jogo extends Phaser.Scene {
 
     // UI das caveiras coletadas
     caveirasImagem = this.add.image(30, 90, "caveiras").setScale(0.25);
-    caveirasTexto = this.add.text(50, 90, "(x0)", {
+    caveirasTexto = this.add.text(50, 90, "(x"+caveiras+")", {
       fontSize: "14px",
       fill: "#ffffff",
     });
@@ -720,7 +720,7 @@ export class Jogo extends Phaser.Scene {
 
   update() {
     // god mode
-    personagemNaoTomaDano = true;
+    // personagemNaoTomaDano = true;
 
     // Logica do personagem
     if (stunJogador === false && cooldownRoll === false) {
@@ -787,7 +787,8 @@ export class Jogo extends Phaser.Scene {
             }, 1000);
 
             caveiras--;
-            personagemVidaAtual += 10;
+            localStorage.setItem("Caveiras",caveiras)
+            personagemVidaAtual += 50;
             personagemVidaAtual = Math.min(
               personagemVidaAtual,
               PERSONAGEM_VIDA_MAXIMA
@@ -873,14 +874,16 @@ export class Jogo extends Phaser.Scene {
             }
           }, 50);
         }
-      }, 1000);
+      }, 500);
     }
   }
 
   // Funcao da funcao de update ui para
   updateDaUi(valorUI, larguraUI, UI, textoUI, cor, posicao) {
     textoUI.setText(valorUI);
+    console.log(valorUI,larguraUI)
 
+    // destruir a otimização
     while (valorUI < larguraUI) {
       larguraUI--;
       UI.clear();
@@ -889,10 +892,18 @@ export class Jogo extends Phaser.Scene {
     }
 
     while (valorUI > larguraUI) {
+      console.log(valorUI, larguraUI);
       larguraUI++;
       UI.clear();
       UI.fillStyle(cor, 1);
       UI.fillRect(0, posicao, larguraUI, 15);
+    }
+
+    if(valorUI === larguraUI) {
+      UI.clear();
+      UI.fillStyle(cor, 1);
+      UI.fillRect(0, posicao, larguraUI, 15);
+      return;
     }
   }
 
@@ -1132,6 +1143,7 @@ export class Jogo extends Phaser.Scene {
     oEsqueletoVar.disableBody(true, true);
 
     caveiras++;
+    localStorage.setItem("Caveiras",caveiras)
     caveirasImagem.setVisible(true);
     caveirasTexto.setText("(x" + caveiras + ")");
   }
@@ -1251,8 +1263,8 @@ let personagemEnergiaAtual = 100;
 const PERSONAGEM_VIDA_MAXIMA = personagemVidaAtual;
 const PERSONAGEM_ENERGIA_MAXIMA = personagemEnergiaAtual;
 
-let vidaUI_Largura = PERSONAGEM_VIDA_MAXIMA;
-let energiaUI_Largura = PERSONAGEM_ENERGIA_MAXIMA;
+let vidaUI_Largura = personagemVidaAtual;
+let energiaUI_Largura = personagemEnergiaAtual;
 
 let personagemNaoTomaDano = false;
 
@@ -1270,7 +1282,8 @@ let personagemX;
 const personagemSpawn = [20, alturaJogo / 1.5];
 
 let diferencaPersonagemEsqueletoX = 0;
-let caveiras = 0;
+
+let caveiras = Number(localStorage.getItem('Caveiras'))
 
 let cooldownHeal = false;
 
