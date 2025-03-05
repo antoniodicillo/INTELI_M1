@@ -6,9 +6,9 @@ https://antoniodicillo.github.io/INTELI_M1/
 
 2. Contexto: 
 
-O jogo se passa na idade merdieval em uma floresta chamada "Blighted Woods" onde ocorreu uma grande batalha entre dois reinos que resultou em milhares de mortos, que foram enterrados na própria floresta. Desde então, há rumores que ela é almodiçoada, pois os que se aventuram para lá nunca voltaram para contar a historia. 
+O jogo se passa por volta do ano 900, na floresta "Blighted Forest" - local que testemunhou uma grande batalha entre dois reinos. O conflito deixou milhares de mortos, que foram enterrados na própria floresta. Desde então, correm rumores de que o local é amaldiçoado, e ninguém tem coragem de adentrá-lo, pois aqueles que ousam entrar nunca mais retornam para contar suas histórias.
 
-Sua missão como um cavaleiro é de regastar um soldado que desapareceu na floresta. 
+Sua missão como cavaleiro é resgatar um soldado desaparecido que foi enviado para investigar os mistérios da floresta assombrada.
 
 3. Controles: 
 A - Mover para esquerda
@@ -25,6 +25,6 @@ Shift + M1 (Mouse click) - Ataque Pesado
 
 5. Link da versão jogável (GitHub Pages): https://antoniodicillo.github.io/INTELI_M1/
 
-6. Dúvidas, dificuldades ou comentários?
+6. Dúvidas, dificuldades ou comentários? ❌
  
 

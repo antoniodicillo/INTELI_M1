@@ -23,7 +23,7 @@ export class Menu extends Phaser.Scene {
     this.add.image(x, y /2, "backgroundMenu").setOrigin(0.5,0.5);
 
     this.textoPrincipal = this.add
-      .text(x, y / 8, "The Blighted Forest", {
+      .text(x, y / 8, "The Blighted Woods", {
         fontSize: "48px",
         fill: "#ffffff",
       })
