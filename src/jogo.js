@@ -655,7 +655,7 @@ export class Jogo extends Phaser.Scene {
     });
 
     this.physics.add.overlap(personagem, this.paredeBoss, () => {
-      this.scene.start("Boss");
+      this.scene.start("BossDialogo");
       this.scene.stop("Jogo");
     });
 

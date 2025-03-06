@@ -566,7 +566,7 @@ export class Boss extends Phaser.Scene {
     this.bossVidaUI.fillStyle(0xba1f11, 1);
     this.bossVidaUI.fillRect(325, 100, this.larguraVidaBoss, 15);
 
-    this.bossVidaName = this.add.text(325, 80, "O soldado perdido", {
+    this.bossVidaName = this.add.text(325, 80, "Garrick, A Lâmina do Céu Partido", {
       fontSize: "14px",
       fill: "#ffffff",
     });
