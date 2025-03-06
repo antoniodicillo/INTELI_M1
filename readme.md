@@ -8,7 +8,7 @@ https://antoniodicillo.github.io/INTELI_M1/
 
 O jogo se passa por volta do ano 900, na floresta "Blighted Woods" - local que testemunhou uma grande batalha entre dois reinos. O conflito deixou milhares de mortos, que foram enterrados na própria floresta. Desde então, correm rumores de que o local é amaldiçoado, e ninguém tem coragem de adentrá-lo, pois aqueles que ousam entrar nunca mais retornam para contar suas histórias.
 
-Você, um jovem cavaleiro tem a missão de capturar um soldado localizado na Blighted Woods.
+O protagonista é um cavaleiro que tem a missão de capturar um soldado desertor, localizado na Blighted Woods.
 
 3. Controles: 
 A - Mover para esquerda

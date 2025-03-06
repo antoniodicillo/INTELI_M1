@@ -37,8 +37,7 @@ export class Menu extends Phaser.Scene {
       this.textoJogar.setTexture("jogar");
     });
     this.textoJogar.on("pointerdown", () => {
-      this.scene.start("Jogo");
-      this.scene.stop("Menu");
+      this.introducao();
     });
 
     this.textoControles = this.add
@@ -68,6 +67,87 @@ export class Menu extends Phaser.Scene {
     this.scene.start("Creditos");
     this.scene.stop("Menu");
   });
+  }
+
+  introducao() {
+    this.textoCreditos.setVisible(false).setActive(false);
+    this.textoControles.setVisible(false).setActive(false);
+    this.textoPrincipal.setVisible(false).setActive(false);
+    this.textoJogar.setVisible(false).setActive(false);
+
+    const x = this.cameras.main.width / 2;
+    const y = this.cameras.main.height;
+
+
+    setTimeout(() => {
+      this.texto1 = this.add
+      .text(50, 50, "", {
+        fontSize: "20px",
+        fill: "#ffffff",
+      })
+      .setOrigin(0.5, 0.5);
+
+      this.texto2 = this.add
+      .text(50, 100, "", {
+        fontSize: "20px",
+        fill: "#ffffff",
+      })
+      .setOrigin(0.5, 0.5);
+
+      this.texto3 = this.add
+      .text(50, 150, "", {
+        fontSize: "20px",
+        fill: "#ffffff",
+      })
+      .setOrigin(0.5, 0.5);
+
+      this.texto4 = this.add
+      .text(50, 200, "", {
+        fontSize: "20px",
+        fill: "#ffffff",
+      })
+      .setOrigin(0.5, 0.5);
+
+      this.texto5 = this.add
+      .text(50, 400, "", {
+        fontSize: "34px",
+        fill: "#ffffff",
+      }).setOrigin(0.5, 0.5);
+
+      this.efeitoTypewrite("Voce é um cavaleiro.", this.texto1)
+      
+      setTimeout(() => {
+        this.efeitoTypewrite("Sua missão é capturar um desertor do seu reino.", this.texto2)
+      }, 2500)
+      setTimeout(() => {
+        this.efeitoTypewrite('Ele está localizado na floresta Blighted Woods.', this.texto3)
+      }, 7000)
+      setTimeout(() => {
+        this.efeitoTypewrite("Boa sorte.", this.texto4)
+      }, 13000)
+      setTimeout(() => {
+        this.efeitoTypewrite("Clique na tela para começar.", this.texto5)
+      }, 16000)
+      this.input.on("pointerdown", () => {
+        this.scene.start("Jogo");
+        this.scene.stop("Menu");
+      });
+    },500)
+  }
+
+  efeitoTypewrite(texto, objeto) {
+    const length = texto.length;
+    const xAntigo = objeto.x;
+    let i = 0;
+    this.time.addEvent({
+      callback: () => {
+        objeto.text += texto[i];
+        objeto.x = xAntigo + objeto.width / 2;
+        ++i;
+      },
+      repeat: length - 1,
+      delay: 90,
+    });
   }
 }
 

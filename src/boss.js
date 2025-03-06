@@ -32,6 +32,18 @@ export class Boss extends Phaser.Scene {
 
       velocidade: 250,
     };
+    // Reseta variaveis
+    stunJogador = false;
+    personagemVidaAtual = PERSONAGEM_VIDA_MAXIMA;
+    personagemEnergiaAtual = PERSONAGEM_ENERGIA_MAXIMA;
+    pode_Pular = true;
+    cooldownRoll = false;
+    vidaUI_Largura = personagemVidaAtual;
+    energiaUI_Largura = personagemEnergiaAtual;
+    personagemNaoTomaDano = false;
+    dano = 0;
+    personagemX = 0;
+    cooldownHeal = false;
   }
 
   preload() {
@@ -1000,7 +1012,6 @@ export class Boss extends Phaser.Scene {
         return;
       }
 
-      oBoss.coolDownAtaque = false;
       oBoss.podeDarDano = false;
       oBoss.danoAtual = 0;
 
@@ -1026,11 +1037,13 @@ export class Boss extends Phaser.Scene {
 
       if (anim.key === "ataqueBoss1" && oBoss.combo >= 2) {
         setTimeout(() => {
+          oBoss.podeDarDano = true;
           oBossVar.anims.play("ataqueBoss2", true);
         }, 50);
         return;
       } else if (anim.key === "ataqueBoss2" && oBoss.combo >= 3) {
         setTimeout(() => {
+          oBoss.podeDarDano = true;
           oBossVar.anims.play("ataqueBoss3", true);
         }, 50);
         return;
@@ -1047,7 +1060,7 @@ export class Boss extends Phaser.Scene {
         oBossVar.anims.play("normalBoss", true);
         setTimeout(() => {
           oBoss.coolDownAtaque = false;
-        }, 3000);
+        }, 700);
       }, 50);
     }
   }
@@ -1069,7 +1082,7 @@ export class Boss extends Phaser.Scene {
     if (oBoss.vidaAtual <= 0) {
       return;
     }
-    if(oBoss.podeMover === false ) {
+    if (oBoss.podeMover === false) {
       return;
     }
 

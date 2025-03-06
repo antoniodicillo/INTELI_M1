@@ -56,8 +56,6 @@ export class Jogo extends Phaser.Scene {
     personagemEnergiaAtual = PERSONAGEM_ENERGIA_MAXIMA;
     pode_Pular = true;
     cooldownRoll = false;
-    personagemVidaAtual = 20;
-    personagemEnergiaAtual = 100;
     vidaUI_Largura = personagemVidaAtual;
     energiaUI_Largura = personagemEnergiaAtual;
     personagemNaoTomaDano = false;
