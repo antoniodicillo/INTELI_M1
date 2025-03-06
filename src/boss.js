@@ -12,7 +12,7 @@ export class Boss extends Phaser.Scene {
 
       podeLevarHit: true,
       podeMover: true,
-      podePular: true,
+
       pertoParaAtaque: false,
       coolDownAtaque: false,
       bossJaTaMorto: false,
@@ -31,6 +31,7 @@ export class Boss extends Phaser.Scene {
       combo: 0, // 0 - Sem combo, 1 - So o primeiro ataque, 2 - Primeiro e segundo ataque, 3 - Todos os ataques
 
       velocidade: 250,
+      tocouSom: false,
     };
     // Reseta variaveis
     stunJogador = false;
@@ -160,9 +161,28 @@ export class Boss extends Phaser.Scene {
     this.load.image("sairDestaque", "src/assets/SairUnderline.png");
     this.load.image("continuar", "src/assets/Continuar.png");
     this.load.image("continuarDestaque", "src/assets/ContinuarUnderline.png");
+    // Audio
+    this.load.audio("dano_BossSom", "src/assets/audio/bossDano.wav");
+
+    this.load.audio("ataque_leveSom", "src/assets/audio/ataque_leve.wav");
+    this.load.audio("ataque_pesadoSom", "src/assets/audio/ataque_pesado.wav");
+    this.load.audio("ataque_esqueletoSom", "src/assets/audio/esqueleto_ataque.wav");
+
+    this.load.audio("thunderClapLight", "src/assets/audio/thunderClapLight.wav");
+    this.load.audio("thunderClap", "src/assets/audio/thunderClap.wav");
+    this.load.audio("thunderClapHeavy", "src/assets/audio/thunderClapHeavy.wav");
   }
 
   create() {
+    
+    const ataque_leveSom = this.sound.add("ataque_leveSom");
+    const ataque_PesadoSom = this.sound.add("ataque_pesadoSom")
+    dano_BossSom = this.sound.add("dano_BossSom")
+
+    thunderClapLight = this.sound.add("thunderClapLight");
+    thunderClap = this.sound.add("thunderClap");
+    thunderClapHeavy = this.sound.add("thunderClapHeavy");
+
     // Adicionar imagens e sprites no jogo
     this.add.image(larguraJogo / 2, alturaJogo / 2, "background");
 
@@ -451,12 +471,20 @@ export class Boss extends Phaser.Scene {
         // Se o frame corresponder com o frame de ataque, seta a variavel dano para o dano do ataque
       } else if (anim.key === "ataque_Leve") {
         if (framesAtaqueLeveDano.includes(frame.frame.name)) {
+          if (personagemTocouSom === false) {
+            personagemTocouSom = true;
+            ataque_leveSom.play();
+          }
           dano = DANO_LEVE;
         } else {
           dano = 0;
         }
       } else if (anim.key === "ataque_Pesado") {
         if (framesAtaquePesadoDano.includes(frame.frame.name)) {
+          if (personagemTocouSom === false) {
+            personagemTocouSom = true;
+            ataque_PesadoSom.play();
+          }
           dano = DANO_PESADO;
         } else {
           dano = 0;
@@ -469,16 +497,19 @@ export class Boss extends Phaser.Scene {
       if (anim.key === "ataque_Leve") {
         this.boss.podeLevarHit = true;
         stunJogador = false;
+        personagemTocouSom = false;
         dano = 0;
       } else if (anim.key === "ataque_Pesado") {
         this.boss.podeLevarHit = true;
         stunJogador = false;
+        personagemTocouSom = false;
         dano = 0;
       } else if (anim.key === "rolamento") {
         personagem.setVelocityX(0);
         cooldownRoll = false;
       } else if (anim.key === "hit") {
         personagemNaoTomaDano = false;
+        personagemTocouSom = false;
         stunJogador = false;
         cooldownRoll = false;
       }
@@ -566,10 +597,15 @@ export class Boss extends Phaser.Scene {
     this.bossVidaUI.fillStyle(0xba1f11, 1);
     this.bossVidaUI.fillRect(325, 100, this.larguraVidaBoss, 15);
 
-    this.bossVidaName = this.add.text(325, 80, "Garrick, Lâmina do Céu Partido", {
-      fontSize: "14px",
-      fill: "#ffffff",
-    });
+    this.bossVidaName = this.add.text(
+      325,
+      80,
+      "Garrick, Lâmina do Céu Partido",
+      {
+        fontSize: "14px",
+        fill: "#ffffff",
+      }
+    );
     this.bossVidaText = this.add.text(
       this.larguraVidaBoss + 325,
       100,
@@ -832,6 +868,8 @@ export class Boss extends Phaser.Scene {
 
         oBoss.podeDarDano = false;
 
+        this.updateUi("vida");
+
         if (personagemVidaAtual == 0) {
           personagem.anims.play("morte", false);
           personagem.podeLevarHit = false;
@@ -842,16 +880,14 @@ export class Boss extends Phaser.Scene {
           personagem.setVelocityY(200);
           setTimeout(() => {
             this.gameOver();
-          }, 800);
+          }, 1200);
           return;
         }
-
-        this.updateUi("vida");
 
         personagem.setVelocity(0);
 
         stunJogador = true;
-        personagem.anims.play("hit", true);
+        personagem.anims.play("hit", true); 
       }
       return;
     }
@@ -870,6 +906,7 @@ export class Boss extends Phaser.Scene {
       oBoss.podeMover = false;
       oBoss.podeLevarHit = false;
 
+      dano_BossSom.play();
       oBossVar.anims.play("hitBoss", false);
     } else {
       oBoss.vidaAtual -= dano;
@@ -907,14 +944,14 @@ export class Boss extends Phaser.Scene {
     diferencaPersonagemBossX = personagemX - oBoss.posX;
     // Verifica se o personagem está no alcance do ataque do boss
     if (diferencaPersonagemBossX > 0) {
-      if (diferencaPersonagemBossX <= 100) {
+      if (diferencaPersonagemBossX <= 80) {
         oBoss.pertoParaAtaque = true;
         this.ataqueBoss(oBoss, oBossVar);
       } else {
         oBoss.pertoParaAtaque = false;
       }
     } else {
-      if (diferencaPersonagemBossX >= -100) {
+      if (diferencaPersonagemBossX >= -80) {
         this.ataqueBoss(oBoss, oBossVar);
         oBoss.pertoParaAtaque = true;
       } else {
@@ -942,12 +979,6 @@ export class Boss extends Phaser.Scene {
         }
       }
 
-      // Logica para ver se o boss pode pular ou nao
-      if (oBossVar.body.touching.down) {
-        oBoss.podePular = true;
-      } else {
-        oBoss.podePular = false;
-      }
     }
   }
 
@@ -955,6 +986,10 @@ export class Boss extends Phaser.Scene {
     if (anim.key === "ataqueBoss1") {
       // Verifica se o frame é um frame de ataque
       if (oBoss.FRAMES_ATAQUE_1.includes(frame.frame.name)) {
+        if(oBoss.tocouSom === false) {
+          oBoss.tocouSom = true;
+          thunderClapLight.play()
+        }
         oBoss.danoAtual = oBoss.DANO_1;
       } else {
         oBoss.danoAtual = 0;
@@ -962,6 +997,10 @@ export class Boss extends Phaser.Scene {
 
       return;
     } else if (anim.key === "ataqueBoss2") {
+      if(oBoss.tocouSom === false) {
+        oBoss.tocouSom = true;
+        thunderClap.play();
+      }
       // Verifica se o frame é um frame de ataque
       if (oBoss.FRAMES_ATAQUE_2.includes(frame.frame.name)) {
         oBoss.danoAtual = oBoss.DANO_2;
@@ -971,6 +1010,10 @@ export class Boss extends Phaser.Scene {
 
       return;
     } else if (anim.key === "ataqueBoss3") {
+      if(oBoss.tocouSom === false) {
+        oBoss.tocouSom = true;
+        thunderClapHeavy.play();
+      }
       // Verifica se o frame é um frame de ataque
       if (oBoss.FRAMES_ATAQUE_3.includes(frame.frame.name)) {
         oBoss.danoAtual = oBoss.DANO_3;
@@ -1015,8 +1058,8 @@ export class Boss extends Phaser.Scene {
       oBoss.podeDarDano = false;
       oBoss.danoAtual = 0;
 
+      oBoss.tocouSom = false;
       oBoss.podeMover = true;
-      oBoss.podePular = true;
       oBossVar.anims.play("normalBoss", true);
       // respawn e morte do boss se o boss tocar a animacao de morte
     } else if (anim.key === "morteBoss") {
@@ -1035,6 +1078,7 @@ export class Boss extends Phaser.Scene {
         return;
       }
 
+      oBoss.tocouSom = false;
       if (anim.key === "ataqueBoss1" && oBoss.combo >= 2) {
         setTimeout(() => {
           oBoss.podeDarDano = true;
@@ -1056,7 +1100,6 @@ export class Boss extends Phaser.Scene {
         oBoss.danoAtual = 0;
 
         oBoss.podeMover = true;
-        oBoss.podePular = true;
         oBossVar.anims.play("normalBoss", true);
         setTimeout(() => {
           oBoss.coolDownAtaque = false;
@@ -1094,7 +1137,6 @@ export class Boss extends Phaser.Scene {
     oBossVar.anims.play("ataqueBoss1", false);
     oBossVar.setVelocityX(0);
     oBoss.podeMover = false;
-    oBoss.podePular = false;
 
     oBoss.coolDownAtaque = true;
     oBoss.podeDarDano = true;
@@ -1333,3 +1375,10 @@ let diferencaPersonagemBossX = 0;
 let caveiras = Number(localStorage.getItem("Caveiras"));
 
 let cooldownHeal = false;
+let personagemTocouSom = false;
+
+let thunderClapLight;
+let thunderClap;
+let thunderClapHeavy 
+
+let dano_BossSom;

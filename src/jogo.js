@@ -26,6 +26,7 @@ export class Jogo extends Phaser.Scene {
       respawnTempo: 10000,
 
       velocidade: 150,
+      tocou_somAtaque: false,
     };
 
     this.esqueleto2 = {
@@ -48,6 +49,7 @@ export class Jogo extends Phaser.Scene {
       respawnTempo: 10000,
 
       velocidade: 160,
+      tocou_somAtaque: false,
     };
 
     // Reseta variaveis
@@ -63,6 +65,7 @@ export class Jogo extends Phaser.Scene {
     personagemX = 0;
     diferencaPersonagemEsqueletoX = 0;
     cooldownHeal = false;
+    personagemTocouSom = false;
   }
 
   preload() {
@@ -192,11 +195,22 @@ export class Jogo extends Phaser.Scene {
     this.load.image("sairDestaque", "src/assets/SairUnderline.png");
     this.load.image("continuar", "src/assets/Continuar.png");
     this.load.image("continuarDestaque", "src/assets/ContinuarUnderline.png");
+
+    // Audio
+    this.load.audio("ataque_leveSom", "src/assets/audio/ataque_leve.wav");
+    this.load.audio("ataque_pesadoSom", "src/assets/audio/ataque_pesado.wav");
+    this.load.audio("ataque_esqueletoSom", "src/assets/audio/esqueleto_ataque.wav");
   }
 
   create() {
     cooldownRoll = false;
     stunJogador = false;
+
+    const ataque_leveSom = this.sound.add("ataque_leveSom");
+    const ataque_PesadoSom = this.sound.add("ataque_pesadoSom")
+    
+
+    ataque_esqueletoSom = this.sound.add("ataque_esqueletoSom")
 
     // Adicionar imagens e sprites no jogo
     this.add.image(larguraJogo / 2, alturaJogo / 2, "background");
@@ -610,12 +624,20 @@ export class Jogo extends Phaser.Scene {
         // Se o frame corresponder com o frame de ataque, seta a variavel dano para o dano do ataque
       } else if (anim.key === "ataque_Leve") {
         if (framesAtaqueLeveDano.includes(frame.frame.name)) {
+          if(personagemTocouSom === false) {
+            personagemTocouSom = true;
+            ataque_leveSom.play()
+          }
           dano = DANO_LEVE;
         } else {
           dano = 0;
         }
       } else if (anim.key === "ataque_Pesado") {
         if (framesAtaquePesadoDano.includes(frame.frame.name)) {
+          if(personagemTocouSom === false) {
+            personagemTocouSom = true;
+            ataque_PesadoSom.play()
+          }
           dano = DANO_PESADO;
         } else {
           dano = 0;
@@ -628,11 +650,13 @@ export class Jogo extends Phaser.Scene {
       if (anim.key === "ataque_Leve") {
         this.esqueleto.podeLevarHit = true;
         this.esqueleto2.podeLevarHit = true;
+        personagemTocouSom = false;
         stunJogador = false;
         dano = 0;
       } else if (anim.key === "ataque_Pesado") {
         this.esqueleto.podeLevarHit = true;
         this.esqueleto2.podeLevarHit = true;
+        personagemTocouSom = false;
         stunJogador = false;
         dano = 0;
       } else if (anim.key === "rolamento") {
@@ -640,6 +664,7 @@ export class Jogo extends Phaser.Scene {
         cooldownRoll = false;
       } else if (anim.key === "hit") {
         personagemNaoTomaDano = false;
+        personagemTocouSom = false;
         stunJogador = false;
         cooldownRoll = false;
       }
@@ -992,6 +1017,8 @@ export class Jogo extends Phaser.Scene {
 
         oEsqueleto.podeDarDano = false;
 
+        this.updateUi("vida");
+
         if (personagemVidaAtual == 0) {
           personagem.anims.play("morte", false);
           personagem.podeLevarHit = false;
@@ -1006,7 +1033,6 @@ export class Jogo extends Phaser.Scene {
           return;
         }
 
-        this.updateUi("vida");
 
         personagem.setVelocity(0);
 
@@ -1110,6 +1136,10 @@ export class Jogo extends Phaser.Scene {
     if (anim.key === "ataqueEsqueleto") {
       // Verifica se o frame é um frame de ataque
       if (oEsqueleto.FRAMES_ATAQUE.includes(frame.frame.name)) {
+        if(oEsqueleto.tocou_somAtaque === false) {
+          oEsqueleto.tocou_somAtaque = true;
+          ataque_esqueletoSom.play()
+        }
         oEsqueleto.danoAtualEsqueleto = oEsqueleto.DANO;
       } else {
         oEsqueleto.danoAtualEsqueleto = 0;
@@ -1162,6 +1192,7 @@ export class Jogo extends Phaser.Scene {
         return;
       }
 
+      oEsqueleto.tocou_somAtaque = false;
       oEsqueleto.podeDarDano = false;
       oEsqueleto.danoAtualEsqueleto = 0;
 
@@ -1493,3 +1524,7 @@ let diferencaPersonagemEsqueletoX = 0;
 let caveiras = Number(localStorage.getItem("Caveiras"));
 
 let cooldownHeal = false;
+
+let personagemTocouSom = false;
+
+let ataque_esqueletoSom 
