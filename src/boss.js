@@ -1138,6 +1138,7 @@ export class Boss extends Phaser.Scene {
     this.bossDerotado();
   }
 
+  // O boss tem combo aleatorio, ou seja ele pode atacar 1, 2 ou 3 vezes
   ataqueBoss(oBoss, oBossVar) {
     if (oBoss.coolDownAtaque === true) {
       return;
@@ -1151,6 +1152,7 @@ export class Boss extends Phaser.Scene {
 
     oBoss.combo = Math.floor(Math.random() * 3) + 1;
 
+    // Ele também não pode ser interrompido no seu ataque
     oBoss.podeSerStunado = false;
 
     oBossVar.anims.play("ataqueBoss1", false);

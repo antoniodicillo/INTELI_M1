@@ -6,6 +6,7 @@ export class Jogo extends Phaser.Scene {
   }
 
   init() {
+    // Variaveis dos esqueletos
     this.esqueleto = {
       vidaAtual: 50,
       VIDA_MAXIMA: 50,
@@ -52,7 +53,7 @@ export class Jogo extends Phaser.Scene {
       tocou_somAtaque: false,
     };
 
-    // Reseta variaveis
+    // Reseta variaveis globais 
     stunJogador = false;
     personagemVidaAtual = PERSONAGEM_VIDA_MAXIMA;
     personagemEnergiaAtual = PERSONAGEM_ENERGIA_MAXIMA;
@@ -72,7 +73,7 @@ export class Jogo extends Phaser.Scene {
   }
 
   preload() {
-    // Preload do background paralax
+    // Preload dos negocios
     this.load.image("background", "src/assets/Background.png");
     this.load.image("backgroundGrama", "src/assets/GramaBackground.png");
     this.load.image("backgroundGrama2", "src/assets/Grama.png");
@@ -159,7 +160,6 @@ export class Jogo extends Phaser.Scene {
     });
 
     // Carrega as animações do esqueleto
-
     this.load.spritesheet("esqueleto_normal", "src/assets/Esqueleto_Idle.png", {
       frameWidth: 92,
       frameHeight: 102,
@@ -209,6 +209,9 @@ export class Jogo extends Phaser.Scene {
   }
 
   create() {
+    // So pra ter certeza que o init funcionou 
+    // Porque eu não duvido que o phaser pularia o init porque seria engraçado
+    
     cooldownRoll = false;
     stunJogador = false;
 
@@ -225,46 +228,46 @@ export class Jogo extends Phaser.Scene {
       alturaJogo / 2, // y
       0, // width
       0, // height
-      "bg_arvores1" // name
+      "bg_arvores1" // nome
     );
     this.bg_arvores2 = this.add.tileSprite(
       larguraJogo / 2, // x
       alturaJogo / 2, // y
       0, // width
       0, // height
-      "bg_arvores2" // name
+      "bg_arvores2" // nome
     );
     this.bg_arvores3 = this.add.tileSprite(
       larguraJogo / 2, // x
       alturaJogo / 2, // y
       0, // width
       0, // height
-      "bg_arvores3" // name
+      "bg_arvores3" // nome
     );
     this.bg_arvores4 = this.add.tileSprite(
       larguraJogo / 2, // x
       alturaJogo / 2, // y
       0, // width
       0, // height
-      "bg_arvores4" // name
+      "bg_arvores4" // nome
     );
     this.bg_arvores5 = this.add.tileSprite(
       larguraJogo / 2, // x
       alturaJogo / 2, // y
       0, // width
       0, // height
-      "bg_arvores5" // name
+      "bg_arvores5" // nome
     );
 
     this.arvoreTransparente1 = this.physics.add.staticImage(
-      larguraJogo + 600,
-      alturaJogo - 320,
-      "arvoreTransparente"
+      larguraJogo + 600, // width
+      alturaJogo - 320, // height
+      "arvoreTransparente" // nome
     );
     this.arvoreTransparente2 = this.physics.add.staticImage(
-      larguraJogo + 600,
-      alturaJogo - 384,
-      "arvoreTransparente"
+      larguraJogo + 600, // width
+      alturaJogo - 384, // height
+      "arvoreTransparente" // nome
     );
 
     this.add.image(larguraJogo / 2, alturaJogo / 1.2, "backgroundGrama");
@@ -309,12 +312,14 @@ export class Jogo extends Phaser.Scene {
       "galho5"
     );
 
+    // Esse sprite não tem colisao mas tá aqui, não sei porque eu coloquei ele aqui
     this.pilares = this.add.image(
       larguraJogo / 1.223,
       alturaJogo / 2,
       "pilares"
     );
 
+    // Nem esse tem colisão
     this.add.image(larguraJogo / 1.853, alturaJogo / 1.3, "pedra2");
 
     chao = this.physics.add.staticImage(
@@ -335,13 +340,13 @@ export class Jogo extends Phaser.Scene {
     this.chao2.setSize(0, 10);
     this.chao2.setPosition(larguraJogo / 1.325, alturaJogo - 65);
 
-    // Adicionar fisica ao personagem
+    // Adicionar o personagem e configurar ele
     personagem = this.physics.add.sprite(64, 0, "player_normal");
     personagem.setCollideWorldBounds(true);
     personagem.setPosition(personagemSpawn[0], personagemSpawn[1]);
     personagem.body.pushable = false;
 
-    // Adicionar fisica ao inimigo
+    // Adicionar os esqueletos e configurar eles
     esqueleto = this.physics.add.sprite(64, 0, "esqueleto_normal");
     esqueleto.setCollideWorldBounds(true);
     esqueleto.setPosition(400, 300);
@@ -369,7 +374,7 @@ export class Jogo extends Phaser.Scene {
     this.physics.add.collider(personagem, galho4_Direita);
     this.physics.add.collider(personagem, galho5_Direita);
 
-    // Adiciona colisão aos inimigos
+    // Adiciona colisão aos esqueletos
     this.physics.add.collider(esqueleto, chao);
     this.physics.add.collider(esqueleto, this.chao2);
     this.physics.add.collider(esqueleto, terra);
@@ -403,10 +408,10 @@ export class Jogo extends Phaser.Scene {
     galho4_Direita.setFlip(true, false);
     galho5_Direita.setFlip(true, false);
 
-    // Parede invisivel para avancar de nivel
+    // Parede invisivel para avancar para o boss
     this.paredeBoss = this.physics.add.staticImage(larguraJogo - 5, 300, null);
-    this.paredeBoss.setSize(10, 600); // Set the size of the wall
-    this.paredeBoss.setAlpha(0); // Make the wall invisible
+    this.paredeBoss.setSize(10, 600);
+    this.paredeBoss.setAlpha(0); 
 
     // Registrar teclas do teclado
     teclaA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -650,7 +655,7 @@ export class Jogo extends Phaser.Scene {
       }
     });
 
-    // Seta a variavel stunJogador para false quando a animação termina, e muda o estagio do ataque
+    // Seta algumas variaveis para valores default quando a animação do player termina
     personagem.on("animationcomplete", (anim) => {
       if (anim.key === "ataque_Leve") {
         this.esqueleto.podeLevarHit = true;
@@ -684,6 +689,7 @@ export class Jogo extends Phaser.Scene {
       this.overlapEsqueletoPlayer(personagem, esqueleto2, this.esqueleto2);
     });
 
+    // Progressão para a area do boss
     this.physics.add.overlap(personagem, this.paredeBoss, () => {
       clearInterval(energiaInterval);
 
@@ -769,6 +775,7 @@ export class Jogo extends Phaser.Scene {
       }
     );
 
+    // Faz com que a UI seja fixa na tela independente da camera
     this.backgroundUI.setScrollFactor(0);
     caveirasImagem.setScrollFactor(0);
     caveirasTexto.setScrollFactor(0);
@@ -783,7 +790,7 @@ export class Jogo extends Phaser.Scene {
   }
 
   update() {
-    // god mode
+    // god mode - tire o comentario abaixo para não tomar dano algun no jogo
     // personagemNaoTomaDano = true;
 
     // Logica do personagem
@@ -946,7 +953,7 @@ export class Jogo extends Phaser.Scene {
   updateDaUi(valorUI, larguraUI, UI, textoUI, cor, posicao) {
     textoUI.setText(valorUI);
 
-    // destruir a otimização
+    // While para atualizar a UI de vida ou energia do jogador                                                                                                                                                                                  (destruir a otimização)
     while (valorUI < larguraUI) {
       larguraUI--;
       UI.clear();
@@ -961,6 +968,7 @@ export class Jogo extends Phaser.Scene {
       UI.fillRect(0, posicao, larguraUI, 15);
     }
 
+    // Se o valor for igual ao maximo, deixa a UI cheia
     if (valorUI === larguraUI) {
       UI.clear();
       UI.fillStyle(cor, 1);
@@ -981,6 +989,7 @@ export class Jogo extends Phaser.Scene {
       return;
     }
 
+    // Logica para ver se o ataque é pesado ou não
     if (teclaShift.isDown) {
       if (personagemEnergiaAtual < ENERGIA_ATAQUE_PESADO) {
         this.naoTenhoEnergiaUi();
@@ -1011,6 +1020,7 @@ export class Jogo extends Phaser.Scene {
       return;
     }
     if (dano === 0) {
+
       // Logica para ver se foi o esqueleto que deu o hit no jogador
       if (
         oEsqueleto.danoAtualEsqueleto > 0 &&
@@ -1047,6 +1057,9 @@ export class Jogo extends Phaser.Scene {
       }
       return;
     }
+
+    // Logica quando o esqueleto leva hit
+
     if (oEsqueleto.vidaAtual <= 0) {
       oEsqueleto.esqueletoJaTaMorto = true;
       return;
@@ -1062,7 +1075,9 @@ export class Jogo extends Phaser.Scene {
 
     oEsqueletoVar.anims.play("hitEsqueleto", false);
 
-    // Para o frame para dar a sensação de hit
+    // Para o frame por pouco tempo para dar a sensação de hit
+    // Usado em jogos de luta então copiei a idea...
+
     this.scene.pause();
     if (dano < 15) {
       setTimeout(() => {
@@ -1075,7 +1090,6 @@ export class Jogo extends Phaser.Scene {
     }
   }
 
-  // ----------------------------------------------
   // Funções esqueleto
 
   updateLogicEsqueleto(oEsqueleto, oEsqueletoVar) {
@@ -1211,6 +1225,8 @@ export class Jogo extends Phaser.Scene {
     }
   }
 
+  // Auto explicativo
+
   killEsqueleto(oEsqueleto, oEsqueletoVar) {
     oEsqueleto.podeMover = false;
     oEsqueletoVar.setVisible(false);
@@ -1222,6 +1238,8 @@ export class Jogo extends Phaser.Scene {
     caveirasImagem.setVisible(true);
     caveirasTexto.setText("(x" + caveiras + ")");
   }
+
+  // Também auto explicativo
 
   respawnEsqueleto(oEsqueleto, oEsqueletoVar) {
     oEsqueletoVar.enableBody(
@@ -1256,6 +1274,7 @@ export class Jogo extends Phaser.Scene {
     oEsqueleto.podePular = false;
   }
 
+  // Logica do ataque do esqueleto
   ataqueEsqueleto(oEsqueleto, oEsqueletoVar) {
     if (oEsqueleto.coolDownAtaque === true) {
       return;
@@ -1276,6 +1295,7 @@ export class Jogo extends Phaser.Scene {
     oEsqueleto.podeDarDano = true;
   }
 
+  // Quando o player morre, executa o abaixo
   gameOver() {
     // "Desativa os esqueletos"
     esqueleto.anims.play("normalEsqueleto", true);
@@ -1457,6 +1477,7 @@ export class Jogo extends Phaser.Scene {
     });
   }
 
+  // Quando a cena é desligada, o abaixo é executado 
   shutdown() {
     clearInterval(energiaInterval);
     stunJogador = false;
@@ -1493,6 +1514,8 @@ export class Jogo extends Phaser.Scene {
     super.shutdown();
   }
 }
+
+// Variaveis globais que não precisavam ser globais...
 
 // Largura e altura do jogo
 const larguraJogo = 3000;

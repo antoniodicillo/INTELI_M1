@@ -4,6 +4,7 @@ export class Menu extends Phaser.Scene {
   }
 
   preload() {
+    // Load do background e botoes
     this.load.image("backgroundMenu", "src/assets/BackgroundMenu.png");
 
     this.load.image("jogar", "src/assets/Jogar.png");
@@ -28,6 +29,8 @@ export class Menu extends Phaser.Scene {
         fill: "#ffffff",
       })
       .setOrigin(0.5, 0.5);
+
+    // Botões e o efeito de destaque no hover 
 
     this.textoJogar = this.add.image(x, y / 2, "jogar").setInteractive();
     this.textoJogar.on("pointerover", () => {
@@ -70,12 +73,16 @@ export class Menu extends Phaser.Scene {
   }
 
   introducao() {
+
+    // Mini introdução do jogo mostrando a lore 
+
+    // Desativa os componentes do menu
     this.textoCreditos.setVisible(false).setActive(false);
     this.textoControles.setVisible(false).setActive(false);
     this.textoPrincipal.setVisible(false).setActive(false);
     this.textoJogar.setVisible(false).setActive(false);
 
-
+    // Adiciona os textos da introdução depois de um delay
     this.time.delayedCall(500,() => {
       this.texto1 = this.add
         .text(50, 50, "", {
@@ -112,6 +119,7 @@ export class Menu extends Phaser.Scene {
         })
         .setOrigin(0.5, 0.5);
 
+      // Aqui está o que está escrito nos textos, de acordo com a funcao para dar um efeito de typewrite
       this.efeitoTypewrite("Voce é um cavaleiro.", this.texto1);
 
       this.time.delayedCall(2500, () => {
@@ -132,6 +140,8 @@ export class Menu extends Phaser.Scene {
       this.time.delayedCall(16000, () => {
         this.efeitoTypewrite("Clique na tela para começar.", this.texto5);
       });
+
+      // Quando o jogador clica na tela, inicia o jogo independente se o texto foi concluido
 
       this.input.on("pointerdown", () => {
         this.textoCreditos.off("pointerdown");
@@ -155,6 +165,7 @@ export class Menu extends Phaser.Scene {
     });
   }
 
+  // Função para cada letra ser adicionada com um delay
   efeitoTypewrite(texto, objeto) {
     const length = texto.length;
     const xAntigo = objeto.x;
@@ -184,6 +195,10 @@ export class Creditos extends Phaser.Scene {
   }
 
   create() {
+
+    // Load dos textos dos creditos. 
+    // Não tem muita coisa interessante aqui então se quiser pode pular esse parte
+
     const x = this.cameras.main.width / 2;
     const y = this.cameras.main.height;
 
@@ -260,14 +275,20 @@ export class Creditos extends Phaser.Scene {
         fill: "#ffffff",
       })
       .setOrigin(0.5, 0.5);
+    
+    // Botao para voltar ao menu
 
     this.textoVoltar = this.add.image(x, y / 1.05, "voltar").setInteractive();
+
+    // Efeito de hover do botao de voltar
     this.textoVoltar.on("pointerover", () => {
       this.textoVoltar.setTexture("voltarDestaque");
     });
     this.textoVoltar.on("pointerout", () => {
       this.textoVoltar.setTexture("voltar");
     });
+
+    // Quando clicar no botao, volta ao menu e tira os listeners no proprio botao
     this.textoVoltar.on("pointerdown", () => {
       this.textoVoltar.off("pointerdown");
       this.textoVoltar.off("pointerout");
@@ -294,6 +315,7 @@ export class Controles extends Phaser.Scene {
     this.load.image("mouseControles", "src/assets/MouseControles.png");
   }
   create() {
+    // So carrega uma imagem e posiciona ela...
     const x = this.cameras.main.width / 2;
     const y = this.cameras.main.height;
 
@@ -307,12 +329,16 @@ export class Controles extends Phaser.Scene {
     this.textoVoltar = this.add
       .image(x / 4, y / 1.05, "voltar")
       .setInteractive();
+
+    // Efeito de hover do botao de voltar
     this.textoVoltar.on("pointerover", () => {
       this.textoVoltar.setTexture("voltarDestaque");
     });
     this.textoVoltar.on("pointerout", () => {
       this.textoVoltar.setTexture("voltar");
     });
+
+    // Quando clicar no botao, volta ao menu e tira os listeners no proprio botao (mesma coisa do de cima)
     this.textoVoltar.on("pointerdown", () => {
       this.textoVoltar.off("pointerdown");
       this.textoVoltar.off("pointerout");

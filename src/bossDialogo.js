@@ -243,6 +243,7 @@ export class BossDialogo extends Phaser.Scene {
     this.comecarCeninha() 
   }
 
+  // Começa a cena, o personagem andando até o boss e para
   comecarCeninha() {
     this.passos = 0;
     this.quantidadeDePassos = 150;
@@ -266,6 +267,7 @@ export class BossDialogo extends Phaser.Scene {
     
   }
 
+  // Boss vira, e olha para o cavaleiro
   bossVirada() {
     boss.setFlip(true,false)
     setTimeout(() => {
@@ -273,6 +275,7 @@ export class BossDialogo extends Phaser.Scene {
     }, 500)
   }
 
+  // Começa o dialogo entre eles (da para pular clicando na tela)
   comecarDialogo() {
     const x = this.cameras.main.width / 3;
     const y = this.cameras.main.height / 2;
@@ -340,7 +343,7 @@ export class BossDialogo extends Phaser.Scene {
         this.dialogo
       );
     });
-    // Start game
+    // Começa a bossfight
     this.time.delayedCall(21000, () => {
       this.scene.start("Boss");
       this.scene.stop("BossDialogo");
