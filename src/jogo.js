@@ -438,7 +438,7 @@ export class Jogo extends Phaser.Scene {
         start: 0,
         end: 9,
       }),
-      frameRate: 3,
+      frameRate: 10,
       repeat: -1,
     });
 
@@ -1573,7 +1573,7 @@ let dano = 0;
 
 let personagemX;
 
-const personagemSpawn = [2900, 500];
+const personagemSpawn = [50, 500];
 
 let diferencaPersonagemEsqueletoX = 0;
 

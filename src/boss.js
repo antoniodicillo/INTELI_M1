@@ -6,10 +6,9 @@ export class Boss extends Phaser.Scene {
   }
 
   init() {
-
     // Variaveis do boss
     this.boss = {
-      vidaAtual: 500,
+      vidaAtual: 2,
       VIDA_MAXIMA: 500,
 
       podeLevarHit: true,
@@ -22,7 +21,7 @@ export class Boss extends Phaser.Scene {
 
       FRAMES_ATAQUE_1: [4, 5],
       FRAMES_ATAQUE_2: [3, 4],
-      FRAMES_ATAQUE_3: [5, 6],
+      FRAMES_ATAQUE_3: [6, 7],
       DANO_1: 35,
       DANO_2: 40,
       DANO_3: 65,
@@ -183,6 +182,7 @@ export class Boss extends Phaser.Scene {
       "thunderClapHeavy",
       "src/assets/audio/thunderClapHeavy.wav"
     );
+    this.load.audio("bossSoundtrack", "src/assets/audio/TemaBoss.wav");
   }
 
   create() {
@@ -190,10 +190,17 @@ export class Boss extends Phaser.Scene {
     const ataque_leveSom = this.sound.add("ataque_leveSom");
     const ataque_PesadoSom = this.sound.add("ataque_pesadoSom");
     dano_BossSom = this.sound.add("dano_BossSom");
+    dano_BossSom.setVolume(0.5);
 
     thunderClapLight = this.sound.add("thunderClapLight");
     thunderClap = this.sound.add("thunderClap");
     thunderClapHeavy = this.sound.add("thunderClapHeavy");
+
+    boss_Musica = this.sound.add("bossSoundtrack");
+    boss_Musica.play();
+    boss_Musica.setLoop(true);
+    boss_Musica.setVolume(0.5)
+
 
     // Adicionar imagens e sprites no jogo
     this.add.image(larguraJogo / 2, alturaJogo / 2, "background");
@@ -699,9 +706,9 @@ export class Boss extends Phaser.Scene {
           if (caveiras > 0 && cooldownHeal === false) {
             cooldownHeal = true;
 
-            setTimeout(() => {
+            this.time.delayedCall(1000, () => {
               cooldownHeal = false;
-            }, 1000);
+            });
 
             caveiras--;
             localStorage.setItem("Caveiras", caveiras);
@@ -774,7 +781,7 @@ export class Boss extends Phaser.Scene {
       this.energiaRegenerando = false;
 
       // Logica para a regeneracao de energia
-      setTimeout(() => {
+      this.time.delayedCall(1200, () => {
         if (this.energiaRegenerando === false) {
           this.energiaRegenerando = true;
           const energiaInterval = setInterval(() => {
@@ -798,7 +805,7 @@ export class Boss extends Phaser.Scene {
             }
           }, 30);
         }
-      }, 1200);
+      });
     }
   }
 
@@ -890,9 +897,9 @@ export class Boss extends Phaser.Scene {
           stunJogador = true;
           personagem.setVelocityX(0);
           personagem.setVelocityY(200);
-          setTimeout(() => {
+          this.time.delayedCall(1200, () => {
             this.gameOver();
-          }, 1200);
+          });
           return;
         }
 
@@ -924,9 +931,9 @@ export class Boss extends Phaser.Scene {
       oBoss.vidaAtual -= dano;
 
       oBoss.podeLevarHit = false;
-      setTimeout(() => {
+      this.time.delayedCall(500,() => {
         oBoss.podeLevarHit = true;
-      }, 500);
+      });
     }
 
     if (oBoss.vidaAtual <= 0) {
@@ -1089,31 +1096,31 @@ export class Boss extends Phaser.Scene {
 
       oBoss.tocouSom = false;
       if (anim.key === "ataqueBoss1" && oBoss.combo >= 2) {
-        setTimeout(() => {
+        this.time.delayedCall(50,() => {
           oBoss.podeDarDano = true;
           oBossVar.anims.play("ataqueBoss2", true);
-        }, 50);
+        });
         return;
       } else if (anim.key === "ataqueBoss2" && oBoss.combo >= 3) {
-        setTimeout(() => {
+        this.time.delayedCall(50, () => {
           oBoss.podeDarDano = true;
           oBossVar.anims.play("ataqueBoss3", true);
-        }, 50);
+        });
         return;
       }
 
       oBoss.podeSerStunado = true;
 
-      setTimeout(() => {
+      this.time.delayedCall(50, () => {
         oBoss.podeDarDano = false;
         oBoss.danoAtual = 0;
 
         oBoss.podeMover = true;
         oBossVar.anims.play("normalBoss", true);
-        setTimeout(() => {
+        this.time.delayedCall(700, () => {
           oBoss.coolDownAtaque = false;
-        }, 700);
-      }, 50);
+        });
+      });
     }
   }
 
@@ -1155,8 +1162,9 @@ export class Boss extends Phaser.Scene {
   }
 
   gameOver() {
-    // "Desativa os esqueletos"
+    // "Desativa o boss"
     boss.anims.play("normalBoss", true);
+    boss_Musica.stop()
 
     boss.setVelocityX(0);
     boss.setVelocityX(0);
@@ -1282,13 +1290,13 @@ export class Boss extends Phaser.Scene {
     this.textoSair.setScrollFactor(0);
     this.mainTexto.setScrollFactor(0);
 
-    setTimeout(() => {
+    this.time.delayedCall(this.tempoTween, () => {
       this.efeitoTypewrite("O cavaleiro está morto", this.mainTexto);
       this.textoSair.setVisible(true);
       this.textoContinuar.setVisible(true);
       this.textoSair.setInteractive();
       this.textoContinuar.setInteractive();
-    }, this.tempoTween);
+    });
   }
 
   efeitoTypewrite(texto, objeto) {
@@ -1308,7 +1316,8 @@ export class Boss extends Phaser.Scene {
 
   // Funcao quando o boss é derrotado
   bossDerotado() {
-    setTimeout(() => {
+    boss_Musica.stop()
+     this.time.delayedCall(500, () => {
       const x = this.cameras.main.width;
       const y = this.cameras.main.height;
 
@@ -1322,7 +1331,7 @@ export class Boss extends Phaser.Scene {
       this.backgroundBossDerotado.fillRect(0, y / 3, x, y / 4);
 
       this.textoBossDerotado = this.add
-        .text(x / 2, y / 2.2, "FORTE INIMIGO DERROTADO", {
+        .text(x / 2, y / 2.2, "INIMIGO FORTE DERROTADO", {
           fontSize: "40px",
           fill: "#ffffff",
           opacity: 1,
@@ -1366,7 +1375,7 @@ export class Boss extends Phaser.Scene {
       this.textoBossDerotado.setScrollFactor(0);
       this.backgroundBossDerotado.setScrollFactor(0);
 
-      setTimeout(() => {
+      this.time.delayedCall(3000, () => {
         // Tween da transparencia do background
         this.tweens.add({
           targets: { alpha: 0.75 },
@@ -1390,23 +1399,23 @@ export class Boss extends Phaser.Scene {
         });
 
         this.gameEnd();
-      }, 3000);
-    }, 500);
+      });
+    });
   }
 
   gameEnd() {
-    setTimeout(() => {
+    this.time.delayedCall(3000, () => {
       // Faz o jogador ficar parado no game end
       stunJogador = true;
 
-      // Adiciona os elementos do game end  
+      // Adiciona os elementos do game end
       const x = this.cameras.main.width;
       const y = this.cameras.main.height;
 
       this.backgroundEndGame = this.add.graphics();
       this.backgroundEndGame.fillStyle(0x000000, 1);
       this.backgroundEndGame.fillRect(0, 0, x, y);
-    
+
       // Tween da transparencia do background
       this.tweens.add({
         targets: { alpha: 0 },
@@ -1431,20 +1440,24 @@ export class Boss extends Phaser.Scene {
       this.backgroundEndGame.setScrollFactor(0);
 
       // Primeiro texto aparece
-      setTimeout(() => {
-        this.textoEndGame.setText("Você o derrotou.");
+      this.time.delayedCall(
+        1000,
+        () => {
+          this.textoEndGame.setText("Você o derrotou.");
 
-        // Tween da transparencia do texto de endgame
-        this.tweens.add({
-          targets: this.textoEndGame,
-          alpha: { from: 0, to: 1 },
-          duration: 3000,
-          ease: "Linear",
-        });
-      }, 1000);
+          // Tween da transparencia do texto de endgame
+          this.tweens.add({
+            targets: this.textoEndGame,
+            alpha: { from: 0, to: 1 },
+            duration: 3000,
+            ease: "Linear",
+          });
+        },
+        
+      );
 
       // Primeiro texto some
-      setTimeout(() => {
+      this.time.delayedCall(4000, () => {
         // Tween da transparencia do texto de endgame
         this.tweens.add({
           targets: this.textoEndGame,
@@ -1452,11 +1465,11 @@ export class Boss extends Phaser.Scene {
           duration: 3000,
           ease: "Linear",
         });
-      }, 4000);
+      });
 
       // Segundo texto aparece
-      setTimeout(() => {
-        this.textoEndGame.setText("Mas e agora?");
+      this.time.delayedCall(7000, () => {
+        this.textoEndGame.setText("Continua?");
         // Tween da transparencia do texto de endgame
         this.tweens.add({
           targets: this.textoEndGame,
@@ -1464,11 +1477,10 @@ export class Boss extends Phaser.Scene {
           duration: 3000,
           ease: "Linear",
         });
-      }, 7000);
+      });
 
       // Segundo texto some
-      setTimeout(() => {
-        this.textoEndGame.setText("Mas e agora?");
+      this.time.delayedCall(10000, () => {
         this.tweens.add({
           targets: this.textoEndGame,
           alpha: { from: 1, to: 0 },
@@ -1477,13 +1489,13 @@ export class Boss extends Phaser.Scene {
         });
 
         // Manda para o menu
-        setTimeout(() => {
+        this.time.delayedCall(3000, () => {
           this.resetGame();
           this.scene.start("Menu");
           this.scene.stop("Boss");
-        }, 3000);
-      }, 10000);
-    }, 3000);
+        });
+      });
+    });
   }
 
   resetGame() {
@@ -1585,3 +1597,4 @@ let thunderClap;
 let thunderClapHeavy;
 
 let dano_BossSom;
+let boss_Musica;

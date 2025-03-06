@@ -198,13 +198,13 @@ export class Creditos extends Phaser.Scene {
 
     this.creditosTitulo1 = this.add
       .text(x, y / 3.5, "Desenvolvimento / Programação", {
-        fontSize: "18px",
+        fontSize: "24px",
         fill: "#ffffff",
       })
       .setOrigin(0.5, 0.5);
     this.creditosTexto1 = this.add
-      .text(x, y / 3, "antonio di cillo", {
-        fontSize: "14px",
+      .text(x, y / 2.9, "antonio di cillo", {
+        fontSize: "22px",
         fill: "#ffffff",
       })
       .setOrigin(0.5, 0.5);
@@ -236,7 +236,7 @@ export class Creditos extends Phaser.Scene {
       .setOrigin(0.5, 0.5);
 
     this.creditosTitulo4 = this.add
-      .text(x * 1.65, y / 1.75, "Esqueleto e Guerreiro", {
+      .text(x * 1.65, y / 1.75, "Sprite do Esqueleto e Guerreiro", {
         fontSize: "16px",
         fill: "#ffffff",
       })
@@ -248,20 +248,20 @@ export class Creditos extends Phaser.Scene {
       })
       .setOrigin(0.5, 0.5);
 
-    this.creditosTitulo5 = this.add
-      .text(x * 1.65, y / 1.75, "Esqueleto e Guerreiro", {
+      this.creditosTitulo5 = this.add
+      .text(x, y / 1.375, "Musica do boss", {
         fontSize: "16px",
         fill: "#ffffff",
       })
       .setOrigin(0.5, 0.5);
     this.creditosTexto5 = this.add
-      .text(x * 1.65, y / 1.65, "luizmelo", {
+      .text(x, y / 1.3, "luizmelo", {
         fontSize: "12px",
         fill: "#ffffff",
       })
       .setOrigin(0.5, 0.5);
 
-    this.textoVoltar = this.add.image(x, y / 1.15, "voltar").setInteractive();
+    this.textoVoltar = this.add.image(x, y / 1.05, "voltar").setInteractive();
     this.textoVoltar.on("pointerover", () => {
       this.textoVoltar.setTexture("voltarDestaque");
     });

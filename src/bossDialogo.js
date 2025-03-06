@@ -20,7 +20,7 @@ export class BossDialogo extends Phaser.Scene {
 
       FRAMES_ATAQUE_1: [4, 5],
       FRAMES_ATAQUE_2: [3, 4],
-      FRAMES_ATAQUE_3: [5, 6],
+      FRAMES_ATAQUE_3: [5],
       DANO_1: 35,
       DANO_2: 40,
       DANO_3: 65,
@@ -37,6 +37,7 @@ export class BossDialogo extends Phaser.Scene {
     personagemEnergiaAtual = PERSONAGEM_ENERGIA_MAXIMA;
     vidaUI_Largura = personagemVidaAtual;
     energiaUI_Largura = personagemEnergiaAtual;
+    personagemAndar = null;
   }
 
   preload() {
@@ -248,7 +249,7 @@ export class BossDialogo extends Phaser.Scene {
     this.passosBoss = 0;
     this.quantidadeDePassosBoss = 200;
 
-    const personagemAndar = setInterval(() => {
+    personagemAndar = setInterval(() => {
       if (
         this.passos < this.quantidadeDePassos
       ) {
@@ -258,9 +259,9 @@ export class BossDialogo extends Phaser.Scene {
       } else {
         clearInterval(personagemAndar);
         personagem.anims.play("normal", true);
-        setTimeout(() => {
+        this.time.delayedCall(500, () => {
           this.bossVirada()
-        }, 500)
+        })
       }},10)
     
   }
@@ -304,7 +305,7 @@ export class BossDialogo extends Phaser.Scene {
     );
 
     // Segundo dialogo
-    setTimeout(() => {
+    this.time.delayedCall(6000, () => {
       this.fotoDialogo = this.add.image(x - 50, y + 50, "fotoCavaleiro");
       this.personagemFalandoTexto.setText("O Cavaleiro");
 
@@ -314,9 +315,9 @@ export class BossDialogo extends Phaser.Scene {
         "Prefiro ser um cão a um covarde que traiu seu próprio reino!",
         this.dialogo
       );
-    }, 6000);
+    });
     // Terceiro dialogo
-    setTimeout(() => {
+    this.time.delayedCall(10000, () => {
       this.fotoDialogo = this.add.image(x - 50, y + 50, "fotoBoss");
       this.personagemFalandoTexto.setText("Garrick");
 
@@ -326,9 +327,9 @@ export class BossDialogo extends Phaser.Scene {
         "Fui eu quem foi traído, cavaleiro. Midland não é o reino  que  te venderam. ",
         this.dialogo
       );
-    }, 10000);
+    });
     // Quarto dialogo
-    setTimeout(() => {
+    this.time.delayedCall(15000, () => {
       this.fotoDialogo = this.add.image(x - 50, y + 50, "fotoBoss");
       this.personagemFalandoTexto.setText("Garrick");
 
@@ -338,12 +339,18 @@ export class BossDialogo extends Phaser.Scene {
         "Mas não importa. Mesmo que você quisesse fugir agora... Não deixarei outro capacho de Midland respirar.",
         this.dialogo
       );
-    }, 15000);
+    });
     // Start game
-    setTimeout(() => {
+    this.time.delayedCall(21000, () => {
       this.scene.start("Boss");
       this.scene.stop("BossDialogo");
-    }, 21000);
+    });
+
+    this.input.on("pointerdown", () => {
+      clearInterval(personagemAndar);
+      this.scene.start("Boss");
+      this.scene.stop("BossDialogo");
+    });
   }
 
   efeitoTypewrite(texto, objeto) {
@@ -384,3 +391,4 @@ let energiaUI_Largura = PERSONAGEM_ENERGIA_MAXIMA;
 const personagemSpawn = [20, 500];
 
 let caveiras = Number(localStorage.getItem("Caveiras"));
+let personagemAndar;
