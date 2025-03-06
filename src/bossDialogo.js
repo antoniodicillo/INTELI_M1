@@ -33,17 +33,10 @@ export class BossDialogo extends Phaser.Scene {
       velocidade: 250,
     };
     // Reseta variaveis
-    stunJogador = false;
     personagemVidaAtual = PERSONAGEM_VIDA_MAXIMA;
     personagemEnergiaAtual = PERSONAGEM_ENERGIA_MAXIMA;
-    pode_Pular = true;
-    cooldownRoll = false;
     vidaUI_Largura = personagemVidaAtual;
     energiaUI_Largura = personagemEnergiaAtual;
-    personagemNaoTomaDano = false;
-    dano = 0;
-    personagemX = 0;
-    cooldownHeal = false;
   }
 
   preload() {
@@ -63,7 +56,7 @@ export class BossDialogo extends Phaser.Scene {
       frameWidth: 50,
       frameHeight: 76,
     });
-   
+
     this.load.spritesheet(
       "player_corrida",
       "src/assets/Cavaleiro_Corrida.png",
@@ -72,7 +65,7 @@ export class BossDialogo extends Phaser.Scene {
         frameHeight: 76,
       }
     );
-  
+
     // ------------------------------------------------------
     // Carrega as animações do boss
     // ------------------------------------------------------
@@ -82,13 +75,10 @@ export class BossDialogo extends Phaser.Scene {
       frameHeight: 92,
     });
 
-
     this.load.spritesheet("boss_andando", "src/assets/Boss_Correr.png", {
       frameWidth: 118,
       frameHeight: 92,
     });
-
-
 
     // Elementos da UI
     this.load.image("fotoCavaleiro", "src/assets/Foto_Cavaleiro.png");
@@ -128,7 +118,7 @@ export class BossDialogo extends Phaser.Scene {
     boss.setCollideWorldBounds(true);
     boss.setPosition(950, 535);
     boss.setOrigin(0.5, 1);
-    
+
     boss.body.pushable = false;
 
     // Adiciona colisão do personagem nas plataforams
@@ -174,7 +164,6 @@ export class BossDialogo extends Phaser.Scene {
       repeat: -1,
     });
 
-
     // ------------------------------------------------------
     // Animações do boss
     // ------------------------------------------------------
@@ -201,16 +190,14 @@ export class BossDialogo extends Phaser.Scene {
       repeat: -1,
     });
 
-
-
     // Background da UI
     this.backgroundUI = this.add.graphics();
     this.backgroundUI.fillStyle(0x000000, 1);
     this.backgroundUI.fillRect(0, 70, 90, 45);
 
     // UI das caveiras coletadas
-    caveirasImagem = this.add.image(30, 90, "caveiras").setScale(0.25);
-    caveirasTexto = this.add.text(50, 90, "(x" + caveiras + ")", {
+    this.caveirasImagem = this.add.image(30, 90, "caveiras").setScale(0.25);
+    this.caveirasTexto = this.add.text(50, 90, "(x" + caveiras + ")", {
       fontSize: "14px",
       fill: "#ffffff",
     });
@@ -252,10 +239,40 @@ export class BossDialogo extends Phaser.Scene {
 
     personagem.anims.play("normal", true);
     boss.anims.play("normalBoss", true);
-    this.comecarCeninha()
+    this.comecarCeninha() 
   }
 
   comecarCeninha() {
+    this.passos = 0;
+    this.quantidadeDePassos = 150;
+    this.passosBoss = 0;
+    this.quantidadeDePassosBoss = 200;
+
+    const personagemAndar = setInterval(() => {
+      if (
+        this.passos < this.quantidadeDePassos
+      ) {
+        this.passos++;
+        personagem.x += 1;
+        personagem.anims.play("corrida", true);
+      } else {
+        clearInterval(personagemAndar);
+        personagem.anims.play("normal", true);
+        setTimeout(() => {
+          this.bossVirada()
+        }, 500)
+      }},10)
+    
+  }
+
+  bossVirada() {
+    boss.setFlip(true,false)
+    setTimeout(() => {
+      this.comecarDialogo();
+    }, 500)
+  }
+
+  comecarDialogo() {
     const x = this.cameras.main.width / 3;
     const y = this.cameras.main.height / 2;
 
@@ -268,34 +285,65 @@ export class BossDialogo extends Phaser.Scene {
     this.bgImagem.fillStyle(0x000000, 1);
     this.bgImagem.fillRect(x - 100, y, 100, 100);
 
-    this.fotoDialogo = this.add.image(x - 50, y + 50, "fotoBoss")
+    this.fotoDialogo = this.add.image(x - 50, y + 50, "fotoBoss");
 
-    this.personagemFalandoTexto = this.add.text(x,y + 5 , "Garrick", {
+    this.personagemFalandoTexto = this.add.text(x, y + 5, "Garrick", {
       fontSize: "16px",
       fill: "#ffffff",
     });
 
-    this.dialogo = this.add.text(x,y + 50 , "", {
+    this.dialogo = this.add.text(x, y + 40, "", {
       fontSize: "16px",
       fill: "#ffffff",
+      wordWrap: { width: 500, useAdvancedWrap: true },
     });
 
     this.efeitoTypewrite(
-      "Você não deveria ter vindo até aqui, cavaleiro!",
-      this.dialogo)
+      "Ah, Cavaleiro de  Midland. Eu sabia que não demoraria para mandarem outro cão  atrás de mim. ",
+      this.dialogo
+    );
 
     // Segundo dialogo
     setTimeout(() => {
-      this.fotoDialogo = this.add.image(x - 50, y + 50, "fotoCavaleiro")
+      this.fotoDialogo = this.add.image(x - 50, y + 50, "fotoCavaleiro");
       this.personagemFalandoTexto.setText("O Cavaleiro");
-  
+
       this.dialogo.setText("");
-  
+
       this.efeitoTypewrite(
-        "Se é burro?",
-        this.dialogo)
-  
-    }, 3500);
+        "Prefiro ser um cão a um covarde que traiu seu próprio juramento!",
+        this.dialogo
+      );
+    }, 6000);
+    // Terceiro dialogo
+    setTimeout(() => {
+      this.fotoDialogo = this.add.image(x - 50, y + 50, "fotoBoss");
+      this.personagemFalandoTexto.setText("Garrick");
+
+      this.dialogo.setText("");
+
+      this.efeitoTypewrite(
+        "Fui eu quem foi traído, cavaleiro. Midland não é o reino  que  te venderam. ",
+        this.dialogo
+      );
+    }, 10000);
+    // Quarto dialogo
+    setTimeout(() => {
+      this.fotoDialogo = this.add.image(x - 50, y + 50, "fotoBoss");
+      this.personagemFalandoTexto.setText("Garrick");
+
+      this.dialogo.setText("");
+
+      this.efeitoTypewrite(
+        "Mas não importa. Mesmo que você quisesse fugir agora... Não deixarei outro capacho de Midland respirar.",
+        this.dialogo
+      );
+    }, 15000);
+    // Start game
+    setTimeout(() => {
+      this.scene.start("Boss");
+      this.scene.stop("BossDialogo");
+    }, 21000);
   }
 
   efeitoTypewrite(texto, objeto) {
@@ -320,42 +368,9 @@ const alturaJogo = 600;
 let personagem;
 let boss;
 
-const tamanhoNormal = [50, 76];
-const tamanhoNormalBoss = [84, 92];
-
-// Frame Data
-
-// Frames que o jogador é invencivel e não toma dano quando ele estiver cooldownRoll
-const framesRolamentoSemDano = [1, 2, 3, 4, 5, 6, 7, 8];
-// Frames que os ataques podem dar dano em inimigos
-const framesAtaqueLeveDano = [2, 3];
-const framesAtaquePesadoDano = [2, 3];
-
-// Teclas wasd
-let teclaA;
-let teclaD;
-let teclaW;
-let teclaEspaco;
-let teclaShift;
-let teclaR;
-var teclado;
-
-// Variaveis da GUI
-let caveirasImagem;
-let caveirasTexto;
-
 // Variaveis de objetos
 var chao;
 var terra;
-
-// Variaveis do personagem
-var pode_Pular = true;
-
-var stunJogador = false;
-
-let cooldownRoll = false;
-
-let alturaPulo = -350;
 
 let personagemVidaAtual = 100;
 let personagemEnergiaAtual = 100;
@@ -366,23 +381,6 @@ const PERSONAGEM_ENERGIA_MAXIMA = personagemEnergiaAtual;
 let vidaUI_Largura = PERSONAGEM_VIDA_MAXIMA;
 let energiaUI_Largura = PERSONAGEM_ENERGIA_MAXIMA;
 
-let personagemNaoTomaDano = false;
-
-const DANO_LEVE = 10;
-const DANO_PESADO = 30;
-
-const ENERGIA_ATAQUE_LEVE = 20;
-const ENERGIA_ATAQUE_PESADO = 35;
-const ENERGIA_ROLAMENTO = 15;
-
-let dano = 0;
-
-let personagemX;
-
 const personagemSpawn = [20, 500];
 
-let diferencaPersonagemBossX = 0;
-
 let caveiras = Number(localStorage.getItem("Caveiras"));
-
-let cooldownHeal = false;

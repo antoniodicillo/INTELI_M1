@@ -193,7 +193,7 @@ export class Boss extends Phaser.Scene {
     // Adicionar fisica ao inimigo
     boss = this.physics.add.sprite(64, 0, "boss_normal");
     boss.setCollideWorldBounds(true);
-    boss.setPosition(1000, 535);
+    boss.setPosition(950, 535);
     boss.setOrigin(0.5, 1);
 
     boss.body.pushable = false;
@@ -566,7 +566,7 @@ export class Boss extends Phaser.Scene {
     this.bossVidaUI.fillStyle(0xba1f11, 1);
     this.bossVidaUI.fillRect(325, 100, this.larguraVidaBoss, 15);
 
-    this.bossVidaName = this.add.text(325, 80, "Garrick, A Lâmina do Céu Partido", {
+    this.bossVidaName = this.add.text(325, 80, "Garrick, Lâmina do Céu Partido", {
       fontSize: "14px",
       fill: "#ffffff",
     });
@@ -1326,7 +1326,7 @@ let dano = 0;
 
 let personagemX;
 
-const personagemSpawn = [20, 500];
+const personagemSpawn = [177, 500];
 
 let diferencaPersonagemBossX = 0;
 
