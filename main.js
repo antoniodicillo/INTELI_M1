@@ -35,6 +35,11 @@ const config = {
   pixelArt: true,
   roundPixels: false,
 
+  render: {
+    autoResize: true,
+    preserveDrawingBuffer: true 
+  },
+
   physics: {
     default: "arcade",
     arcade: {

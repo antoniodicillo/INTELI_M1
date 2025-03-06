@@ -20,7 +20,7 @@ export class Menu extends Phaser.Scene {
     const x = this.cameras.main.width / 2;
     const y = this.cameras.main.height;
 
-    this.add.image(x, y /2, "backgroundMenu").setOrigin(0.5,0.5);
+    this.add.image(x, y / 2, "backgroundMenu").setOrigin(0.5, 0.5);
 
     this.textoPrincipal = this.add
       .text(x, y / 8, "The Blighted Woods", {
@@ -55,18 +55,18 @@ export class Menu extends Phaser.Scene {
     });
 
     this.textoCreditos = this.add
-    .image(x, y / 1.55, "creditos")
-    .setInteractive();
-  this.textoCreditos.on("pointerover", () => {
-    this.textoCreditos.setTexture("creditosDestaque");
-  });
-  this.textoCreditos.on("pointerout", () => {
-    this.textoCreditos.setTexture("creditos");
-  });
-  this.textoCreditos.on("pointerdown", () => {
-    this.scene.start("Creditos");
-    this.scene.stop("Menu");
-  });
+      .image(x, y / 1.55, "creditos")
+      .setInteractive();
+    this.textoCreditos.on("pointerover", () => {
+      this.textoCreditos.setTexture("creditosDestaque");
+    });
+    this.textoCreditos.on("pointerout", () => {
+      this.textoCreditos.setTexture("creditos");
+    });
+    this.textoCreditos.on("pointerdown", () => {
+      this.scene.start("Creditos");
+      this.scene.stop("Menu");
+    });
   }
 
   introducao() {
@@ -75,71 +75,91 @@ export class Menu extends Phaser.Scene {
     this.textoPrincipal.setVisible(false).setActive(false);
     this.textoJogar.setVisible(false).setActive(false);
 
-    const x = this.cameras.main.width / 2;
-    const y = this.cameras.main.height;
 
-
-    setTimeout(() => {
+    this.time.delayedCall(500,() => {
       this.texto1 = this.add
-      .text(50, 50, "", {
-        fontSize: "20px",
-        fill: "#ffffff",
-      })
-      .setOrigin(0.5, 0.5);
+        .text(50, 50, "", {
+          fontSize: "20px",
+          fill: "#ffffff",
+        })
+        .setOrigin(0.5, 0.5);
 
       this.texto2 = this.add
-      .text(50, 100, "", {
-        fontSize: "20px",
-        fill: "#ffffff",
-      })
-      .setOrigin(0.5, 0.5);
+        .text(50, 100, "", {
+          fontSize: "20px",
+          fill: "#ffffff",
+        })
+        .setOrigin(0.5, 0.5);
 
       this.texto3 = this.add
-      .text(50, 150, "", {
-        fontSize: "20px",
-        fill: "#ffffff",
-      })
-      .setOrigin(0.5, 0.5);
+        .text(50, 150, "", {
+          fontSize: "20px",
+          fill: "#ffffff",
+        })
+        .setOrigin(0.5, 0.5);
 
       this.texto4 = this.add
-      .text(50, 200, "", {
-        fontSize: "20px",
-        fill: "#ffffff",
-      })
-      .setOrigin(0.5, 0.5);
+        .text(50, 200, "", {
+          fontSize: "20px",
+          fill: "#ffffff",
+        })
+        .setOrigin(0.5, 0.5);
 
       this.texto5 = this.add
-      .text(50, 400, "", {
-        fontSize: "34px",
-        fill: "#ffffff",
-      }).setOrigin(0.5, 0.5);
+        .text(50, 400, "", {
+          fontSize: "34px",
+          fill: "#ffffff",
+        })
+        .setOrigin(0.5, 0.5);
 
-      this.efeitoTypewrite("Voce é um cavaleiro.", this.texto1)
-      
-      setTimeout(() => {
-        this.efeitoTypewrite("Sua missão é capturar um desertor do seu reino.", this.texto2)
-      }, 2500)
-      setTimeout(() => {
-        this.efeitoTypewrite('Ele está localizado na floresta Blighted Woods.', this.texto3)
-      }, 7000)
-      setTimeout(() => {
-        this.efeitoTypewrite("Boa sorte.", this.texto4)
-      }, 13000)
-      setTimeout(() => {
-        this.efeitoTypewrite("Clique na tela para começar.", this.texto5)
-      }, 16000)
+      this.efeitoTypewrite("Voce é um cavaleiro.", this.texto1);
+
+      this.time.delayedCall(2500, () => {
+        this.efeitoTypewrite(
+          "Sua missão é capturar um desertor do seu reino.",
+          this.texto2
+        );
+      });
+      this.time.delayedCall(7000,() => {
+        this.efeitoTypewrite(
+          "Ele está localizado na floresta Blighted Woods.",
+          this.texto3
+        );
+      });
+      this.time.delayedCall(13000, () => {
+        this.efeitoTypewrite("Boa sorte.", this.texto4);
+      });
+      this.time.delayedCall(16000, () => {
+        this.efeitoTypewrite("Clique na tela para começar.", this.texto5);
+      });
+
       this.input.on("pointerdown", () => {
+        this.textoCreditos.off("pointerdown");
+        this.textoCreditos.off("pointerout");
+        this.textoCreditos.off("pointerover");
+
+        this.textoJogar.off("pointerdown");
+        this.textoJogar.off("pointerout");
+        this.textoJogar.off("pointerover");
+
+        this.textoControles.off("pointerdown");
+        this.textoControles.off("pointerout");
+        this.textoControles.off("pointerover");
+
+        this.time.removeEvent(this.eventoTypewrite);
+        this.eventoTypewrite.destroy();
+
         this.scene.start("Jogo");
         this.scene.stop("Menu");
       });
-    },500)
+    });
   }
 
   efeitoTypewrite(texto, objeto) {
     const length = texto.length;
     const xAntigo = objeto.x;
     let i = 0;
-    this.time.addEvent({
+    this.eventoTypewrite = this.time.addEvent({
       callback: () => {
         objeto.text += texto[i];
         objeto.x = xAntigo + objeto.width / 2;
@@ -167,7 +187,7 @@ export class Creditos extends Phaser.Scene {
     const x = this.cameras.main.width / 2;
     const y = this.cameras.main.height;
 
-    this.add.image(x, y /2, "backgroundMenu").setOrigin(0.5,0.5);
+    this.add.image(x, y / 2, "backgroundMenu").setOrigin(0.5, 0.5);
 
     this.textoPrincipal = this.add
       .text(x, y / 8, "Creditos", {
@@ -176,56 +196,66 @@ export class Creditos extends Phaser.Scene {
       })
       .setOrigin(0.5, 0.5);
 
-
-  
-
-      this.creditosTitulo1 = this.add
+    this.creditosTitulo1 = this.add
       .text(x, y / 3.5, "Desenvolvimento / Programação", {
         fontSize: "18px",
         fill: "#ffffff",
       })
       .setOrigin(0.5, 0.5);
-      this.creditosTexto1 = this.add
+    this.creditosTexto1 = this.add
       .text(x, y / 3, "antonio di cillo", {
         fontSize: "14px",
         fill: "#ffffff",
       })
       .setOrigin(0.5, 0.5);
 
-      this.creditosTitulo2 = this.add
+    this.creditosTitulo2 = this.add
       .text(x / 3, y / 1.75, "Sprite do cavaleiro", {
         fontSize: "16px",
         fill: "#ffffff",
       })
       .setOrigin(0.5, 0.5);
-      this.creditosTexto2 = this.add
+    this.creditosTexto2 = this.add
       .text(x / 3, y / 1.65, "aamatniekss", {
         fontSize: "12px",
         fill: "#ffffff",
       })
       .setOrigin(0.5, 0.5);
 
-      this.creditosTitulo3 = this.add
-      .text(x , y / 1.75, "Tiles e Ambiente", {
+    this.creditosTitulo3 = this.add
+      .text(x, y / 1.75, "Tiles e Ambiente", {
         fontSize: "16px",
         fill: "#ffffff",
       })
       .setOrigin(0.5, 0.5);
-      this.creditosTexto3 = this.add
-      .text(x , y / 1.65, "szadiart", {
+    this.creditosTexto3 = this.add
+      .text(x, y / 1.65, "szadiart", {
         fontSize: "12px",
         fill: "#ffffff",
       })
       .setOrigin(0.5, 0.5);
 
-      this.creditosTitulo4 = this.add
-      .text(x * 1.65 , y / 1.75, "Esqueleto e Guerreiro", {
+    this.creditosTitulo4 = this.add
+      .text(x * 1.65, y / 1.75, "Esqueleto e Guerreiro", {
         fontSize: "16px",
         fill: "#ffffff",
       })
       .setOrigin(0.5, 0.5);
-      this.creditosTexto4 = this.add
-      .text(x * 1.65 , y / 1.65, "luizmelo", {
+    this.creditosTexto4 = this.add
+      .text(x * 1.65, y / 1.65, "luizmelo", {
+        fontSize: "12px",
+        fill: "#ffffff",
+      })
+      .setOrigin(0.5, 0.5);
+
+    this.creditosTitulo5 = this.add
+      .text(x * 1.65, y / 1.75, "Esqueleto e Guerreiro", {
+        fontSize: "16px",
+        fill: "#ffffff",
+      })
+      .setOrigin(0.5, 0.5);
+    this.creditosTexto5 = this.add
+      .text(x * 1.65, y / 1.65, "luizmelo", {
         fontSize: "12px",
         fill: "#ffffff",
       })
@@ -239,10 +269,13 @@ export class Creditos extends Phaser.Scene {
       this.textoVoltar.setTexture("voltar");
     });
     this.textoVoltar.on("pointerdown", () => {
+      this.textoVoltar.off("pointerdown");
+      this.textoVoltar.off("pointerout");
+      this.textoVoltar.off("pointerover");
+
       this.scene.start("Menu");
       this.scene.stop("Creditos");
     });
-
   }
 }
 
@@ -264,10 +297,16 @@ export class Controles extends Phaser.Scene {
     const x = this.cameras.main.width / 2;
     const y = this.cameras.main.height;
 
-    this.tecladoControles = this.add.image(x, y / 2.9, "tecladoControles").setScale(0.5)
-    this.mouseControles = this.add.image(x, y / 1.25, "mouseControles").setScale(0.5)
+    this.tecladoControles = this.add
+      .image(x, y / 2.9, "tecladoControles")
+      .setScale(0.5);
+    this.mouseControles = this.add
+      .image(x, y / 1.25, "mouseControles")
+      .setScale(0.5);
 
-    this.textoVoltar = this.add.image(x / 4, y / 1.05, "voltar").setInteractive();
+    this.textoVoltar = this.add
+      .image(x / 4, y / 1.05, "voltar")
+      .setInteractive();
     this.textoVoltar.on("pointerover", () => {
       this.textoVoltar.setTexture("voltarDestaque");
     });
@@ -275,9 +314,12 @@ export class Controles extends Phaser.Scene {
       this.textoVoltar.setTexture("voltar");
     });
     this.textoVoltar.on("pointerdown", () => {
+      this.textoVoltar.off("pointerdown");
+      this.textoVoltar.off("pointerout");
+      this.textoVoltar.off("pointerover");
+
       this.scene.start("Menu");
       this.scene.stop("Controles");
     });
-
   }
 }

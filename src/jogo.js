@@ -66,6 +66,9 @@ export class Jogo extends Phaser.Scene {
     diferencaPersonagemEsqueletoX = 0;
     cooldownHeal = false;
     personagemTocouSom = false;
+
+    caveirasImagem = null;
+    caveirasTexto = null;
   }
 
   preload() {
@@ -199,7 +202,10 @@ export class Jogo extends Phaser.Scene {
     // Audio
     this.load.audio("ataque_leveSom", "src/assets/audio/ataque_leve.wav");
     this.load.audio("ataque_pesadoSom", "src/assets/audio/ataque_pesado.wav");
-    this.load.audio("ataque_esqueletoSom", "src/assets/audio/esqueleto_ataque.wav");
+    this.load.audio(
+      "ataque_esqueletoSom",
+      "src/assets/audio/esqueleto_ataque.wav"
+    );
   }
 
   create() {
@@ -207,10 +213,9 @@ export class Jogo extends Phaser.Scene {
     stunJogador = false;
 
     const ataque_leveSom = this.sound.add("ataque_leveSom");
-    const ataque_PesadoSom = this.sound.add("ataque_pesadoSom")
-    
+    const ataque_PesadoSom = this.sound.add("ataque_pesadoSom");
 
-    ataque_esqueletoSom = this.sound.add("ataque_esqueletoSom")
+    ataque_esqueletoSom = this.sound.add("ataque_esqueletoSom");
 
     // Adicionar imagens e sprites no jogo
     this.add.image(larguraJogo / 2, alturaJogo / 2, "background");
@@ -624,9 +629,9 @@ export class Jogo extends Phaser.Scene {
         // Se o frame corresponder com o frame de ataque, seta a variavel dano para o dano do ataque
       } else if (anim.key === "ataque_Leve") {
         if (framesAtaqueLeveDano.includes(frame.frame.name)) {
-          if(personagemTocouSom === false) {
+          if (personagemTocouSom === false) {
             personagemTocouSom = true;
-            ataque_leveSom.play()
+            ataque_leveSom.play();
           }
           dano = DANO_LEVE;
         } else {
@@ -634,9 +639,9 @@ export class Jogo extends Phaser.Scene {
         }
       } else if (anim.key === "ataque_Pesado") {
         if (framesAtaquePesadoDano.includes(frame.frame.name)) {
-          if(personagemTocouSom === false) {
+          if (personagemTocouSom === false) {
             personagemTocouSom = true;
-            ataque_PesadoSom.play()
+            ataque_PesadoSom.play();
           }
           dano = DANO_PESADO;
         } else {
@@ -680,6 +685,8 @@ export class Jogo extends Phaser.Scene {
     });
 
     this.physics.add.overlap(personagem, this.paredeBoss, () => {
+      clearInterval(energiaInterval);
+
       this.scene.start("BossDialogo");
       this.scene.stop("Jogo");
     });
@@ -839,9 +846,9 @@ export class Jogo extends Phaser.Scene {
           if (caveiras > 0 && cooldownHeal === false) {
             cooldownHeal = true;
 
-            setTimeout(() => {
+            this.time.delayedCall(1000,() => {
               cooldownHeal = false;
-            }, 1000);
+            });
 
             caveiras--;
             localStorage.setItem("Caveiras", caveiras);
@@ -907,10 +914,10 @@ export class Jogo extends Phaser.Scene {
       this.energiaRegenerando = false;
 
       // Logica para a regeneracao de energia
-      setTimeout(() => {
+      this.time.delayedCall(1200,() => {
         if (this.energiaRegenerando === false) {
           this.energiaRegenerando = true;
-          const energiaInterval = setInterval(() => {
+          energiaInterval = setInterval(() => {
             if (
               personagemEnergiaAtual < PERSONAGEM_ENERGIA_MAXIMA &&
               this.energiaRegenerando === true
@@ -931,7 +938,7 @@ export class Jogo extends Phaser.Scene {
             }
           }, 30);
         }
-      }, 500);
+      });
     }
   }
 
@@ -1027,12 +1034,11 @@ export class Jogo extends Phaser.Scene {
           stunJogador = true;
           personagem.setVelocityX(0);
           personagem.setVelocityY(200);
-          setTimeout(() => {
+          this.time.delayedCall(1200, () => {
             this.gameOver();
-          }, 800);
+          });
           return;
         }
-
 
         personagem.setVelocity(0);
 
@@ -1136,9 +1142,9 @@ export class Jogo extends Phaser.Scene {
     if (anim.key === "ataqueEsqueleto") {
       // Verifica se o frame é um frame de ataque
       if (oEsqueleto.FRAMES_ATAQUE.includes(frame.frame.name)) {
-        if(oEsqueleto.tocou_somAtaque === false) {
+        if (oEsqueleto.tocou_somAtaque === false) {
           oEsqueleto.tocou_somAtaque = true;
-          ataque_esqueletoSom.play()
+          ataque_esqueletoSom.play();
         }
         oEsqueleto.danoAtualEsqueleto = oEsqueleto.DANO;
       } else {
@@ -1180,15 +1186,15 @@ export class Jogo extends Phaser.Scene {
     } else if (anim.key === "morteEsqueleto") {
       // Respawn aqui em baixo
       this.killEsqueleto(oEsqueleto, oEsqueletoVar);
-      setTimeout(() => {
+      this.time.delayedCall(oEsqueleto.respawnTempo,() => {
         this.respawnEsqueleto(oEsqueleto, oEsqueletoVar);
-      }, oEsqueleto.respawnTempo);
+      });
     } else if (anim.key === "ataqueEsqueleto") {
       if (oEsqueleto.esqueletoJaTaMorto === true) {
         this.killEsqueleto(oEsqueleto, oEsqueletoVar);
-        setTimeout(() => {
+        this.time.delayedCall(oEsqueleto.respawnTempo, () => {
           this.respawnEsqueleto(oEsqueleto, oEsqueletoVar);
-        }, oEsqueleto.respawnTempo);
+        });
         return;
       }
 
@@ -1199,9 +1205,9 @@ export class Jogo extends Phaser.Scene {
       oEsqueleto.podeMover = true;
       oEsqueleto.podePular = true;
       oEsqueletoVar.anims.play("normalEsqueleto", true);
-      setTimeout(() => {
+       this.time.delayedCall(2000, () => {
         oEsqueleto.coolDownAtaque = false;
-      }, 2000);
+      });
     }
   }
 
@@ -1314,8 +1320,7 @@ export class Jogo extends Phaser.Scene {
       })
       .setOrigin(0.5, 0.5);
 
-    this.textoContinuar = this.add
-      .image(x / 1.35, y - 50, "continuar")
+    this.textoContinuar = this.add.image(x / 1.35, y - 50, "continuar");
 
     // Interação com os botões
     this.textoContinuar.on("pointerover", () => {
@@ -1350,7 +1355,7 @@ export class Jogo extends Phaser.Scene {
       this.scene.restart();
     });
 
-    this.textoSair = this.add.image(x / 1.1, y - 50, "sair")
+    this.textoSair = this.add.image(x / 1.1, y - 50, "sair");
     this.textoSair.on("pointerover", () => {
       this.textoSair.setTexture("sairDestaque");
     });
@@ -1358,6 +1363,23 @@ export class Jogo extends Phaser.Scene {
       this.textoSair.setTexture("sair");
     });
     this.textoSair.on("pointerdown", () => {
+      this.textoContinuar.off("pointerdown");
+      this.textoSair.off("pointerdown");
+
+      this.input.off("pointerdown");
+
+      personagem.off("animationcomplete");
+      personagem.off("animationstart");
+      personagem.off("animationupdate");
+
+      esqueleto.off("animationcomplete");
+      esqueleto.off("animationstart");
+      esqueleto.off("animationupdate");
+
+      esqueleto2.off("animationcomplete");
+      esqueleto2.off("animationstart");
+      esqueleto2.off("animationupdate");
+
       this.scene.start("Menu");
       this.scene.stop("Jogo");
     });
@@ -1411,14 +1433,13 @@ export class Jogo extends Phaser.Scene {
     this.textoSair.setScrollFactor(0);
     this.mainTexto.setScrollFactor(0);
 
-    
-    setTimeout(() => {
+    this.time.delayedCall(this.tempoTween,() => {
       this.efeitoTypewrite("O cavaleiro está morto", this.mainTexto);
       this.textoSair.setVisible(true);
       this.textoContinuar.setVisible(true);
       this.textoSair.setInteractive();
       this.textoContinuar.setInteractive();
-    }, this.tempoTween)
+    });
   }
 
   efeitoTypewrite(texto, objeto) {
@@ -1432,8 +1453,44 @@ export class Jogo extends Phaser.Scene {
         ++i;
       },
       repeat: length - 1,
-      delay: 100
+      delay: 100,
     });
+  }
+
+  shutdown() {
+    clearInterval(energiaInterval);
+    stunJogador = false;
+    personagemVidaAtual = PERSONAGEM_VIDA_MAXIMA;
+    personagemEnergiaAtual = PERSONAGEM_ENERGIA_MAXIMA;
+    pode_Pular = true;
+    cooldownRoll = false;
+    vidaUI_Largura = personagemVidaAtual;
+    energiaUI_Largura = personagemEnergiaAtual;
+    personagemNaoTomaDano = false;
+    dano = 0;
+    personagemX = 0;
+    diferencaPersonagemEsqueletoX = 0;
+    cooldownHeal = false;
+    personagemTocouSom = false;
+
+    caveirasImagem = null;
+    caveirasTexto = null;
+
+    this.input.off("pointerdown");
+
+    personagem.off("animationcomplete");
+    personagem.off("animationstart");
+    personagem.off("animationupdate");
+
+    esqueleto.off("animationcomplete");
+    esqueleto.off("animationstart");
+    esqueleto.off("animationupdate");
+
+    esqueleto2.off("animationcomplete");
+    esqueleto2.off("animationstart");
+    esqueleto2.off("animationupdate");
+
+    super.shutdown();
   }
 }
 
@@ -1476,7 +1533,6 @@ var terra;
 
 var arvoreBaixo;
 var arvoreCima;
-var arvoreTransparente;
 
 var galho5_Esquerda;
 var galho4_Esquerda;
@@ -1517,7 +1573,7 @@ let dano = 0;
 
 let personagemX;
 
-const personagemSpawn = [20, 500];
+const personagemSpawn = [2900, 500];
 
 let diferencaPersonagemEsqueletoX = 0;
 
@@ -1527,4 +1583,5 @@ let cooldownHeal = false;
 
 let personagemTocouSom = false;
 
-let ataque_esqueletoSom 
+let ataque_esqueletoSom;
+let energiaInterval 

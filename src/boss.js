@@ -6,6 +6,8 @@ export class Boss extends Phaser.Scene {
   }
 
   init() {
+
+    // Variaveis do boss
     this.boss = {
       vidaAtual: 500,
       VIDA_MAXIMA: 500,
@@ -33,7 +35,8 @@ export class Boss extends Phaser.Scene {
       velocidade: 250,
       tocouSom: false,
     };
-    // Reseta variaveis
+
+    // Reseta variaveis globais
     stunJogador = false;
     personagemVidaAtual = PERSONAGEM_VIDA_MAXIMA;
     personagemEnergiaAtual = PERSONAGEM_ENERGIA_MAXIMA;
@@ -166,18 +169,27 @@ export class Boss extends Phaser.Scene {
 
     this.load.audio("ataque_leveSom", "src/assets/audio/ataque_leve.wav");
     this.load.audio("ataque_pesadoSom", "src/assets/audio/ataque_pesado.wav");
-    this.load.audio("ataque_esqueletoSom", "src/assets/audio/esqueleto_ataque.wav");
+    this.load.audio(
+      "ataque_esqueletoSom",
+      "src/assets/audio/esqueleto_ataque.wav"
+    );
 
-    this.load.audio("thunderClapLight", "src/assets/audio/thunderClapLight.wav");
+    this.load.audio(
+      "thunderClapLight",
+      "src/assets/audio/thunderClapLight.wav"
+    );
     this.load.audio("thunderClap", "src/assets/audio/thunderClap.wav");
-    this.load.audio("thunderClapHeavy", "src/assets/audio/thunderClapHeavy.wav");
+    this.load.audio(
+      "thunderClapHeavy",
+      "src/assets/audio/thunderClapHeavy.wav"
+    );
   }
 
   create() {
-    
+    // Carrega os sons
     const ataque_leveSom = this.sound.add("ataque_leveSom");
-    const ataque_PesadoSom = this.sound.add("ataque_pesadoSom")
-    dano_BossSom = this.sound.add("dano_BossSom")
+    const ataque_PesadoSom = this.sound.add("ataque_pesadoSom");
+    dano_BossSom = this.sound.add("dano_BossSom");
 
     thunderClapLight = this.sound.add("thunderClapLight");
     thunderClap = this.sound.add("thunderClap");
@@ -786,7 +798,7 @@ export class Boss extends Phaser.Scene {
             }
           }, 30);
         }
-      }, 500);
+      }, 1200);
     }
   }
 
@@ -887,7 +899,7 @@ export class Boss extends Phaser.Scene {
         personagem.setVelocity(0);
 
         stunJogador = true;
-        personagem.anims.play("hit", true); 
+        personagem.anims.play("hit", true);
       }
       return;
     }
@@ -978,7 +990,6 @@ export class Boss extends Phaser.Scene {
           oBossVar.anims.play("andarBoss", true);
         }
       }
-
     }
   }
 
@@ -986,9 +997,9 @@ export class Boss extends Phaser.Scene {
     if (anim.key === "ataqueBoss1") {
       // Verifica se o frame é um frame de ataque
       if (oBoss.FRAMES_ATAQUE_1.includes(frame.frame.name)) {
-        if(oBoss.tocouSom === false) {
+        if (oBoss.tocouSom === false) {
           oBoss.tocouSom = true;
-          thunderClapLight.play()
+          thunderClapLight.play();
         }
         oBoss.danoAtual = oBoss.DANO_1;
       } else {
@@ -997,7 +1008,7 @@ export class Boss extends Phaser.Scene {
 
       return;
     } else if (anim.key === "ataqueBoss2") {
-      if(oBoss.tocouSom === false) {
+      if (oBoss.tocouSom === false) {
         oBoss.tocouSom = true;
         thunderClap.play();
       }
@@ -1010,7 +1021,7 @@ export class Boss extends Phaser.Scene {
 
       return;
     } else if (anim.key === "ataqueBoss3") {
-      if(oBoss.tocouSom === false) {
+      if (oBoss.tocouSom === false) {
         oBoss.tocouSom = true;
         thunderClapHeavy.play();
       }
@@ -1070,8 +1081,6 @@ export class Boss extends Phaser.Scene {
       anim.key === "ataqueBoss2" ||
       anim.key === "ataqueBoss1"
     ) {
-      console.log("combo: " + oBoss.combo);
-
       if (oBoss.bossJaTaMorto === true || oBoss.vidaAtual <= 0) {
         oBoss.bossJaTaMorto = true;
         oBossVar.anims.play("morteBoss", false);
@@ -1108,6 +1117,7 @@ export class Boss extends Phaser.Scene {
     }
   }
 
+  // Mata o boss
   killBoss(oBoss, oBossVar) {
     oBoss.podeMover = false;
     oBossVar.setActive(false);
@@ -1116,6 +1126,9 @@ export class Boss extends Phaser.Scene {
     localStorage.setItem("Caveiras", caveiras);
     caveirasImagem.setVisible(true);
     caveirasTexto.setText("(x" + caveiras + ")");
+
+    // Começa a funcao quando o boss é derrotado
+    this.bossDerotado();
   }
 
   ataqueBoss(oBoss, oBossVar) {
@@ -1130,7 +1143,6 @@ export class Boss extends Phaser.Scene {
     }
 
     oBoss.combo = Math.floor(Math.random() * 3) + 1;
-    console.log(oBoss.combo);
 
     oBoss.podeSerStunado = false;
 
@@ -1204,13 +1216,7 @@ export class Boss extends Phaser.Scene {
 
       this.input.off("pointerdown");
 
-      personagem.off("animationcomplete");
-      personagem.off("animationstart");
-      personagem.off("animationupdate");
-
-      boss.off("animationcomplete");
-      boss.off("animationstart");
-      boss.off("animationupdate");
+      this.resetGame();
 
       this.scene.restart();
     });
@@ -1299,6 +1305,203 @@ export class Boss extends Phaser.Scene {
       delay: 100,
     });
   }
+
+  // Funcao quando o boss é derrotado
+  bossDerotado() {
+    setTimeout(() => {
+      const x = this.cameras.main.width;
+      const y = this.cameras.main.height;
+
+      this.bossVidaBgUI.setVisible(false);
+      this.bossVidaUI.setVisible(false);
+      this.bossVidaName.setVisible(false);
+      this.bossVidaText.setVisible(false);
+
+      this.backgroundBossDerotado = this.add.graphics();
+      this.backgroundBossDerotado.fillStyle(0x000000, 0);
+      this.backgroundBossDerotado.fillRect(0, y / 3, x, y / 4);
+
+      this.textoBossDerotado = this.add
+        .text(x / 2, y / 2.2, "FORTE INIMIGO DERROTADO", {
+          fontSize: "40px",
+          fill: "#ffffff",
+          opacity: 1,
+        })
+        .setOrigin(0.5, 0.5);
+
+      // Tween da transparencia do texto
+      this.tweens.add({
+        targets: this.textoBossDerotado,
+        alpha: { from: 0, to: 1 },
+        duration: 3000,
+        ease: "Linear",
+      });
+
+      // Tween da transparencia do background
+      this.tweens.add({
+        targets: { alpha: 0 },
+        alpha: 0.75,
+        duration: 3000,
+        ease: "Linear",
+        onUpdate: (tween) => {
+          const alpha = tween.getValue();
+          this.backgroundBossDerotado.clear();
+          this.backgroundBossDerotado.fillStyle(0x000000, alpha);
+          this.backgroundBossDerotado.fillRect(0, y / 3, x, y / 4);
+        },
+      });
+
+      // Tween do tamanho do texto
+      this.tweens.add({
+        targets: { size: 36 },
+        size: 48,
+        duration: 3000,
+        ease: "Linear",
+        onUpdate: (tween) => {
+          const size = tween.getValue();
+          this.textoBossDerotado.setStyle({ fontSize: `${size}px` });
+        },
+      });
+
+      this.textoBossDerotado.setScrollFactor(0);
+      this.backgroundBossDerotado.setScrollFactor(0);
+
+      setTimeout(() => {
+        // Tween da transparencia do background
+        this.tweens.add({
+          targets: { alpha: 0.75 },
+          alpha: 0,
+          duration: 1000,
+          ease: "Power1",
+          onUpdate: (tween) => {
+            const alpha = tween.getValue();
+            this.backgroundBossDerotado.clear();
+            this.backgroundBossDerotado.fillStyle(0x000000, alpha);
+            this.backgroundBossDerotado.fillRect(0, y / 3, x, y / 4);
+          },
+        });
+
+        // Tween da transparencia do texto
+        this.tweens.add({
+          targets: this.textoBossDerotado,
+          alpha: { from: 1, to: 0 },
+          duration: 1000,
+          ease: "Linear",
+        });
+
+        this.gameEnd();
+      }, 3000);
+    }, 500);
+  }
+
+  gameEnd() {
+    setTimeout(() => {
+      // Faz o jogador ficar parado no game end
+      stunJogador = true;
+
+      // Adiciona os elementos do game end  
+      const x = this.cameras.main.width;
+      const y = this.cameras.main.height;
+
+      this.backgroundEndGame = this.add.graphics();
+      this.backgroundEndGame.fillStyle(0x000000, 1);
+      this.backgroundEndGame.fillRect(0, 0, x, y);
+    
+      // Tween da transparencia do background
+      this.tweens.add({
+        targets: { alpha: 0 },
+        alpha: 1,
+        duration: 1000,
+        ease: "Power1",
+        onUpdate: (tween) => {
+          const alpha = tween.getValue();
+          this.backgroundEndGame.clear();
+          this.backgroundEndGame.fillStyle(0x000000, alpha);
+          this.backgroundEndGame.fillRect(0, 0, x, y);
+        },
+      });
+
+      this.textoEndGame = this.add
+        .text(x / 2, y / 2, "", {
+          fontSize: "38px",
+        })
+        .setOrigin(0.5, 0.5);
+
+      this.textoEndGame.setScrollFactor(0);
+      this.backgroundEndGame.setScrollFactor(0);
+
+      // Primeiro texto aparece
+      setTimeout(() => {
+        this.textoEndGame.setText("Você o derrotou.");
+
+        // Tween da transparencia do texto de endgame
+        this.tweens.add({
+          targets: this.textoEndGame,
+          alpha: { from: 0, to: 1 },
+          duration: 3000,
+          ease: "Linear",
+        });
+      }, 1000);
+
+      // Primeiro texto some
+      setTimeout(() => {
+        // Tween da transparencia do texto de endgame
+        this.tweens.add({
+          targets: this.textoEndGame,
+          alpha: { from: 1, to: 0 },
+          duration: 3000,
+          ease: "Linear",
+        });
+      }, 4000);
+
+      // Segundo texto aparece
+      setTimeout(() => {
+        this.textoEndGame.setText("Mas e agora?");
+        // Tween da transparencia do texto de endgame
+        this.tweens.add({
+          targets: this.textoEndGame,
+          alpha: { from: 0, to: 1 },
+          duration: 3000,
+          ease: "Linear",
+        });
+      }, 7000);
+
+      // Segundo texto some
+      setTimeout(() => {
+        this.textoEndGame.setText("Mas e agora?");
+        this.tweens.add({
+          targets: this.textoEndGame,
+          alpha: { from: 1, to: 0 },
+          duration: 3000,
+          ease: "Linear",
+        });
+
+        // Manda para o menu
+        setTimeout(() => {
+          this.resetGame();
+          this.scene.start("Menu");
+          this.scene.stop("Boss");
+        }, 3000);
+      }, 10000);
+    }, 3000);
+  }
+
+  resetGame() {
+    // reseta o jogo para como ele era
+    personagemNaoTomaDano = false;
+    stunJogador = false;
+    cooldownRoll = false;
+
+    // Remove os listeners nos botoes
+
+    personagem.off("animationcomplete");
+    personagem.off("animationstart");
+    personagem.off("animationupdate");
+
+    boss.off("animationcomplete");
+    boss.off("animationstart");
+    boss.off("animationupdate");
+  }
 }
 
 // Largura e altura do jogo
@@ -1379,6 +1582,6 @@ let personagemTocouSom = false;
 
 let thunderClapLight;
 let thunderClap;
-let thunderClapHeavy 
+let thunderClapHeavy;
 
 let dano_BossSom;
