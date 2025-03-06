@@ -8,7 +8,7 @@ export class Boss extends Phaser.Scene {
   init() {
     // Variaveis do boss
     this.boss = {
-      vidaAtual: 2,
+      vidaAtual: 500,
       VIDA_MAXIMA: 500,
 
       podeLevarHit: true,
