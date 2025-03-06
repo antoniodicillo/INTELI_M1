@@ -311,7 +311,7 @@ export class BossDialogo extends Phaser.Scene {
       this.dialogo.setText("");
 
       this.efeitoTypewrite(
-        "Prefiro ser um cão a um covarde que traiu seu próprio juramento!",
+        "Prefiro ser um cão a um covarde que traiu seu próprio reino!",
         this.dialogo
       );
     }, 6000);
