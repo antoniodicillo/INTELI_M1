@@ -199,8 +199,7 @@ export class Boss extends Phaser.Scene {
     boss_Musica = this.sound.add("bossSoundtrack");
     boss_Musica.play();
     boss_Musica.setLoop(true);
-    boss_Musica.setVolume(0.5)
-
+    boss_Musica.setVolume(0.5);
 
     // Adicionar imagens e sprites no jogo
     this.add.image(larguraJogo / 2, alturaJogo / 2, "background");
@@ -931,7 +930,7 @@ export class Boss extends Phaser.Scene {
       oBoss.vidaAtual -= dano;
 
       oBoss.podeLevarHit = false;
-      this.time.delayedCall(500,() => {
+      this.time.delayedCall(500, () => {
         oBoss.podeLevarHit = true;
       });
     }
@@ -1096,7 +1095,7 @@ export class Boss extends Phaser.Scene {
 
       oBoss.tocouSom = false;
       if (anim.key === "ataqueBoss1" && oBoss.combo >= 2) {
-        this.time.delayedCall(50,() => {
+        this.time.delayedCall(50, () => {
           oBoss.podeDarDano = true;
           oBossVar.anims.play("ataqueBoss2", true);
         });
@@ -1166,7 +1165,7 @@ export class Boss extends Phaser.Scene {
   gameOver() {
     // "Desativa o boss"
     boss.anims.play("normalBoss", true);
-    boss_Musica.stop()
+    boss_Musica.stop();
 
     boss.setVelocityX(0);
     boss.setVelocityX(0);
@@ -1318,8 +1317,8 @@ export class Boss extends Phaser.Scene {
 
   // Funcao quando o boss é derrotado
   bossDerotado() {
-    boss_Musica.stop()
-     this.time.delayedCall(500, () => {
+    boss_Musica.stop();
+    this.time.delayedCall(500, () => {
       const x = this.cameras.main.width;
       const y = this.cameras.main.height;
 
@@ -1336,9 +1335,10 @@ export class Boss extends Phaser.Scene {
         .text(x / 2, y / 2.2, "INIMIGO FORTE DERROTADO", {
           fontSize: "40px",
           fill: "#ffffff",
-          opacity: 1,
         })
         .setOrigin(0.5, 0.5);
+
+      this.textoBossDerotado.alpha = 0;
 
       // Tween da transparencia do texto
       this.tweens.add({
@@ -1437,26 +1437,23 @@ export class Boss extends Phaser.Scene {
           fontSize: "38px",
         })
         .setOrigin(0.5, 0.5);
+      this.textoEndGame.alpha = 0;
 
       this.textoEndGame.setScrollFactor(0);
       this.backgroundEndGame.setScrollFactor(0);
 
       // Primeiro texto aparece
-      this.time.delayedCall(
-        1000,
-        () => {
-          this.textoEndGame.setText("Você o derrotou.");
+      this.time.delayedCall(1000, () => {
+        this.textoEndGame.setText("Você o derrotou.");
 
-          // Tween da transparencia do texto de endgame
-          this.tweens.add({
-            targets: this.textoEndGame,
-            alpha: { from: 0, to: 1 },
-            duration: 3000,
-            ease: "Linear",
-          });
-        },
-        
-      );
+        // Tween da transparencia do texto de endgame
+        this.tweens.add({
+          targets: this.textoEndGame,
+          alpha: { from: 0, to: 1 },
+          duration: 3000,
+          ease: "Linear",
+        });
+      });
 
       // Primeiro texto some
       this.time.delayedCall(4000, () => {
@@ -1467,33 +1464,11 @@ export class Boss extends Phaser.Scene {
           duration: 3000,
           ease: "Linear",
         });
-      });
 
-      // Segundo texto aparece
-      this.time.delayedCall(7000, () => {
-        this.textoEndGame.setText("Continua?");
-        // Tween da transparencia do texto de endgame
-        this.tweens.add({
-          targets: this.textoEndGame,
-          alpha: { from: 0, to: 1 },
-          duration: 3000,
-          ease: "Linear",
-        });
-      });
-
-      // Segundo texto some
-      this.time.delayedCall(10000, () => {
-        this.tweens.add({
-          targets: this.textoEndGame,
-          alpha: { from: 1, to: 0 },
-          duration: 3000,
-          ease: "Linear",
-        });
-
-        // Manda para o menu
+        // Manda para os creditos
         this.time.delayedCall(3000, () => {
           this.resetGame();
-          this.scene.start("Menu");
+          this.scene.start("Creditos");
           this.scene.stop("Boss");
         });
       });
