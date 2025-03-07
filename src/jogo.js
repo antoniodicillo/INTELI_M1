@@ -992,7 +992,6 @@ export class Jogo extends Phaser.Scene {
     // Logica para ver se o ataque é pesado ou não
     if (teclaShift.isDown) {
       if (personagemEnergiaAtual < ENERGIA_ATAQUE_PESADO) {
-        this.naoTenhoEnergiaUi();
         return;
       }
       personagem.setVelocity(0);
@@ -1001,7 +1000,6 @@ export class Jogo extends Phaser.Scene {
       personagem.anims.play("ataque_Pesado", false);
     } else if (personagemEnergiaAtual >= ENERGIA_ATAQUE_LEVE) {
       if (personagemEnergiaAtual < ENERGIA_ATAQUE_LEVE) {
-        this.naoTenhoEnergiaUi();
         return;
       }
 

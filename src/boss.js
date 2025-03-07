@@ -653,7 +653,7 @@ export class Boss extends Phaser.Scene {
 
   update() {
     // god mode
-    //personagemNaoTomaDano = true;
+    // personagemNaoTomaDano = true;
 
     // Logica do personagem
     if (stunJogador === false && cooldownRoll === false) {
@@ -848,7 +848,6 @@ export class Boss extends Phaser.Scene {
 
     if (teclaShift.isDown) {
       if (personagemEnergiaAtual < ENERGIA_ATAQUE_PESADO) {
-        this.naoTenhoEnergiaUi();
         return;
       }
       personagem.setVelocity(0);
@@ -857,7 +856,6 @@ export class Boss extends Phaser.Scene {
       personagem.anims.play("ataque_Pesado", false);
     } else if (personagemEnergiaAtual >= ENERGIA_ATAQUE_LEVE) {
       if (personagemEnergiaAtual < ENERGIA_ATAQUE_LEVE) {
-        this.naoTenhoEnergiaUi();
         return;
       }
 
@@ -1046,17 +1044,22 @@ export class Boss extends Phaser.Scene {
 
   bossAnimacaoComecada(oBossVar, anim) {
     if (anim.key === "ataqueBoss1") {
-      oBossVar.setSize(170, 120);
-      oBossVar.setOffset(0, 70);
+      oBossVar.setSize(170, 180);
+      oBossVar.setOffset(0, 0);
       return;
     } else if (anim.key === "ataqueBoss2") {
-      oBossVar.setSize(240, 155);
-      oBossVar.setOffset(0, 70);
+      oBossVar.setSize(210, 180);
+      oBossVar.setOffset(0, 35);
       return;
     }
     if (anim.key === "ataqueBoss3") {
-      oBossVar.setSize(265, 205);
-      oBossVar.setOffset(0, 70);
+      oBossVar.setSize(140, 205);
+      if(boss.flipX === false) {
+        oBossVar.setOffset(100, 70);
+      } else {  
+        oBossVar.setOffset(40, 70);
+      }
+    
       return;
     }
     oBossVar.setSize(tamanhoNormalBoss[0], tamanhoNormalBoss[1]);
@@ -1149,7 +1152,7 @@ export class Boss extends Phaser.Scene {
       return;
     }
 
-    oBoss.combo = Math.floor(Math.random() * 3) + 1;
+    oBoss.combo = 3
 
     // Ele também não pode ser interrompido no seu ataque
     oBoss.podeSerStunado = false;
