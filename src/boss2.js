@@ -1053,8 +1053,8 @@ export class BossSecreto extends Phaser.Scene {
       return;
     }
     if (anim.key === "ataqueBoss3") {
-      oBossVar.setSize(200,250);
-      oBossVar.setOffset(0, 20);
+      oBossVar.setSize(200,150);
+      oBossVar.setOffset(0, 150);
     
       return;
     }
