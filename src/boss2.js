@@ -459,7 +459,7 @@ export class BossSecreto extends Phaser.Scene {
 
     // Animação de ataque do boss2
     this.anims.create({
-      key: "ataqueBoss2_2R",
+      key: "ataqueBoss2R",
       frames: this.anims.generateFrameNumbers("boss2_ataque2", {
         start: 0,
         end: 3,
@@ -470,7 +470,7 @@ export class BossSecreto extends Phaser.Scene {
 
     // Animação de ataque do boss2
     this.anims.create({
-      key: "ataqueBoss2_3R",
+      key: "ataqueBoss3R",
       frames: this.anims.generateFrameNumbers("boss2_ataque3", {
         start: 0,
         end: 3,
