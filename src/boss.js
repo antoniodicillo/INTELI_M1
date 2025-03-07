@@ -8,7 +8,7 @@ export class Boss extends Phaser.Scene {
   init() {
     // Variaveis do boss
     this.boss = {
-      vidaAtual: 500,
+      vidaAtual: 2,
       VIDA_MAXIMA: 500,
 
       podeLevarHit: true,
@@ -36,6 +36,7 @@ export class Boss extends Phaser.Scene {
     };
 
     // Reseta variaveis globais
+    playerLevouHit = false;
     stunJogador = false;
     personagemVidaAtual = PERSONAGEM_VIDA_MAXIMA;
     personagemEnergiaAtual = PERSONAGEM_ENERGIA_MAXIMA;
@@ -705,7 +706,7 @@ export class Boss extends Phaser.Scene {
           if (caveiras > 0 && cooldownHeal === false) {
             cooldownHeal = true;
 
-            this.time.delayedCall(1000, () => {
+            this.time.delayedCall(2500, () => {
               cooldownHeal = false;
             });
 
@@ -879,6 +880,8 @@ export class Boss extends Phaser.Scene {
         if (personagemNaoTomaDano === true) {
           return;
         }
+        playerLevouHit = true;
+
         personagemVidaAtual -= oBoss.danoAtual;
         personagemVidaAtual = Math.max(0, personagemVidaAtual);
 
@@ -1054,15 +1057,16 @@ export class Boss extends Phaser.Scene {
     }
     if (anim.key === "ataqueBoss3") {
       oBossVar.setSize(140, 205);
-      if(boss.flipX === false) {
+      if (boss.flipX === false) {
         oBossVar.setOffset(100, 70);
-      } else {  
+      } else {
         oBossVar.setOffset(40, 70);
       }
-    
+
       return;
     }
     oBossVar.setSize(tamanhoNormalBoss[0], tamanhoNormalBoss[1]);
+    oBossVar.setOffset(0, 65);
   }
 
   bossAnimacaoTerminada(oBoss, oBossVar, anim) {
@@ -1403,7 +1407,13 @@ export class Boss extends Phaser.Scene {
           ease: "Linear",
         });
 
-        this.gameEnd();
+        if (playerLevouHit === true) {
+          this.gameEnd();
+        } else {
+          this.time.delayedCall(5000, () => {
+            this.gameEndAlternativo();
+          })
+        }
       });
     });
   }
@@ -1494,6 +1504,61 @@ export class Boss extends Phaser.Scene {
     boss.off("animationstart");
     boss.off("animationupdate");
   }
+
+  gameEndAlternativo() {
+    const x = this.cameras.main.width / 3;
+    const y = this.cameras.main.height / 2;
+
+    // Primeiro dialogo
+    this.bgDialogo = this.add.graphics();
+    this.bgDialogo.fillStyle(0x000000, 1);
+    this.bgDialogo.fillRect(x - 50, y, 600, 100);
+
+    this.bgImagem = this.add.graphics();
+    this.bgImagem.fillStyle(0x000000, 1);
+    this.bgImagem.fillRect(x - 100, y, 100, 100);
+
+    this.personagemFalandoTexto = this.add.text(x, y + 5, "???", {
+      fontSize: "16px",
+      fill: "#ffffff",
+    });
+
+    this.dialogo = this.add.text(x, y + 40, "", {
+      fontSize: "16px",
+      fill: "#ffffff",
+      wordWrap: { width: 500, useAdvancedWrap: true },
+    }).setOrigin(0.5,0.5)
+
+    this.bgDialogo.setScrollFactor(0);
+    this.bgImagem.setScrollFactor(0);
+    this.personagemFalandoTexto.setScrollFactor(0);
+    this.dialogo.setScrollFactor(0);
+
+    this.efeitoTypewrite(
+      "VOCÊ PENSOU QUE ESSE ERA O FIM?",
+      this.dialogo
+    );
+    // Quarto dialogo
+    this.time.delayedCall(6000, () => {
+      this.dialogo.destroy()
+
+      this.dialogo = this.add.text(x, y + 40, "", {
+        fontSize: "16px",
+        fill: "#ffffff",
+        wordWrap: { width: 500, useAdvancedWrap: true },
+      }).setOrigin(0.5,0.5)
+
+      this.efeitoTypewrite(
+        "ESTAMOS APENAS COMEÇANDO...",
+        this.dialogo
+      );
+      this.time.delayedCall(5000, () => {
+        this.resetGame();
+        this.scene.start("BossSecreto");
+        this.scene.stop("Boss");
+      })
+    });
+  }
 }
 
 // Largura e altura do jogo
@@ -1578,3 +1643,5 @@ let thunderClapHeavy;
 
 let dano_BossSom;
 let boss_Musica;
+
+let playerLevouHit = false;

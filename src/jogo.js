@@ -853,7 +853,7 @@ export class Jogo extends Phaser.Scene {
           if (caveiras > 0 && cooldownHeal === false) {
             cooldownHeal = true;
 
-            this.time.delayedCall(1000,() => {
+            this.time.delayedCall(2500,() => {
               cooldownHeal = false;
             });
 

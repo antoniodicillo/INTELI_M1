@@ -6,34 +6,39 @@ export class BossSecreto extends Phaser.Scene {
   }
 
   init() {
-    // Variaveis do boss
-    this.boss = {
-      vidaAtual: 500,
-      VIDA_MAXIMA: 500,
+    // Variaveis do boss22
+    this.boss2 = {
+      vidaAtual: 400,
+      VIDA_MAXIMA: 400,
 
       podeLevarHit: true,
       podeMover: true,
 
       pertoParaAtaque: false,
       coolDownAtaque: false,
-      bossJaTaMorto: false,
+      boss2JaTaMorto: false,
       podeSerStunado: true,
 
-      FRAMES_ATAQUE_1: [3],
-      FRAMES_ATAQUE_2: [3],
-      FRAMES_ATAQUE_3: [3],
-      DANO_1: 30,
-      DANO_2: 35,
+      FRAMES_ATAQUE_1: [2],
+      FRAMES_ATAQUE_2: [2],
+      FRAMES_ATAQUE_3: [2],
+      DANO_1: 25,
+      DANO_2: 30,
       DANO_3: 40,
+      DANO_RAPIDO: 75,
       podeDarDano: false,
       danoAtual: 0,
       posX: 200,
 
-      combo: 0, // 0 - Sem combo, 1 - So o primeiro ataque, 2 - Primeiro e segundo ataque, 3 - Todos os ataques
+      combo: 0, // 0 - Aqui o combo é o numero de vezes que o boss2 atacou, se ele for 3 ele muda de modo
+      modo: 0, // 0 - Normal 1 - Evasivo (da um counter) 2 - Ataque rapido
 
-      velocidade: 250,
+      vaiTentarCounter: true,
+      velocidade: 300,
       tocouSom: false,
     };
+
+    this.boss2.modo = 1;
 
     // Reseta variaveis globais
     stunJogador = false;
@@ -120,42 +125,52 @@ export class BossSecreto extends Phaser.Scene {
     });
 
     // ------------------------------------------------------
-    // Carrega as animações do boss
+    // Carrega as animações do boss2
     // ------------------------------------------------------
 
-    this.load.spritesheet("boss_normal", "src/assets/Boss2_Idle.png", {
+    this.load.spritesheet("boss2_normal", "src/assets/Boss2_Idle.png", {
       frameWidth: 100,
       frameHeight: 115,
     });
 
-    this.load.spritesheet("boss_hit", "src/assets/Boss2_Dano.png", {
+    this.load.spritesheet("boss2_hit", "src/assets/Boss2_Dano.png", {
       frameWidth: 105,
       frameHeight: 115,
     });
 
-    this.load.spritesheet("boss_morte", "src/assets/Boss2_Morte.png", {
+    this.load.spritesheet("boss2_morte", "src/assets/Boss2_Morte.png", {
       frameWidth: 105,
       frameHeight: 115,
     });
 
-    this.load.spritesheet("boss_andando", "src/assets/Boss2_Correndo.png", {
+    this.load.spritesheet("boss2_andando", "src/assets/Boss2_Correndo.png", {
       frameWidth: 105,
       frameHeight: 115,
     });
 
-    this.load.spritesheet("boss_ataque1", "src/assets/Boss2_Ataque1.png", {
+    this.load.spritesheet("boss2_ataque1", "src/assets/Boss2_Ataque1.png", {
       frameWidth: 189,
       frameHeight: 140,
     });
 
-    this.load.spritesheet("boss_ataque2", "src/assets/Boss2_Ataque2.png", {
+    this.load.spritesheet("boss2_ataque2", "src/assets/Boss2_Ataque2.png", {
       frameWidth: 303,
       frameHeight: 140,
     });
 
-    this.load.spritesheet("boss_ataque3", "src/assets/Boss2_Ataque3.png", {
+    this.load.spritesheet("boss2_ataque3", "src/assets/Boss2_Ataque3.png", {
       frameWidth: 303,
       frameHeight: 216,
+    });
+
+    this.load.spritesheet("boss2_pulo", "src/assets/Boss2_Pulo.png", {
+      frameWidth: 105,
+      frameHeight: 115,
+    });
+
+    this.load.spritesheet("boss2_caindo", "src/assets/Boss2_Fall.png", {
+      frameWidth: 105,
+      frameHeight: 115,
     });
 
     // Elementos da UI
@@ -164,42 +179,15 @@ export class BossSecreto extends Phaser.Scene {
     this.load.image("continuar", "src/assets/Continuar.png");
     this.load.image("continuarDestaque", "src/assets/ContinuarUnderline.png");
     // Audio
-    this.load.audio("dano_BossSom", "src/assets/audio/bossDano.wav");
 
     this.load.audio("ataque_leveSom", "src/assets/audio/ataque_leve.wav");
     this.load.audio("ataque_pesadoSom", "src/assets/audio/ataque_pesado.wav");
-    this.load.audio(
-      "ataque_esqueletoSom",
-      "src/assets/audio/esqueleto_ataque.wav"
-    );
-
-    this.load.audio(
-      "thunderClapLight",
-      "src/assets/audio/thunderClapLight.wav"
-    );
-    this.load.audio("thunderClap", "src/assets/audio/thunderClap.wav");
-    this.load.audio(
-      "thunderClapHeavy",
-      "src/assets/audio/thunderClapHeavy.wav"
-    );
-    this.load.audio("bossSoundtrack", "src/assets/audio/TemaBoss.wav");
   }
 
   create() {
     // Carrega os sons
     const ataque_leveSom = this.sound.add("ataque_leveSom");
     const ataque_PesadoSom = this.sound.add("ataque_pesadoSom");
-    dano_BossSom = this.sound.add("dano_BossSom");
-    dano_BossSom.setVolume(0.5);
-
-    thunderClapLight = this.sound.add("thunderClapLight");
-    thunderClap = this.sound.add("thunderClap");
-    thunderClapHeavy = this.sound.add("thunderClapHeavy");
-
-    boss_Musica = this.sound.add("bossSoundtrack");
-    boss_Musica.play();
-    boss_Musica.setLoop(true);
-    boss_Musica.setVolume(0.5);
 
     // Adicionar imagens e sprites no jogo
     this.add.image(larguraJogo / 2, alturaJogo / 2, "background");
@@ -229,12 +217,12 @@ export class BossSecreto extends Phaser.Scene {
     personagem.body.pushable = false;
 
     // Adicionar fisica ao inimigo
-    boss = this.physics.add.sprite(64, 0, "boss_normal");
-    boss.setCollideWorldBounds(true);
-    boss.setPosition(950, 535);
-    boss.setOrigin(0.5, 1);
+    boss2 = this.physics.add.sprite(64, 0, "boss2_normal");
+    boss2.setCollideWorldBounds(true);
+    boss2.setPosition(1500, 535);
+    boss2.setOrigin(0.5, 1);
 
-    boss.body.pushable = false;
+    boss2.body.pushable = false;
 
     // Adiciona colisão do personagem nas plataforams
     this.physics.add.collider(personagem, chao);
@@ -242,9 +230,9 @@ export class BossSecreto extends Phaser.Scene {
     this.physics.add.collider(personagem, terra);
 
     // Adiciona colisão aos inimigos
-    this.physics.add.collider(boss, chao);
-    this.physics.add.collider(boss, this.chao2);
-    this.physics.add.collider(boss, terra);
+    this.physics.add.collider(boss2, chao);
+    this.physics.add.collider(boss2, this.chao2);
+    this.physics.add.collider(boss2, terra);
 
     // Registrar teclas do teclado
     teclaA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -365,13 +353,13 @@ export class BossSecreto extends Phaser.Scene {
     });
 
     // ------------------------------------------------------
-    // Animações do boss
+    // Animações do boss2
     // ------------------------------------------------------
 
-    // Idle do boss
+    // Idle do boss2
     this.anims.create({
-      key: "normalBoss",
-      frames: this.anims.generateFrameNumbers("boss_normal", {
+      key: "normalBoss2",
+      frames: this.anims.generateFrameNumbers("boss2_normal", {
         start: 0,
         end: 7,
       }),
@@ -379,10 +367,10 @@ export class BossSecreto extends Phaser.Scene {
       repeat: -1,
     });
 
-    // Animação de hit do boss
+    // Animação de hit do boss2
     this.anims.create({
-      key: "hitBoss",
-      frames: this.anims.generateFrameNumbers("boss_hit", {
+      key: "hitBoss2",
+      frames: this.anims.generateFrameNumbers("boss2_hit", {
         start: 0,
         end: 3,
       }),
@@ -390,10 +378,10 @@ export class BossSecreto extends Phaser.Scene {
       repeat: 0,
     });
 
-    // Animação de hit do boss
+    // Animação de hit do boss2
     this.anims.create({
-      key: "morteBoss",
-      frames: this.anims.generateFrameNumbers("boss_morte", {
+      key: "morteBoss2",
+      frames: this.anims.generateFrameNumbers("boss2_morte", {
         start: 0,
         end: 5,
       }),
@@ -401,10 +389,10 @@ export class BossSecreto extends Phaser.Scene {
       repeat: 0,
     });
 
-    // Animação de andar do boss
+    // Animação de andar do boss2
     this.anims.create({
-      key: "andarBoss",
-      frames: this.anims.generateFrameNumbers("boss_andando", {
+      key: "andarBoss2",
+      frames: this.anims.generateFrameNumbers("boss2_andando", {
         start: 0,
         end: 7,
       }),
@@ -412,10 +400,10 @@ export class BossSecreto extends Phaser.Scene {
       repeat: -1,
     });
 
-    // Animação de ataque do boss
+    // Animação de ataque do boss2
     this.anims.create({
-      key: "ataqueBoss1",
-      frames: this.anims.generateFrameNumbers("boss_ataque1", {
+      key: "ataqueBoss2_1",
+      frames: this.anims.generateFrameNumbers("boss2_ataque1", {
         start: 0,
         end: 3,
       }),
@@ -423,10 +411,10 @@ export class BossSecreto extends Phaser.Scene {
       repeat: 0,
     });
 
-    // Animação de ataque do boss
+    // Animação de ataque do boss2
     this.anims.create({
-      key: "ataqueBoss2",
-      frames: this.anims.generateFrameNumbers("boss_ataque2", {
+      key: "ataqueBoss2_2",
+      frames: this.anims.generateFrameNumbers("boss2_ataque2", {
         start: 0,
         end: 3,
       }),
@@ -434,14 +422,60 @@ export class BossSecreto extends Phaser.Scene {
       repeat: 0,
     });
 
-    // Animação de ataque do boss
+    // Animação de ataque do boss2
     this.anims.create({
-      key: "ataqueBoss3",
-      frames: this.anims.generateFrameNumbers("boss_ataque3", {
+      key: "ataqueBoss2_3",
+      frames: this.anims.generateFrameNumbers("boss2_ataque3", {
         start: 0,
         end: 3,
       }),
       frameRate: 10,
+      repeat: 0,
+    });
+
+    // Animação de ataque do boss2
+    this.anims.create({
+      key: "boss2Pulo",
+      frames: this.anims.generateFrameNumbers("boss2_pulo", {
+        start: 0,
+        end: 1,
+      }),
+      frameRate: 2,
+      repeat: 0,
+    });
+
+    // Animação de ataque do boss2
+    this.anims.create({
+      key: "boss2Caindo",
+      frames: this.anims.generateFrameNumbers("boss2_caindo", {
+        start: 0,
+        end: 1,
+      }),
+      frameRate: 2,
+      repeat: 0,
+    });
+
+    // Ataque rapido do boss2
+
+    // Animação de ataque do boss2
+    this.anims.create({
+      key: "ataqueBoss2_2R",
+      frames: this.anims.generateFrameNumbers("boss2_ataque2", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 20,
+      repeat: 0,
+    });
+
+    // Animação de ataque do boss2
+    this.anims.create({
+      key: "ataqueBoss2_3R",
+      frames: this.anims.generateFrameNumbers("boss2_ataque3", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 20,
       repeat: 0,
     });
 
@@ -513,12 +547,12 @@ export class BossSecreto extends Phaser.Scene {
     // Seta a variavel stunJogador para false quando a animação termina, e muda o estagio do ataque
     personagem.on("animationcomplete", (anim) => {
       if (anim.key === "ataque_Leve") {
-        this.boss.podeLevarHit = true;
+        this.boss2.podeLevarHit = true;
         stunJogador = false;
         personagemTocouSom = false;
         dano = 0;
       } else if (anim.key === "ataque_Pesado") {
-        this.boss.podeLevarHit = true;
+        this.boss2.podeLevarHit = true;
         stunJogador = false;
         personagemTocouSom = false;
         dano = 0;
@@ -533,25 +567,25 @@ export class BossSecreto extends Phaser.Scene {
       }
     });
 
-    // Logica para o overlap do personagem contra o boss
-    this.physics.add.overlap(personagem, boss, () => {
-      this.overlapBossPlayer(personagem, boss, this.boss);
+    // Logica para o overlap do personagem contra o boss2
+    this.physics.add.overlap(personagem, boss2, () => {
+      this.overlapBossPlayer(personagem, boss2, this.boss2);
     });
 
-    // Logica das animações do boss
+    // Logica das animações do boss2
 
-    // Animação do primeiro boss
-    boss.on("animationstart", (anim) => {
-      this.bossAnimacaoComecada(boss, anim);
+    // Animação do primeiro boss2
+    boss2.on("animationstart", (anim) => {
+      this.boss2AnimacaoComecada(boss2, anim);
     });
 
-    // Verifica o frame da animação do boss
-    boss.on("animationupdate", (anim, frame) => {
-      this.bossAnimacaoUpdate(boss, this.boss, anim, frame);
+    // Verifica o frame da animação do boss2
+    boss2.on("animationupdate", (anim, frame) => {
+      this.boss2AnimacaoUpdate(boss2, this.boss2, anim, frame);
     });
 
-    boss.on("animationcomplete", (anim) => {
-      this.bossAnimacaoTerminada(this.boss, boss, anim);
+    boss2.on("animationcomplete", (anim) => {
+      this.boss2AnimacaoTerminada(this.boss2, boss2, anim);
     });
 
     // Parte da GUI
@@ -603,31 +637,26 @@ export class BossSecreto extends Phaser.Scene {
       }
     );
 
-    // Bara de vida do boss
+    // Bara de vida do boss2
 
-    this.larguraVidaBoss = this.boss.vidaAtual;
+    this.larguraVidaBoss = this.boss2.vidaAtual;
 
-    this.bossVidaBgUI = this.add.graphics();
-    this.bossVidaBgUI.fillStyle(0x000000, 1);
-    this.bossVidaBgUI.fillRect(325, 100, this.larguraVidaBoss + 25, 15);
+    this.boss2VidaBgUI = this.add.graphics();
+    this.boss2VidaBgUI.fillStyle(0x000000, 1);
+    this.boss2VidaBgUI.fillRect(325, 100, this.larguraVidaBoss + 25, 15);
 
-    this.bossVidaUI = this.add.graphics();
-    this.bossVidaUI.fillStyle(0xba1f11, 1);
-    this.bossVidaUI.fillRect(325, 100, this.larguraVidaBoss, 15);
+    this.boss2VidaUI = this.add.graphics();
+    this.boss2VidaUI.fillStyle(0xba1f11, 1);
+    this.boss2VidaUI.fillRect(325, 100, this.larguraVidaBoss, 15);
 
-    this.bossVidaName = this.add.text(
-      325,
-      80,
-      "Garrick, Lâmina do Céu Partido",
-      {
-        fontSize: "14px",
-        fill: "#ffffff",
-      }
-    );
-    this.bossVidaText = this.add.text(
+    this.boss2VidaName = this.add.text(325, 80, "Old Oak King", {
+      fontSize: "14px",
+      fill: "#ffffff",
+    });
+    this.boss2VidaText = this.add.text(
       this.larguraVidaBoss + 325,
       100,
-      this.boss.vidaAtual,
+      this.boss2.vidaAtual,
       {
         fontSize: "14px",
         fill: "#ffffff",
@@ -643,12 +672,14 @@ export class BossSecreto extends Phaser.Scene {
     this.energiaBgUI.setScrollFactor(0);
     this.energiaUI.setScrollFactor(0);
     this.energiaTexto.setScrollFactor(0);
-    this.bossVidaText.setScrollFactor(0);
-    this.bossVidaBgUI.setScrollFactor(0);
-    this.bossVidaUI.setScrollFactor(0);
-    this.bossVidaName.setScrollFactor(0);
+    this.boss2VidaText.setScrollFactor(0);
+    this.boss2VidaBgUI.setScrollFactor(0);
+    this.boss2VidaUI.setScrollFactor(0);
+    this.boss2VidaName.setScrollFactor(0);
 
     this.energiaRegenerando = false;
+
+   
   }
 
   update() {
@@ -705,7 +736,7 @@ export class BossSecreto extends Phaser.Scene {
           if (caveiras > 0 && cooldownHeal === false) {
             cooldownHeal = true;
 
-            this.time.delayedCall(1000, () => {
+            this.time.delayedCall(2500, () => {
               cooldownHeal = false;
             });
 
@@ -730,7 +761,7 @@ export class BossSecreto extends Phaser.Scene {
         } else {
           personagem.anims.play("corrida", true);
         }
-        if (!boss.body.touching.up) {
+        if (!boss2.body.touching.up) {
           pode_Pular = true;
         }
 
@@ -745,15 +776,15 @@ export class BossSecreto extends Phaser.Scene {
       }
     }
     personagemX = personagem.body.position.x;
-    this.boss.posX = boss.body.position.x;
+    this.boss2.posX = boss2.body.position.x;
 
-    this.updateLogicBoss(this.boss, boss);
+    this.updateLogicBoss(this.boss2, boss2);
   }
   updateVidaBoss() {
-    this.bossVidaUI.clear();
-    this.bossVidaUI.fillStyle(0xba1f11, 1);
-    this.bossVidaUI.fillRect(325, 100, this.boss.vidaAtual, 15);
-    this.bossVidaText.setText(this.boss.vidaAtual);
+    this.boss2VidaUI.clear();
+    this.boss2VidaUI.fillStyle(0xba1f11, 1);
+    this.boss2VidaUI.fillRect(325, 100, this.boss2.vidaAtual, 15);
+    this.boss2VidaText.setText(this.boss2.vidaAtual);
   }
 
   // Função para atualizar a UI de vida ou stamina
@@ -866,6 +897,40 @@ export class BossSecreto extends Phaser.Scene {
     }
   }
 
+  oCounterDoBoss(oBoss, oBossVar) {
+    let velocidadeAntiga = oBoss.velocidade
+
+    oBossVar.anims.play("boss2Pulo", false);
+
+    oBossVar.setVelocityY(-200);
+    if(oBossVar.flipX === true) {
+      oBossVar.setVelocityX(-400);
+    } else {
+      oBossVar.setVelocityX(400);
+    }
+    
+    oBoss.velocidade = 600;
+
+    this.time.delayedCall(500, () => {
+      const groundCheck = () => {
+        if (oBossVar.body.touching.down && oBoss.coolDownAtaque === false) {
+          this.events.off("update", groundCheck);
+  
+          oBossVar.setVelocityX(0);
+          oBoss.podeMover = true;
+          oBoss.podeLevarHit = true;
+          oBoss.modo = 2;
+        }
+      };
+      this.time.delayedCall(1000, () => {
+        oBoss.velocidade = velocidadeAntiga;
+      });
+      // Evento para verificar se o boss2 tocou no chao
+      this.events.on("update", groundCheck);
+    })
+    
+  }
+
   overlapBossPlayer(personagem, oBossVar, oBoss) {
     if (oBoss.podeLevarHit === false) {
       return;
@@ -874,7 +939,7 @@ export class BossSecreto extends Phaser.Scene {
       return;
     }
     if (dano === 0) {
-      // Logica para ver se foi o boss que deu o hit no jogador
+      // Logica para ver se foi o boss2 que deu o hit no jogador
       if (oBoss.danoAtual > 0 && oBoss.podeDarDano === true) {
         if (personagemNaoTomaDano === true) {
           return;
@@ -908,13 +973,20 @@ export class BossSecreto extends Phaser.Scene {
       return;
     }
     if (oBoss.vidaAtual <= 0) {
-      oBoss.bossJaTaMorto = true;
+      oBoss.boss2JaTaMorto = true;
       return;
     }
 
-    // Verifica se o boss vai tocar a animacao de hit ou nao
+    if (oBoss.vaiTentarCounter === true && oBossVar.flipX !== personagem.flipX) {
+      oBoss.vaiTentarCounter = false;
+      oBoss.podeLevarHit = false;
+      this.oCounterDoBoss(oBoss, oBossVar);
+      return;
+    }
+
+    // Verifica se o boss2 vai tocar a animacao de hit ou nao
     if (oBoss.podeSerStunado === true || oBoss.vidaAtual <= 0) {
-      oBoss.vidaAtual -= dano * 2;
+      oBoss.vidaAtual -= dano * 1.5;
 
       oBossVar.setVelocityX(0);
       oBossVar.setVelocityY(200);
@@ -922,8 +994,7 @@ export class BossSecreto extends Phaser.Scene {
       oBoss.podeMover = false;
       oBoss.podeLevarHit = false;
 
-      dano_BossSom.play();
-      oBossVar.anims.play("hitBoss", false);
+      oBossVar.anims.play("hitBoss2", false);
     } else {
       oBoss.vidaAtual -= dano;
 
@@ -953,12 +1024,12 @@ export class BossSecreto extends Phaser.Scene {
   }
 
   // ----------------------------------------------
-  // Funções boss
+  // Funções boss2
 
   updateLogicBoss(oBoss, oBossVar) {
-    // Variavel da diferenca do x entre o boss e o personagem
+    // Variavel da diferenca do x entre o boss2 e o personagem
     diferencaPersonagemBossX = personagemX - oBoss.posX;
-    // Verifica se o personagem está no alcance do ataque do boss
+    // Verifica se o personagem está no alcance do ataque do boss2
     if (diferencaPersonagemBossX > 0) {
       if (diferencaPersonagemBossX <= 80) {
         oBoss.pertoParaAtaque = true;
@@ -975,14 +1046,14 @@ export class BossSecreto extends Phaser.Scene {
       }
     }
 
-    if (oBoss.podeMover === true && oBoss.bossJaTaMorto === false) {
-      // Se o boss estiver muito perto do personagem significa que ele pode atacar
+    if (oBoss.podeMover === true && oBoss.boss2JaTaMorto === false) {
+      // Se o boss2 estiver muito perto do personagem significa que ele pode atacar
 
-      // Move o boss para o jogador
+      // Move o boss2 para o jogador
       if (diferencaPersonagemBossX > 50) {
         oBossVar.setFlip(false, false);
         oBossVar.setVelocityX(oBoss.velocidade);
-        oBossVar.anims.play("andarBoss", true);
+        oBossVar.anims.play("andarBoss2", true);
       } else if (diferencaPersonagemBossX < -50) {
         oBossVar.setFlip(true, false);
         oBossVar.setVelocityX(-oBoss.velocidade);
@@ -991,31 +1062,23 @@ export class BossSecreto extends Phaser.Scene {
       // Se o esquleto estar movendo, tocar animacao
       if (oBossVar.body.touching.down) {
         if (oBossVar.body.velocity.x !== 0) {
-          oBossVar.anims.play("andarBoss", true);
+          oBossVar.anims.play("andarBoss2", true);
         }
       }
     }
   }
 
-  bossAnimacaoUpdate(oBossVar, oBoss, anim, frame) {
-    if (anim.key === "ataqueBoss1") {
+  boss2AnimacaoUpdate(oBossVar, oBoss, anim, frame) {
+    if (anim.key === "ataqueBoss2_1") {
       // Verifica se o frame é um frame de ataque
       if (oBoss.FRAMES_ATAQUE_1.includes(frame.frame.name)) {
-        if (oBoss.tocouSom === false) {
-          oBoss.tocouSom = true;
-          thunderClapLight.play();
-        }
         oBoss.danoAtual = oBoss.DANO_1;
       } else {
         oBoss.danoAtual = 0;
       }
 
       return;
-    } else if (anim.key === "ataqueBoss2") {
-      if (oBoss.tocouSom === false) {
-        oBoss.tocouSom = true;
-        thunderClap.play();
-      }
+    } else if (anim.key === "ataqueBoss2_2") {
       // Verifica se o frame é um frame de ataque
       if (oBoss.FRAMES_ATAQUE_2.includes(frame.frame.name)) {
         oBoss.danoAtual = oBoss.DANO_2;
@@ -1024,14 +1087,17 @@ export class BossSecreto extends Phaser.Scene {
       }
 
       return;
-    } else if (anim.key === "ataqueBoss3") {
-      if (oBoss.tocouSom === false) {
-        oBoss.tocouSom = true;
-        thunderClapHeavy.play();
-      }
+    } else if (anim.key === "ataqueBoss2_3") {
       // Verifica se o frame é um frame de ataque
       if (oBoss.FRAMES_ATAQUE_3.includes(frame.frame.name)) {
         oBoss.danoAtual = oBoss.DANO_3;
+      } else {
+        oBoss.danoAtual = 0;
+      }
+      return;
+    } else if (anim.key === "ataqueBoss2R" || anim.key === "ataqueBoss3R") {
+      if (oBoss.FRAMES_ATAQUE_3.includes(frame.frame.name)) {
+        oBoss.danoAtual = oBoss.DANO_RAPIDO;
       } else {
         oBoss.danoAtual = 0;
       }
@@ -1042,32 +1108,41 @@ export class BossSecreto extends Phaser.Scene {
     oBossVar.setSize(tamanhoNormalBoss[0], tamanhoNormalBoss[1]);
   }
 
-  bossAnimacaoComecada(oBossVar, anim) {
-    if (anim.key === "ataqueBoss1") {
-      oBossVar.setSize(200,200);
+  boss2AnimacaoComecada(oBossVar, anim) {
+    if (anim.key === "ataqueBoss2_1") {
+      oBossVar.setSize(180, 200);
       oBossVar.setOffset(0, 0);
       return;
-    } else if (anim.key === "ataqueBoss2") {
-      oBossVar.setSize(200,200);
-      oBossVar.setOffset(0, 0);
+    } else if (anim.key === "ataqueBoss2_2" || anim.key === "ataqueBoss2R") {
+      oBossVar.setSize(250, 200);
+      if (oBossVar.flipX === false) {
+        oBossVar.setOffset(0, 0);
+      } else {
+        oBossVar.setOffset(50, 0);
+      }
       return;
+      rr;
     }
-    if (anim.key === "ataqueBoss3") {
-      oBossVar.setSize(200,250);
-      oBossVar.setOffset(0, 20);
-    
+    if (anim.key === "ataqueBoss2_3" || anim.key === "ataqueBoss3R") {
+      oBossVar.setSize(150, 250);
+      if (oBossVar.flipX === false) {
+        oBossVar.setOffset(150, 40);
+      } else {
+        oBossVar.setOffset(10, 40);
+      }
       return;
     }
     oBossVar.setSize(tamanhoNormalBoss[0], tamanhoNormalBoss[1]);
+    oBossVar.setOffset(0, 0);
   }
 
-  bossAnimacaoTerminada(oBoss, oBossVar, anim) {
-    // Ve se o boss levou hit
-    if (anim.key === "hitBoss") {
+  boss2AnimacaoTerminada(oBoss, oBossVar, anim) {
+    // Ve se o boss2 levou hit
+    if (anim.key === "hitBoss2") {
       // Ve se o esqueleto morreu
       if (oBoss.vidaAtual <= 0) {
-        oBoss.bossJaTaMorto = true;
-        oBossVar.anims.play("morteBoss", false);
+        oBoss.boss2JaTaMorto = true;
+        oBossVar.anims.play("morteBoss2", false);
         return;
       }
 
@@ -1076,35 +1151,63 @@ export class BossSecreto extends Phaser.Scene {
 
       oBoss.tocouSom = false;
       oBoss.podeMover = true;
-      oBossVar.anims.play("normalBoss", true);
-      // respawn e morte do boss se o boss tocar a animacao de morte
-    } else if (anim.key === "morteBoss") {
+      oBossVar.anims.play("normalBoss2", true);
+      // respawn e morte do boss2 se o boss2 tocar a animacao de morte
+    } else if (anim.key === "morteBoss2") {
       // Respawn aqui em baixo
       this.killBoss(oBoss, oBossVar);
     } else if (
-      anim.key === "ataqueBoss3" ||
-      anim.key === "ataqueBoss2" ||
-      anim.key === "ataqueBoss1"
+      anim.key === "ataqueBoss2_3" ||
+      anim.key === "ataqueBoss2_2" ||
+      anim.key === "ataqueBoss2_1" ||
+      anim.key === "ataqueBoss2R" ||
+      anim.key === "ataqueBoss3R"
     ) {
-      if (oBoss.bossJaTaMorto === true || oBoss.vidaAtual <= 0) {
-        oBoss.bossJaTaMorto = true;
-        oBossVar.anims.play("morteBoss", false);
+      if (oBoss.boss2JaTaMorto === true || oBoss.vidaAtual <= 0) {
+        oBoss.boss2JaTaMorto = true;
+        oBossVar.anims.play("morteBoss2", false);
         return;
       }
 
-      oBoss.tocouSom = false;
-      if (anim.key === "ataqueBoss1" && oBoss.combo >= 2) {
-        this.time.delayedCall(50, () => {
+      // Ver se o boss2 vai dar o ataque rapido ou normal
+      if (anim.key === "ataqueBoss2_1") {
+        if (oBoss.modo === 2) {
+          this.time.delayedCall(500, () => {
+            oBoss.podeDarDano = true;
+            oBossVar.anims.play("ataqueBoss2R", true);
+          });
+        } else {
+          this.time.delayedCall(100, () => {
+            oBoss.podeDarDano = true;
+            oBossVar.anims.play("ataqueBoss2_2", true);
+          });
+        }
+        return;
+      } else if (anim.key === "ataqueBoss2_2") {
+        this.time.delayedCall(100, () => {
           oBoss.podeDarDano = true;
-          oBossVar.anims.play("ataqueBoss2", true);
+          oBossVar.anims.play("ataqueBoss2_3", true);
         });
         return;
-      } else if (anim.key === "ataqueBoss2" && oBoss.combo >= 3) {
-        this.time.delayedCall(50, () => {
-          oBoss.podeDarDano = true;
-          oBossVar.anims.play("ataqueBoss3", true);
-        });
+      } else if (anim.key === "ataqueBoss2R") {
+        oBoss.podeDarDano = true;
+        oBossVar.anims.play("ataqueBoss3R", true);
         return;
+      }
+
+      // Avança a contagem do modo do boss2. Se a contagem for maior que 3, ele muda de modo
+      oBoss.combo++;
+      console.log(oBoss.combo)
+      if(oBoss.combo >= 3) {
+        oBoss.combo = 0;
+        let modoAntigo = this.boss2.modo;
+        do {
+          this.boss2.modo = Math.floor(Math.random() * 3);
+        } while (this.boss2.modo === modoAntigo);
+
+        console.log(this.boss2.modo);
+
+        this.boss2.vaiTentarCounter = false;
       }
 
       oBoss.podeSerStunado = true;
@@ -1114,7 +1217,7 @@ export class BossSecreto extends Phaser.Scene {
         oBoss.danoAtual = 0;
 
         oBoss.podeMover = true;
-        oBossVar.anims.play("normalBoss", true);
+        oBossVar.anims.play("normalBoss2", true);
         this.time.delayedCall(700, () => {
           oBoss.coolDownAtaque = false;
         });
@@ -1122,21 +1225,21 @@ export class BossSecreto extends Phaser.Scene {
     }
   }
 
-  // Mata o boss
+  // Mata o boss2
   killBoss(oBoss, oBossVar) {
     oBoss.podeMover = false;
     oBossVar.setActive(false);
 
-    caveiras += 20;
+    caveiras += 100;
     localStorage.setItem("Caveiras", caveiras);
     caveirasImagem.setVisible(true);
     caveirasTexto.setText("(x" + caveiras + ")");
 
-    // Começa a funcao quando o boss é derrotado
-    this.bossDerotado();
+    // Começa a funcao quando o boss2 é derrotado
+    this.boss2Derotado();
   }
 
-  // O boss tem combo aleatorio, ou seja ele pode atacar 1, 2 ou 3 vezes
+ 
   ataqueBoss(oBoss, oBossVar) {
     if (oBoss.coolDownAtaque === true) {
       return;
@@ -1148,12 +1251,27 @@ export class BossSecreto extends Phaser.Scene {
       return;
     }
 
-    oBoss.combo = 3
+    if (oBoss.modo === 1 && oBoss.podeDarDano === false) {
+      oBoss.podeMover = false;
+      oBoss.vaiTentarCounter = true;
+      oBossVar.setVelocityX(0);
+      oBossVar.anims.play("normalBoss2", true);
+      
+      // Se o player nao atacar o boss2, entao ele sai da fase de counter
+      this.time.delayedCall(2500, () => {
+        if(this.boss2.vaiTentarCounter === true && this.boss2.modo !== 2) {
+          this.boss2.vaiTentarCounter = false;
+          this.boss2.podeMover = true;
+          oBoss.modo = 0;
+        }
+      });
+      return;
+    }
 
     // Ele também não pode ser interrompido no seu ataque
     oBoss.podeSerStunado = false;
 
-    oBossVar.anims.play("ataqueBoss1", false);
+    oBossVar.anims.play("ataqueBoss2_1", false);
     oBossVar.setVelocityX(0);
     oBoss.podeMover = false;
 
@@ -1162,17 +1280,16 @@ export class BossSecreto extends Phaser.Scene {
   }
 
   gameOver() {
-    // "Desativa o boss"
-    boss.anims.play("normalBoss", true);
-    boss_Musica.stop();
+    // "Desativa o boss2"
+    boss2.anims.play("normalBoss2", true);
 
-    boss.setVelocityX(0);
-    boss.setVelocityX(0);
+    boss2.setVelocityX(0);
+    boss2.setVelocityX(0);
 
-    this.boss.podeLevarHit = false;
+    this.boss2.podeLevarHit = false;
 
-    this.boss.podeMover = false;
-    this.boss.coolDownAtaque = true;
+    this.boss2.podeMover = false;
+    this.boss2.coolDownAtaque = true;
 
     // Define quanto tempo demora para a tween
     this.tempoTween = 800;
@@ -1238,7 +1355,7 @@ export class BossSecreto extends Phaser.Scene {
     });
     this.textoSair.on("pointerdown", () => {
       this.scene.start("Menu");
-      this.scene.stop("Boss");
+      this.scene.stop("BossSecreto");
     });
 
     this.textoSair.setVisible(false);
@@ -1314,24 +1431,23 @@ export class BossSecreto extends Phaser.Scene {
     });
   }
 
-  // Funcao quando o boss é derrotado
-  bossDerotado() {
-    boss_Musica.stop();
+  // Funcao quando o boss2 é derrotado
+  boss2Derotado() {
     this.time.delayedCall(500, () => {
       const x = this.cameras.main.width;
       const y = this.cameras.main.height;
 
-      this.bossVidaBgUI.setVisible(false);
-      this.bossVidaUI.setVisible(false);
-      this.bossVidaName.setVisible(false);
-      this.bossVidaText.setVisible(false);
+      this.boss2VidaBgUI.setVisible(false);
+      this.boss2VidaUI.setVisible(false);
+      this.boss2VidaName.setVisible(false);
+      this.boss2VidaText.setVisible(false);
 
       this.backgroundBossDerotado = this.add.graphics();
       this.backgroundBossDerotado.fillStyle(0x000000, 0);
       this.backgroundBossDerotado.fillRect(0, y / 3, x, y / 4);
 
       this.textoBossDerotado = this.add
-        .text(x / 2, y / 2.2, "INIMIGO FORTE DERROTADO", {
+        .text(x / 2, y / 2.2, "REI DERROTADO", {
           fontSize: "40px",
           fill: "#ffffff",
         })
@@ -1443,7 +1559,7 @@ export class BossSecreto extends Phaser.Scene {
 
       // Primeiro texto aparece
       this.time.delayedCall(1000, () => {
-        this.textoEndGame.setText("Você o derrotou.");
+        this.textoEndGame.setText("O rei está morto");
 
         // Tween da transparencia do texto de endgame
         this.tweens.add({
@@ -1468,7 +1584,7 @@ export class BossSecreto extends Phaser.Scene {
         this.time.delayedCall(3000, () => {
           this.resetGame();
           this.scene.start("Creditos");
-          this.scene.stop("Boss");
+          this.scene.stop("BossSecreto");
         });
       });
     });
@@ -1486,9 +1602,9 @@ export class BossSecreto extends Phaser.Scene {
     personagem.off("animationstart");
     personagem.off("animationupdate");
 
-    boss.off("animationcomplete");
-    boss.off("animationstart");
-    boss.off("animationupdate");
+    boss2.off("animationcomplete");
+    boss2.off("animationstart");
+    boss2.off("animationupdate");
   }
 }
 
@@ -1498,7 +1614,7 @@ const alturaJogo = 600;
 
 // Variaveis
 let personagem;
-let boss;
+let boss2;
 
 const tamanhoNormal = [50, 76];
 const tamanhoNormalBoss = [105, 115];
@@ -1567,10 +1683,3 @@ let caveiras = Number(localStorage.getItem("Caveiras"));
 
 let cooldownHeal = false;
 let personagemTocouSom = false;
-
-let thunderClapLight;
-let thunderClap;
-let thunderClapHeavy;
-
-let dano_BossSom;
-let boss_Musica;
