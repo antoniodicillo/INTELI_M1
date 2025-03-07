@@ -3,6 +3,7 @@ import { GameOver } from "./src/gameOver.js";
 import { Menu, Creditos, Controles } from "./src/menu.js";
 import { Boss } from "./src/boss.js";
 import { BossDialogo } from "./src/bossDialogo.js";
+import { BossSecreto } from "./src/boss2.js";
 
 class BootScene extends Phaser.Scene {
   constructor() {
@@ -17,7 +18,7 @@ class BootScene extends Phaser.Scene {
       localStorage.setItem('Caveiras',0)
     }   
 
-    this.scene.start("Menu");
+    this.scene.start("BossSecreto");
     this.scene.stop("boot");
   }
 }
@@ -44,11 +45,11 @@ const config = {
     default: "arcade",
     arcade: {
       gravity: { y: 600 },
-      debug: false,
+      debug: true,
     },
   },
 
-  scene: [BootScene, Menu, Creditos, Controles,  Jogo, GameOver, Boss, BossDialogo]
+  scene: [BootScene, Menu, Creditos, Controles,  Jogo, GameOver, Boss, BossDialogo, BossSecreto]
 };
 
 

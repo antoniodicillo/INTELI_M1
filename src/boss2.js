@@ -1,8 +1,8 @@
 // boa sorte
 
-export class Boss extends Phaser.Scene {
+export class BossSecreto extends Phaser.Scene {
   constructor() {
-    super("Boss");
+    super("BossSecreto");
   }
 
   init() {
@@ -19,12 +19,12 @@ export class Boss extends Phaser.Scene {
       bossJaTaMorto: false,
       podeSerStunado: true,
 
-      FRAMES_ATAQUE_1: [4, 5],
-      FRAMES_ATAQUE_2: [3, 4],
-      FRAMES_ATAQUE_3: [6, 7],
-      DANO_1: 35,
-      DANO_2: 40,
-      DANO_3: 65,
+      FRAMES_ATAQUE_1: [3],
+      FRAMES_ATAQUE_2: [3],
+      FRAMES_ATAQUE_3: [3],
+      DANO_1: 30,
+      DANO_2: 35,
+      DANO_3: 40,
       podeDarDano: false,
       danoAtual: 0,
       posX: 200,
@@ -123,39 +123,39 @@ export class Boss extends Phaser.Scene {
     // Carrega as animações do boss
     // ------------------------------------------------------
 
-    this.load.spritesheet("boss_normal", "src/assets/Boss_Idle.png", {
-      frameWidth: 84,
-      frameHeight: 92,
+    this.load.spritesheet("boss_normal", "src/assets/Boss2_Idle.png", {
+      frameWidth: 100,
+      frameHeight: 115,
     });
 
-    this.load.spritesheet("boss_hit", "src/assets/Boss_Hit.png", {
-      frameWidth: 88,
-      frameHeight: 92,
+    this.load.spritesheet("boss_hit", "src/assets/Boss2_Dano.png", {
+      frameWidth: 105,
+      frameHeight: 115,
     });
 
-    this.load.spritesheet("boss_morte", "src/assets/Boss_Morte.png", {
-      frameWidth: 116,
-      frameHeight: 92,
+    this.load.spritesheet("boss_morte", "src/assets/Boss2_Morte.png", {
+      frameWidth: 105,
+      frameHeight: 115,
     });
 
-    this.load.spritesheet("boss_andando", "src/assets/Boss_Correr.png", {
-      frameWidth: 118,
-      frameHeight: 92,
+    this.load.spritesheet("boss_andando", "src/assets/Boss2_Correndo.png", {
+      frameWidth: 105,
+      frameHeight: 115,
     });
 
-    this.load.spritesheet("boss_ataque1", "src/assets/Boss_Ataque1.png", {
-      frameWidth: 170,
-      frameHeight: 120,
+    this.load.spritesheet("boss_ataque1", "src/assets/Boss2_Ataque1.png", {
+      frameWidth: 189,
+      frameHeight: 140,
     });
 
-    this.load.spritesheet("boss_ataque2", "src/assets/Boss_Ataque2.png", {
-      frameWidth: 240,
-      frameHeight: 155,
+    this.load.spritesheet("boss_ataque2", "src/assets/Boss2_Ataque2.png", {
+      frameWidth: 303,
+      frameHeight: 140,
     });
 
-    this.load.spritesheet("boss_ataque3", "src/assets/Boss_Ataque3.png", {
-      frameWidth: 265,
-      frameHeight: 205,
+    this.load.spritesheet("boss_ataque3", "src/assets/Boss2_Ataque3.png", {
+      frameWidth: 303,
+      frameHeight: 216,
     });
 
     // Elementos da UI
@@ -373,7 +373,7 @@ export class Boss extends Phaser.Scene {
       key: "normalBoss",
       frames: this.anims.generateFrameNumbers("boss_normal", {
         start: 0,
-        end: 9,
+        end: 7,
       }),
       frameRate: 10,
       repeat: -1,
@@ -395,7 +395,7 @@ export class Boss extends Phaser.Scene {
       key: "morteBoss",
       frames: this.anims.generateFrameNumbers("boss_morte", {
         start: 0,
-        end: 6,
+        end: 5,
       }),
       frameRate: 8,
       repeat: 0,
@@ -417,7 +417,7 @@ export class Boss extends Phaser.Scene {
       key: "ataqueBoss1",
       frames: this.anims.generateFrameNumbers("boss_ataque1", {
         start: 0,
-        end: 6,
+        end: 3,
       }),
       frameRate: 10,
       repeat: 0,
@@ -428,7 +428,7 @@ export class Boss extends Phaser.Scene {
       key: "ataqueBoss2",
       frames: this.anims.generateFrameNumbers("boss_ataque2", {
         start: 0,
-        end: 6,
+        end: 3,
       }),
       frameRate: 10,
       repeat: 0,
@@ -439,7 +439,7 @@ export class Boss extends Phaser.Scene {
       key: "ataqueBoss3",
       frames: this.anims.generateFrameNumbers("boss_ataque3", {
         start: 0,
-        end: 7,
+        end: 3,
       }),
       frameRate: 10,
       repeat: 0,
@@ -1044,21 +1044,17 @@ export class Boss extends Phaser.Scene {
 
   bossAnimacaoComecada(oBossVar, anim) {
     if (anim.key === "ataqueBoss1") {
-      oBossVar.setSize(170, 180);
+      oBossVar.setSize(200,200);
       oBossVar.setOffset(0, 0);
       return;
     } else if (anim.key === "ataqueBoss2") {
-      oBossVar.setSize(210, 180);
-      oBossVar.setOffset(0, 35);
+      oBossVar.setSize(200,200);
+      oBossVar.setOffset(0, 0);
       return;
     }
     if (anim.key === "ataqueBoss3") {
-      oBossVar.setSize(140, 205);
-      if(boss.flipX === false) {
-        oBossVar.setOffset(100, 70);
-      } else {  
-        oBossVar.setOffset(40, 70);
-      }
+      oBossVar.setSize(200,250);
+      oBossVar.setOffset(0, 20);
     
       return;
     }
@@ -1152,7 +1148,7 @@ export class Boss extends Phaser.Scene {
       return;
     }
 
-    oBoss.combo = Math.floor(Math.random() * 3) + 1;
+    oBoss.combo = 3
 
     // Ele também não pode ser interrompido no seu ataque
     oBoss.podeSerStunado = false;
@@ -1505,7 +1501,7 @@ let personagem;
 let boss;
 
 const tamanhoNormal = [50, 76];
-const tamanhoNormalBoss = [84, 92];
+const tamanhoNormalBoss = [105, 115];
 
 // Frame Data
 
