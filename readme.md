@@ -17,8 +17,12 @@ Shift + M1 (Mouse click) - Ataque Pesado
 https://antoniodicillo.github.io/INTELI_M1/
 
 
-### Cheat list (coloque o nome no localstorage)
+### Cheat list (coloque o nome no localstorage e recarregue a página)
 
 - O REI DA FLORESTA : Vai direto a bossfight secreta
 - O PRIMEIRO CHEFAO : Vai direto a bossfight normal
 - godMode : Deixa o player imune a todos os danos
+
+
+### Figma:
+https://www.figma.com/design/ep7DqHAO0DeaCM6f5f0fgi/Phaser-Game---Kizzy?node-id=135-14&p=f&t=FUnoXhTUk2UtUA2b-0
