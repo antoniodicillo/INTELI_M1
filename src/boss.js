@@ -187,6 +187,13 @@ export class Boss extends Phaser.Scene {
   }
 
   create() {
+    this.godMode = false;
+    
+    if(localStorage.getItem("godMode")) {
+      this.godMode = true;
+    }
+    
+
     // Carrega os sons
     const ataque_leveSom = this.sound.add("ataque_leveSom");
     const ataque_PesadoSom = this.sound.add("ataque_pesadoSom");
@@ -654,7 +661,9 @@ export class Boss extends Phaser.Scene {
 
   update() {
     // god mode
-    // personagemNaoTomaDano = true;
+    if(this.godMode === true) {
+      personagemNaoTomaDano = true;
+    }
 
     // Logica do personagem
     if (stunJogador === false && cooldownRoll === false) {
@@ -1541,6 +1550,7 @@ export class Boss extends Phaser.Scene {
     // Quarto dialogo
     this.time.delayedCall(6000, () => {
       this.dialogo.destroy()
+      this.dialogo.setScrollFactor(0);
 
       this.dialogo = this.add.text(x, y + 40, "", {
         fontSize: "16px",

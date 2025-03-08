@@ -185,6 +185,13 @@ export class BossSecreto extends Phaser.Scene {
   }
 
   create() {
+    // Modo que voce nao toma dano
+    this.godMode = false;
+
+    if (localStorage.getItem("godMode")) {
+      this.godMode = true;
+    }
+
     // Carrega os sons
     const ataque_leveSom = this.sound.add("ataque_leveSom");
     const ataque_PesadoSom = this.sound.add("ataque_pesadoSom");
@@ -678,13 +685,13 @@ export class BossSecreto extends Phaser.Scene {
     this.boss2VidaName.setScrollFactor(0);
 
     this.energiaRegenerando = false;
-
-   
   }
 
   update() {
     // god mode
-    // personagemNaoTomaDano = true;
+    if (this.godMode === true) {
+      personagemNaoTomaDano = true;
+    }
 
     // Logica do personagem
     if (stunJogador === false && cooldownRoll === false) {
@@ -898,24 +905,24 @@ export class BossSecreto extends Phaser.Scene {
   }
 
   oCounterDoBoss(oBoss, oBossVar) {
-    let velocidadeAntiga = oBoss.velocidade
+    let velocidadeAntiga = oBoss.velocidade;
 
     oBossVar.anims.play("boss2Pulo", false);
 
     oBossVar.setVelocityY(-200);
-    if(oBossVar.flipX === true) {
+    if (oBossVar.flipX === true) {
       oBossVar.setVelocityX(-400);
     } else {
       oBossVar.setVelocityX(400);
     }
-    
+
     oBoss.velocidade = 600;
 
     this.time.delayedCall(500, () => {
       const groundCheck = () => {
         if (oBossVar.body.touching.down && oBoss.coolDownAtaque === false) {
           this.events.off("update", groundCheck);
-  
+
           oBossVar.setVelocityX(0);
           oBoss.podeMover = true;
           oBoss.podeLevarHit = true;
@@ -927,8 +934,7 @@ export class BossSecreto extends Phaser.Scene {
       });
       // Evento para verificar se o boss2 tocou no chao
       this.events.on("update", groundCheck);
-    })
-    
+    });
   }
 
   overlapBossPlayer(personagem, oBossVar, oBoss) {
@@ -977,7 +983,10 @@ export class BossSecreto extends Phaser.Scene {
       return;
     }
 
-    if (oBoss.vaiTentarCounter === true && oBossVar.flipX !== personagem.flipX) {
+    if (
+      oBoss.vaiTentarCounter === true &&
+      oBossVar.flipX !== personagem.flipX
+    ) {
       oBoss.vaiTentarCounter = false;
       oBoss.podeLevarHit = false;
       this.oCounterDoBoss(oBoss, oBossVar);
@@ -1197,8 +1206,8 @@ export class BossSecreto extends Phaser.Scene {
 
       // Avança a contagem do modo do boss2. Se a contagem for maior que 3, ele muda de modo
       oBoss.combo++;
-      console.log(oBoss.combo)
-      if(oBoss.combo >= 3) {
+      console.log(oBoss.combo);
+      if (oBoss.combo >= 3) {
         oBoss.combo = 0;
         let modoAntigo = this.boss2.modo;
         do {
@@ -1239,7 +1248,6 @@ export class BossSecreto extends Phaser.Scene {
     this.boss2Derotado();
   }
 
- 
   ataqueBoss(oBoss, oBossVar) {
     if (oBoss.coolDownAtaque === true) {
       return;
@@ -1256,10 +1264,10 @@ export class BossSecreto extends Phaser.Scene {
       oBoss.vaiTentarCounter = true;
       oBossVar.setVelocityX(0);
       oBossVar.anims.play("normalBoss2", true);
-      
+
       // Se o player nao atacar o boss2, entao ele sai da fase de counter
       this.time.delayedCall(2500, () => {
-        if(this.boss2.vaiTentarCounter === true && this.boss2.modo !== 2) {
+        if (this.boss2.vaiTentarCounter === true && this.boss2.modo !== 2) {
           this.boss2.vaiTentarCounter = false;
           this.boss2.podeMover = true;
           oBoss.modo = 0;

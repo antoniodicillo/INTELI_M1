@@ -15,3 +15,10 @@ M1 (Mouse click) - Ataque Leve
 Shift + M1 (Mouse click) - Ataque Pesado
 
 https://antoniodicillo.github.io/INTELI_M1/
+
+
+### Cheat list (coloque o nome no localstorage)
+
+- O REI DA FLORESTA
+- O PRIMEIRO CHEFAO
+- godMode

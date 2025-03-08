@@ -53,7 +53,7 @@ export class Jogo extends Phaser.Scene {
       tocou_somAtaque: false,
     };
 
-    // Reseta variaveis globais 
+    // Reseta variaveis globais
     stunJogador = false;
     personagemVidaAtual = PERSONAGEM_VIDA_MAXIMA;
     personagemEnergiaAtual = PERSONAGEM_ENERGIA_MAXIMA;
@@ -209,9 +209,14 @@ export class Jogo extends Phaser.Scene {
   }
 
   create() {
-    // So pra ter certeza que o init funcionou 
+    this.godMode = false;
+
+    if (localStorage.getItem("godMode")) {
+      this.godMode = true;
+    }
+    // So pra ter certeza que o init funcionou
     // Porque eu não duvido que o phaser pularia o init porque seria engraçado
-    
+
     cooldownRoll = false;
     stunJogador = false;
 
@@ -411,7 +416,7 @@ export class Jogo extends Phaser.Scene {
     // Parede invisivel para avancar para o boss
     this.paredeBoss = this.physics.add.staticImage(larguraJogo - 5, 300, null);
     this.paredeBoss.setSize(10, 600);
-    this.paredeBoss.setAlpha(0); 
+    this.paredeBoss.setAlpha(0);
 
     // Registrar teclas do teclado
     teclaA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -790,8 +795,10 @@ export class Jogo extends Phaser.Scene {
   }
 
   update() {
-    // god mode - tire o comentario abaixo para não tomar dano algun no jogo
-    // personagemNaoTomaDano = true;
+    // god mode
+    if (this.godMode === true) {
+      personagemNaoTomaDano = true;
+    }
 
     // Logica do personagem
     if (stunJogador === false && cooldownRoll === false) {
@@ -853,7 +860,7 @@ export class Jogo extends Phaser.Scene {
           if (caveiras > 0 && cooldownHeal === false) {
             cooldownHeal = true;
 
-            this.time.delayedCall(2500,() => {
+            this.time.delayedCall(2500, () => {
               cooldownHeal = false;
             });
 
@@ -921,7 +928,7 @@ export class Jogo extends Phaser.Scene {
       this.energiaRegenerando = false;
 
       // Logica para a regeneracao de energia
-      this.time.delayedCall(1200,() => {
+      this.time.delayedCall(1200, () => {
         if (this.energiaRegenerando === false) {
           this.energiaRegenerando = true;
           energiaInterval = setInterval(() => {
@@ -1018,7 +1025,6 @@ export class Jogo extends Phaser.Scene {
       return;
     }
     if (dano === 0) {
-
       // Logica para ver se foi o esqueleto que deu o hit no jogador
       if (
         oEsqueleto.danoAtualEsqueleto > 0 &&
@@ -1198,7 +1204,7 @@ export class Jogo extends Phaser.Scene {
     } else if (anim.key === "morteEsqueleto") {
       // Respawn aqui em baixo
       this.killEsqueleto(oEsqueleto, oEsqueletoVar);
-      this.time.delayedCall(oEsqueleto.respawnTempo,() => {
+      this.time.delayedCall(oEsqueleto.respawnTempo, () => {
         this.respawnEsqueleto(oEsqueleto, oEsqueletoVar);
       });
     } else if (anim.key === "ataqueEsqueleto") {
@@ -1217,7 +1223,7 @@ export class Jogo extends Phaser.Scene {
       oEsqueleto.podeMover = true;
       oEsqueleto.podePular = true;
       oEsqueletoVar.anims.play("normalEsqueleto", true);
-       this.time.delayedCall(2000, () => {
+      this.time.delayedCall(2000, () => {
         oEsqueleto.coolDownAtaque = false;
       });
     }
@@ -1451,7 +1457,7 @@ export class Jogo extends Phaser.Scene {
     this.textoSair.setScrollFactor(0);
     this.mainTexto.setScrollFactor(0);
 
-    this.time.delayedCall(this.tempoTween,() => {
+    this.time.delayedCall(this.tempoTween, () => {
       this.efeitoTypewrite("O cavaleiro está morto", this.mainTexto);
       this.textoSair.setVisible(true);
       this.textoContinuar.setVisible(true);
@@ -1475,7 +1481,7 @@ export class Jogo extends Phaser.Scene {
     });
   }
 
-  // Quando a cena é desligada, o abaixo é executado 
+  // Quando a cena é desligada, o abaixo é executado
   shutdown() {
     clearInterval(energiaInterval);
     stunJogador = false;
@@ -1605,4 +1611,4 @@ let cooldownHeal = false;
 let personagemTocouSom = false;
 
 let ataque_esqueletoSom;
-let energiaInterval 
+let energiaInterval;

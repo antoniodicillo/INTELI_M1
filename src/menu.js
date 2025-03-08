@@ -18,6 +18,21 @@ export class Menu extends Phaser.Scene {
   }
 
   create() {
+    // Cheat codes para acessar os bosses, coloque os seguintes nomes no localStorage
+    
+    // Acesso ao boss secreto
+    if(localStorage.getItem("O REI DA FLORESTA")) {
+      localStorage.removeItem("O REI DA FLORESTA");
+      this.scene.start("BossSecreto");
+      this.scene.stop("Menu")
+    }
+     // Acesso ao boss normal
+    if(localStorage.getItem("O PRIMEIRO CHEFAO")) {
+      localStorage.removeItem("O PRIMEIRO CHEFAO");
+      this.scene.start("Boss");
+      this.scene.stop("Menu")
+    }
+
     const x = this.cameras.main.width / 2;
     const y = this.cameras.main.height;
 
