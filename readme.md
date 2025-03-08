@@ -19,6 +19,6 @@ https://antoniodicillo.github.io/INTELI_M1/
 
 ### Cheat list (coloque o nome no localstorage)
 
-- O REI DA FLORESTA
-- O PRIMEIRO CHEFAO
-- godMode
+- O REI DA FLORESTA : Vai direto a bossfight secreta
+- O PRIMEIRO CHEFAO : Vai direto a bossfight normal
+- godMode : Deixa o player imune a todos os danos
