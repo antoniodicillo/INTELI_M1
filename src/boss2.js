@@ -445,9 +445,9 @@ export class BossSecreto extends Phaser.Scene {
       key: "boss2Pulo",
       frames: this.anims.generateFrameNumbers("boss2_pulo", {
         start: 0,
-        end: 1,
+        end: 3,
       }),
-      frameRate: 2,
+      frameRate: 4,
       repeat: 0,
     });
 
@@ -1127,7 +1127,7 @@ export class BossSecreto extends Phaser.Scene {
       if (oBossVar.flipX === false) {
         oBossVar.setOffset(0, 0);
       } else {
-        oBossVar.setOffset(50, 0);
+        oBossVar.setOffset(50, -5);
       }
       return;
       rr;
@@ -1135,9 +1135,9 @@ export class BossSecreto extends Phaser.Scene {
     if (anim.key === "ataqueBoss2_3" || anim.key === "ataqueBoss3R") {
       oBossVar.setSize(150, 250);
       if (oBossVar.flipX === false) {
-        oBossVar.setOffset(150, 40);
+        oBossVar.setOffset(150, 30);
       } else {
-        oBossVar.setOffset(10, 40);
+        oBossVar.setOffset(10, 30);
       }
       return;
     }
